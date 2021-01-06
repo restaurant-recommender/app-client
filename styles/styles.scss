@@ -1,0 +1,26 @@
+.app {
+    height: 100%;
+    display: flex;
+}
+
+.container {
+    &.middle {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+html, body {
+    height: 100%;
+}
+
+.btn-primary {
+    background-color: red !important;
+    border-color: red !important;
+}
+
+#__next {
+    height: 100%;
+}
+
+$primary-color: #fe8019;
