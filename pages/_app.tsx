@@ -1,4 +1,4 @@
-import "../styles/styles.scss";
+import "../styles/global.scss";
 import "../styles/antd.less";
 
 // This default export is required in a new `pages/_app.js` file.

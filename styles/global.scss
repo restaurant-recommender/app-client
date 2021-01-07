@@ -1,0 +1,78 @@
+.register-page {
+    .title {
+        font-size: 3rem;
+        font-weight: 900;
+    }
+
+    .tag {
+        color: gray;
+    }
+}
+
+.group-confirmation-page {
+    .header {
+        display: flex;
+        width: 100%;
+
+        .center-button {
+            margin: auto;
+        }
+
+        .pin-code-box {
+            flex-grow: 1;
+            text-align: center;
+
+            .pin-code {
+                font-size: 1.5rem;
+                font-weight: bolder;
+            }
+        }
+    }
+
+    // .members {
+        
+    // }
+}
+
+.app {
+    height: 100%;
+    display: flex;
+}
+
+.container {
+    padding: 1.5rem;
+    max-width: 1000px;
+    width: 100%;
+
+    &.middle {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+p {
+    color:#ffffffd5;
+    color:#98acff;
+    color: #f0f0f0;
+    color: #ffd9b0bd;
+    color:#ffffff;
+    color:#535353;
+}
+
+h1 {
+    font-weight: bolder !important;
+}
+
+html, body {
+    height: 100%;
+}
+
+#__next {
+    height: 100%;
+}
+
+.ant-btn-primary {
+    font-weight: bolder !important;
+}
+
+$primary-color: #fe8019;
