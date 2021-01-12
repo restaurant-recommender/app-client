@@ -5,7 +5,7 @@ import { Button, Dropdown, Menu } from "antd"
 import { faEllipsisH, faCrown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { Spacer, FixedBottomButton, CardList } from "../../components"
+import { Spacer, CardList, FixedBottom } from "../../components"
 
 const fakemembers = [
   {
@@ -73,13 +73,19 @@ export default function GroupConfirmation() {
     return null;
   }
 
-  // const Map = useMemo(() => dynamic(
-  //   () => import("../../components/Map/Map"), // replace '@components/map' with your component's location
-  //   { 
-  //     loading: () => <p>A map is loading</p>,
-  //     ssr: false // This line is important. It's what prevents server-side render
-  //   }
-  // ), [/* list variables which should trigger a re-render here */])
+  const Map = dynamic(
+    () => import("../../components/Map/Map"), { 
+      loading: () => (
+        <div style={{height: '220px', lineHeight: '220px', textAlign: 'center', background: 'gray', marginLeft: '-1.5rem', marginRight: '-1.5rem'}}>
+          Map is Loading...
+        </div>
+      ),
+      ssr: false // This line is important. It's what prevents server-side render
+  })
+  // const Map = dynamic(() => import("../../components/Map/Map"), {
+  //   loading: () => <p>Loading Map...</p>,
+  //   ssr: false
+  // });
 
   const memberMenu = (
     <Menu>
@@ -121,18 +127,25 @@ export default function GroupConfirmation() {
         <Button className="center-button">Share</Button>
       </div>
       <Spacer />
-      {/* <Map /> */}
-      <div style={{height: '220px', lineHeight: '220px', textAlign: 'center', background: 'gray'}}>
-        Will be a map
-      </div>
+
+      <Map />
       <Spacer rem={2}/>
+
       <div>
         <h2 style={{fontWeight: 'bolder'}}>Members</h2>
         {membersList}
       </div>
-      <Spacer height={100} />
+      <Spacer height={140} />
       
-      <FixedBottomButton title="Start" onClick={handleStart}/>
+      <FixedBottom style={{flexDirection: 'column', height: '140px'}}>
+        <div style={{width:'300px', margin:'auto', display: 'flex', marginTop: '1.5rem', marginBottom: '1rem', justifyContent: 'space-around'}}>
+        <Button style={{}}>Set Prefer Price</Button>
+        <Button style={{}}>Edit Preference</Button>
+        </div>
+        <div style={{width:'100%', display: 'flex'}}>
+          <Button onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>Start</Button>
+        </div>
+      </FixedBottom>
     </div>
   )
 }
