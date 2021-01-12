@@ -122,7 +122,7 @@ export default function GroupConfirmation() {
         <Button onClick={handleCancel} className="center-button">Cancel</Button>
         <div className="pin-code-box">
           <div style={{color: 'gray'}}>Pin Code</div>
-          <div className="pin-code">{pin.slice(0, 3)} {pin.slice(3, 6)}</div>
+          <div className="pin-code">{pin && pin.slice(0, 3)} {pin && pin.slice(3, 6)}</div>
         </div>
         <Button className="center-button">Share</Button>
       </div>

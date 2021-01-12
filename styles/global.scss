@@ -50,6 +50,15 @@
         margin-top: auto;
         margin-bottom: auto;
     }
+
+    &.middle-flex {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.ant-modal-body {
+    box-shadow: 0px 0px 10px 10px gray;
 }
 
 p {

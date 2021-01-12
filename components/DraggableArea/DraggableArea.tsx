@@ -4,36 +4,30 @@ import { Checkbox } from "antd"
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { IAvailableItem } from "../../types"
 import { Spacer } from "../"
 
 import "./DraggableArea.scss"
 import { relative } from "path";
 
-
-interface IAvailableItem {
-  id: string
-  name: string
-  isSeleceted: boolean
-  order: number
-}
-
 interface IDraggableArea {
   availableItems: IAvailableItem[]
   selectedTitle?: string
   setAvailableItemsCallback: any
+  clickOnIdCallback?: any // id: string
 }
 
 const getAvailableItems = (selected: IAvailableItem[], items: IAvailableItem[]): IAvailableItem[] => {
   const orderedSelected = selected.map((item, index) => ({
     id: item.id,
     name: item.name,
-    isSeleceted: true,
+    isSelected: true,
     order: index + 1,
   }))
   const orderedItems= items.map((item, index) => ({
     id: item.id,
     name: item.name,
-    isSeleceted: false,
+    isSelected: false,
     order: index + 1,
   }))
   return orderedSelected.concat(orderedItems)
@@ -78,6 +72,7 @@ const getItemStyle = (isDragging, draggableStyle, isLast) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
   display: 'flex',
+  justifyContent: 'space-between',
   padding: grid * 2,
   margin: !isLast ? `0 0 ${grid}px 0` : '0',
   borderRadius: '8px',
@@ -91,19 +86,20 @@ const getItemStyle = (isDragging, draggableStyle, isLast) => ({
 });
 
 const getListStyle = (isDraggingOver, hasTitle) => ({
-  borderRadius: hasTitle ? '0 0 14px 14px' : '14px',
-  background: isDraggingOver ? '#ffd9b0bd' : '#e5e5e5',
+  borderRadius: '14px',
+  background: isDraggingOver ? '#ffe7ba' : '#e5e5e5',
   border: hasTitle ? 'solid 4px #fe8019' : 'none',
   padding: grid,
+  marginTop: '-12px',
   width: '100%',
 });
 
 const getItemsFromAvailables = (availables: IAvailableItem[]) => (
-  availables.filter(a => !a.isSeleceted)
+  availables.filter(a => !a.isSelected)
 )
 
 const getSelectedFromAvailables = (availables: IAvailableItem[]) => (
-  availables.filter(a => a.isSeleceted)
+  availables.filter(a => a.isSelected)
 )
 
 export const DraggableArea = (prop: IDraggableArea) => {
@@ -166,10 +162,10 @@ export const DraggableArea = (prop: IDraggableArea) => {
       draggableId={item.id}
       index={index}>
       {(provided, snapshot) => (
-        <div ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast)}>
+        <div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast)}>
           {showRanking && <div className="rank-badge">{index + 1}</div>}
-          <div style={{flexGrow: 1}}>{item.name}</div>
-          <FontAwesomeIcon icon={faBars} style={{margin: 'auto'}}/>
+          <div style={{flexGrow: 1, maxWidth: '75%'}}>{item.name}</div>
+          <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem'}}/>
           <div className="draggable-knob" {...provided.dragHandleProps}/>
         </div>
       )}
@@ -194,7 +190,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
           </div>
         )}
       </Droppable>
-      <Spacer />
+      <Spacer rem={2}/>
       <Droppable droppableId="itemsDropableId">
         {(provided, snapshot) => (
           <div

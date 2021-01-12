@@ -7,67 +7,67 @@ const fakeitems = [
   {
     id: '1',
     name: 'Thai',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '2',
     name: 'Japanese',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '3',
     name: 'Chinese',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '4',
     name: 'Korean',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '5',
     name: 'Italian',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '6',
     name: 'Fast Food',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '7',
     name: 'Buffet',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '8',
     name: 'Seafood',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '9',
     name: 'Noodle',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '10',
     name: 'Steakhouse',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
   {
     id: '11',
     name: 'Shabu Shabu',
-    isSeleceted: false,
+    isSelected: false,
     order: -1,
   },
 ]
@@ -84,7 +84,7 @@ export default function Register() {
   const router = useRouter();
 
   const totalSelected = 5;
-  const isValid = () => (items.filter((item) => item.isSeleceted).length) === totalSelected;
+  const isValid = () => (items.filter((item) => item.isSelected).length) === totalSelected;
 
   const handleNext = () => {
     if (isValid()) {
