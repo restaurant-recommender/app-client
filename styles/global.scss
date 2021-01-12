@@ -55,6 +55,10 @@
         display: flex;
         flex-direction: column;
     }
+
+    &.bg-gray {
+        background: #fafafa;
+    }
 }
 
 .ant-modal-body {

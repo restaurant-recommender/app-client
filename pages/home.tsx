@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   return (
-    <div className="container middle-flex">
+    <div className="container middle-flex bg-gray">
       <div style={{fontSize: '1rem', color: 'gray', display: 'flex'}}>
         Hi, {username}
         <Button style={{marginLeft: 'auto'}} onClick={handleChangeLanguge}>TH</Button>
