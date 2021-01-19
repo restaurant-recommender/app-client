@@ -22,4 +22,8 @@ module.exports = withCSS({
       },
     })
   ),
+  i18n: {
+    locales: ['en', 'th'],
+    defaultLocale: 'en',
+  },
 });

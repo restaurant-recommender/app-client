@@ -1,8 +1,13 @@
-import { useState, useEffect, useMemo, useCallback } from "react"
-import { useRouter } from "next/router"
+import { Button } from "antd"
+import { CSSProperties, useState } from "react"
+import { faFrown, faGrinStars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useCookies } from "react-cookie"
 
-import { DraggableArea, Spacer, FixedBottomButton, RestaurantModal } from "../../../components"
-import { IAvailableItem, IRestaurant } from "../../../types"
+import { Spacer, RestaurantCard, Box, FloatButton } from "../../../components"
+import { IRestaurant } from "../../../types"
+import { Color } from "../../../utils"
+import { useRouter } from "next/router"
 
 const fakerestaurant: IRestaurant[] = [
   {
@@ -487,98 +492,55 @@ const fakerestaurant: IRestaurant[] = [
   }
 ]
 
-const fakeitems: IAvailableItem[] = [
-  {
-    id: '1',
-    name: 'ปังกะโหลก',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '2',
-    name: 'ชาบูนางใน',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '3',
-    name: 'มีข้าวมีเตี๋ยว',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '4',
-    name: 'KFC MaxValue',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '5',
-    name: 'ลานไม้',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '6',
-    name: 'ลาบยโส',
-    isSelected: false,
-    order: -1,
+const fadeWhite = 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)'
+
+  const buttonStyle: CSSProperties = {
+    fontSize: "1.2rem",
+    height: "3rem",
+    padding: "0 2.4rem",
+    fontWeight: "bolder",
+    color: 'white',
+    boxShadow: '0px 10px 30px 0px rgba(0,0,0,0.15)'
   }
-]
 
-const getItemsFromRestaurants = (restaurants: IRestaurant[]): IAvailableItem[] => restaurants.map((restaurant, index) => ({
-  id: restaurant._id,
-  name: restaurant.name,
-  isSelected: false,
-  order: index + 1,
-}))
+export default function IndividualStart() {
 
-export default function GroupStart() {
-  const [restaurants, setRestaurants] = useState<IRestaurant[]>(fakerestaurant)
-  const [items, setItems] = useState(getItemsFromRestaurants(restaurants))
-  const [showRestaurant, setShowrestaurant] = useState<IRestaurant>(restaurants[0])
-  const [isShowRestaurant, setIsShowrestaurant] = useState<boolean>(false)
+  const [cookie, setCookie] = useCookies(['user'])
+
   const router = useRouter()
-  const { id } = router.query
-
-  const totalSelected = items.length;
-  const isValid = () => (items.filter((item) => item.isSelected).length) === totalSelected;
-
-  const setItemsCallback = useCallback((newItems) => {
-    setItems(newItems)
-    console.log(newItems)
-  }, [])
-
-  const handleNext = () => {
-    if (isValid()) {
-      router.push("/group/finish/fakegrouprecommendationid")
-    }
+  const [currentRestaurantIndex, setCurrentRestaurantIndex] = useState<number>(0)
+  
+  const handleSkip = () => {
+    console.log('test')
+    const user = cookie.user
+    console.log(user)
   }
 
-  const closeModalCallback = useCallback(() => {
-    setIsShowrestaurant(false)
-  }, [])
+  const handleLove = () => {
 
-  const showRestaurantModal = (id: string) => {
-    console.log(id)
   }
 
-  const showRestaurantModalCallback = useCallback((id: string) => {
-    showRestaurantModal(id)
-    const targetRestaurant: IRestaurant = restaurants.find((restaurant) => restaurant._id === id)
-    setShowrestaurant(targetRestaurant)
-    setIsShowrestaurant(true)
-  }, [])
+  const handleHome = () => {
+    setCookie('user', 'testcookie')
+  }
 
   return (
     <div className="container">
-      {/* {id} */}
-      <h1>Restaurants</h1>
-      <p>Please order given restaurants by your preferences. Drag all {totalSelected} restaurants into <strong>Love box</strong> and <strong>order</strong> them as your wish.</p>
-      <DraggableArea clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>
-      <Spacer height={100} />
-      <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Finish' : 'Please order all restaurants.'} onClick={handleNext}/>
-      <RestaurantModal isVisible={isShowRestaurant} restuarant={showRestaurant} onCancelCallback={closeModalCallback} />
+      <Box display="flex" justifyContent="space-between" marginBottom="1rem">
+        <Button danger>Cancel</Button>
+        <Button>Setting</Button>
+      </Box>
+
+      <Spacer />
+      <RestaurantCard style={{margin: 'auto'}} restaurant={fakerestaurant[0]} />
+      <Box height="120px" />
+      
+      <Box position="fixed" bottom="0" left="0" height="120px" display="flex" width="100%" background={fadeWhite}>
+        <Box margin="auto" display="flex" width="100%" justifyContent="space-around">
+          <FloatButton onClick={handleSkip} type="secondary"><FontAwesomeIcon icon={faFrown}/>&nbsp;&nbsp;Nah</FloatButton>
+          <FloatButton onClick={handleLove} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;Love</FloatButton>
+        </Box>
+      </Box>
     </div>
   )
 }

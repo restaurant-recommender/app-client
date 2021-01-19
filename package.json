@@ -19,6 +19,7 @@
     "@zeit/next-sass": "^1.0.1",
     "antd": "^4.10.0",
     "babel-plugin-import": "^1.13.3",
+    "cookie": "^0.4.1",
     "leaflet": "^1.7.1",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "leaflet-geosearch": "^3.1.0",
@@ -27,7 +28,10 @@
     "next": "^10.0.0",
     "react": "16.13.1",
     "react-beautiful-dnd-next": "^11.0.5",
+    "react-collapse": "^5.1.0",
+    "react-cookie": "^4.0.3",
     "react-dom": "16.13.1",
+    "react-intl": "^5.10.15",
     "react-leaflet": "^3.0.5",
     "react-leaflet-enhanced-marker": "^1.0.19",
     "react-mapbox-gl": "^5.1.1",
@@ -36,7 +40,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.5.19",
-    "@types/node": "^14.14.20",
+    "@types/node": "^14.14.21",
     "@types/react": "^17.0.0",
     "typescript": "^4.1.3"
   }

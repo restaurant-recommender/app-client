@@ -112,7 +112,7 @@ const fakerestaurant: IRestaurant = {
   }
 }
 
-export default function GroupFinish() {
+export default function IndividualFinish() {
   const router = useRouter()
 
   const handleHome = () => {
