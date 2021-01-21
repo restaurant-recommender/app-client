@@ -1,6 +1,11 @@
+const global = {
+  appName: "Kinraidee?",
+  logoutButton: "Logout",
+}
+
 export const en = {
   "/home": {
-    logout: "Logout",
+    ...global,
     hi: "Hi, ",
     individualTitle: "Individual Eating",
     groupTitle: "Group Eating",
@@ -9,7 +14,4 @@ export const en = {
     joinGroupLabel: "Join Group",
     editPreferenceLabel: "Edit Preference",
   },
-  // "/alt": {
-  //   hello: "Yo",
-  // },
 };

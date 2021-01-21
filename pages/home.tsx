@@ -3,17 +3,15 @@ import { useRouter } from "next/router"
 import { Button } from "antd"
 import { useState } from "react";
 import { faUser, faUsers, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
-import { useIntl } from "react-intl"
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { Spacer, BigButton, Line } from "../components"
-import { Color } from "../utils"
+import { Color, useFormatter } from "../utils"
 
 export default function Home() {
-  const { formatMessage } = useIntl()
-  const f = id => formatMessage({ id })
 
   const router = useRouter()
+  const f = useFormatter()
   const [username, setUsername] = useState('testUser')
 
   const handleIndividualReccommendation = () => {
@@ -41,9 +39,9 @@ export default function Home() {
       <div style={{fontSize: '1rem', color: 'gray', display: 'flex'}}>
         {f('hi')}{username}
         <Button style={{marginLeft: 'auto'}} onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Button>
-        <Button style={{marginLeft: '1rem'}} danger onClick={handleLogout}>{f('logout')}</Button>
+        <Button style={{marginLeft: '1rem'}} danger onClick={handleLogout}>{f('logoutButton')}</Button>
       </div>
-      <div style={{fontSize: '3rem', fontWeight: 'bolder'}}>Kinraidee?</div>
+      <div style={{fontSize: '3rem', fontWeight: 'bolder'}}>{f('appName')}</div>
       <Spacer />
       <Line />
       <div style={{flexGrow: 1, display: 'flex', overflow: 'scroll', marginLeft: '-1.5rem', marginRight: '-1.5rem'}}>

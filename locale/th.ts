@@ -1,6 +1,11 @@
+const global = {
+  appName: "กินไรดี?",
+  logoutButton: "ออกจากระบบ",
+}
+
 export const th = {
   "/home": {
-    logout: "ออกจากระบบ",
+    ...global,
     hi: "สวัสดี ",
     individualTitle: "กินคนเดียว",
     groupTitle: "กินเป็นกลุ่ม",
