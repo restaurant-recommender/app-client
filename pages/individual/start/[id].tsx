@@ -1,4 +1,4 @@
-import { Button } from "antd"
+import { Button, Modal } from "antd"
 import { CSSProperties, useState } from "react"
 import { faFrown, faGrinStars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,6 +8,7 @@ import { Spacer, RestaurantCard, Box, FloatButton } from "../../../components"
 import { IRestaurant } from "../../../types"
 import { Color } from "../../../utils"
 import { useRouter } from "next/router"
+import { ModalFuncProps } from "antd/lib/modal"
 
 const fakerestaurant: IRestaurant[] = [
   {
@@ -494,45 +495,56 @@ const fakerestaurant: IRestaurant[] = [
 
 const fadeWhite = 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)'
 
-  const buttonStyle: CSSProperties = {
-    fontSize: "1.2rem",
-    height: "3rem",
-    padding: "0 2.4rem",
-    fontWeight: "bolder",
-    color: 'white',
-    boxShadow: '0px 10px 30px 0px rgba(0,0,0,0.15)'
-  }
-
 export default function IndividualStart() {
 
   const [cookie, setCookie] = useCookies(['user'])
+  const [modal, contextHolder] = Modal.useModal();
 
   const router = useRouter()
   const [currentRestaurantIndex, setCurrentRestaurantIndex] = useState<number>(0)
   
   const handleSkip = () => {
-    console.log('test')
-    const user = cookie.user
-    console.log(user)
+    // console.log('test')
+    // const user = cookie.user
+    // console.log(user)
+    setCurrentRestaurantIndex(currentRestaurantIndex + 1)
   }
 
   const handleLove = () => {
-
+    router.push('/individual/finish/faketoken')
   }
 
   const handleHome = () => {
-    setCookie('user', 'testcookie')
+    // setCookie('user', 'testcookie')
+  }
+
+  const cancelModalConfig: ModalFuncProps = {
+    title: 'Go Home?',
+    content: (
+      <>
+        Do you want to cancel the recommendation and go back to home page?
+      </>
+    ),
+    okText: 'Yes, go home',
+    cancelText: 'No',
+    onOk: () => {
+      router.push('/home')
+    },
+  };
+
+  const handleCancel = () => {
+    modal.confirm(cancelModalConfig)
   }
 
   return (
     <div className="container">
       <Box display="flex" justifyContent="space-between" marginBottom="1rem">
-        <Button danger>Cancel</Button>
+        <Button onClick={handleCancel} danger>Back</Button>
         <Button>Setting</Button>
       </Box>
 
       <Spacer />
-      <RestaurantCard style={{margin: 'auto'}} restaurant={fakerestaurant[0]} />
+      <RestaurantCard style={{margin: 'auto'}} restaurant={fakerestaurant[currentRestaurantIndex]} />
       <Box height="120px" />
       
       <Box position="fixed" bottom="0" left="0" height="120px" display="flex" width="100%" background={fadeWhite}>
@@ -541,6 +553,7 @@ export default function IndividualStart() {
           <FloatButton onClick={handleLove} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;Love</FloatButton>
         </Box>
       </Box>
+      {contextHolder}
     </div>
   )
 }

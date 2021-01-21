@@ -18,7 +18,7 @@ export default function Home() {
 
   const handleIndividualReccommendation = () => {
     // TODO: Init recommendation -> get token
-    router.push(`/individual/faketoken`)
+    router.push(`/individual/start/faketoken`)
   }
 
   const handleCreateGroup = () => {

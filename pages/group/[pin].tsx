@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import { Button, Dropdown, Menu } from "antd"
-import { faEllipsisH, faCrown } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH, faCrown, faLink, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import QRCode from "react-qr-code"
 
-import { Spacer, CardList, FixedBottom } from "../../components"
+import { Spacer, CardList, FixedBottom, BottomDrawer, Box } from "../../components"
 
 const fakemembers = [
   {
@@ -43,8 +44,10 @@ interface IMember {
   isHead: boolean
 }
 
-export default function GroupConfirmation() {
+export default function GroupConfirmation({ hostname }) {
   const [members, setMembers] = useState<IMember[]>(fakemembers)
+  const [isShareSheetVisible, setIsShareSheetVisible] = useState<boolean>(false)
+  const [isCopied, setIsCopied] = useState<boolean>(false)
   const router = useRouter()
   const { pin } = router.query
 
@@ -55,7 +58,8 @@ export default function GroupConfirmation() {
   }
 
   const handleShare = () => {
-    // TODO: shoe share model
+    setIsCopied(false)
+    setIsShareSheetVisible(true)
   }
 
   const handleStart = () => {
@@ -64,14 +68,13 @@ export default function GroupConfirmation() {
     router.push("/group/start/fakegrouprecommendationid")
   }
 
-  const [isBrowser, setIsBrowser] = useState(false);
-  useEffect(() => {
-    setIsBrowser(true);
-  }, []);
-
-  if (!isBrowser) {
-    return null;
+  const handleCopyLink = () => {
+    setIsCopied(true)
+    navigator.clipboard.writeText(getShareLink())
   }
+
+  /* TODO: change to correct hostname */
+  const getShareLink = () => `https://kinrai.dee${router.asPath}`
 
   const Map = dynamic(
     () => import("../../components/Map/Map"), { 
@@ -82,10 +85,6 @@ export default function GroupConfirmation() {
       ),
       ssr: false // This line is important. It's what prevents server-side render
   })
-  // const Map = dynamic(() => import("../../components/Map/Map"), {
-  //   loading: () => <p>Loading Map...</p>,
-  //   ssr: false
-  // });
 
   const memberMenu = (
     <Menu>
@@ -112,19 +111,22 @@ export default function GroupConfirmation() {
         </CardList>
         <Spacer />
       </div>
-      
     ))
+  )
+
+  const pinCodeBox = (
+    <Box flexGrow={1} textAlign="center">
+      <Box color="gray">Pin Code</Box>
+      <Box fontSize="1.5rem" fontWeight="bolder">{pin && pin.slice(0, 3)} {pin && pin.slice(3, 6)}</Box>
+    </Box>
   )
 
   return (
     <div className="container group-confirmation-page">
       <div className="header">
         <Button onClick={handleCancel} className="center-button">Cancel</Button>
-        <div className="pin-code-box">
-          <div style={{color: 'gray'}}>Pin Code</div>
-          <div className="pin-code">{pin && pin.slice(0, 3)} {pin && pin.slice(3, 6)}</div>
-        </div>
-        <Button className="center-button">Share</Button>
+        {pinCodeBox}
+        <Button onClick={handleShare} className="center-button">Share</Button>
       </div>
       <Spacer />
 
@@ -146,6 +148,16 @@ export default function GroupConfirmation() {
           <Button onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>Start</Button>
         </div>
       </FixedBottom>
+
+      <BottomDrawer height={500} visible={isShareSheetVisible} onClose={() => { setIsShareSheetVisible(false) }}>
+        <Box width="100%" textAlign="center">
+          {pinCodeBox}
+          <Spacer rem={2} />
+          <QRCode value={getShareLink()}/>
+          <Spacer rem={2} />
+          <Button onClick={handleCopyLink} style={{width: '256px'}}><FontAwesomeIcon icon={isCopied ? faCheck : faLink}/>&nbsp;&nbsp;{isCopied ? 'Copied' : 'Copy'} to Clipboard</Button>
+        </Box>
+      </BottomDrawer>
     </div>
   )
 }
