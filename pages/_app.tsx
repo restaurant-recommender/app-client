@@ -1,6 +1,8 @@
 import { IntlProvider } from "react-intl"
 import { useRouter } from "next/router"
 import * as locales from "../locale"
+import dynamic from "next/dynamic";
+// import { CookiesProvider } from 'react-cookie'
 
 import "../styles/global.scss";
 import "../styles/antd.less";
@@ -9,14 +11,17 @@ import "../styles/antd.less";
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
   const { locale, defaultLocale, pathname } = router
-  const localeCopy = locales[locale]
-  const messages = localeCopy[pathname]
+  const messages = locales[locale]
 
   return (
-    <IntlProvider locale={locale} defaultLocale={defaultLocale} messages={messages}>
-      <div className="app">
-        <Component {...pageProps} />
-      </div>
-    </IntlProvider>
+      <IntlProvider locale={locale} defaultLocale={defaultLocale} messages={messages}>
+        <div className="app">
+          <Component {...pageProps} />
+        </div>
+      </IntlProvider>
   ) 
 }
+
+// export default dynamic(() => Promise.resolve(MyApp), {
+//   ssr: false,
+// });

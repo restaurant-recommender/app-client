@@ -1,94 +1,64 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Button, Input } from "antd";
 import { DraggableArea, Spacer, FixedBottomButton } from "../components";
+import { getToken, useAuth } from "../utils/auth";
+import { AvailableItem, CommonCetegory, Preference } from "../types";
+import { restaurantService, userService } from "../services";
 
-const fakeitems = [
-  {
-    id: '1',
-    name: 'Thai',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '2',
-    name: 'Japanese',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '3',
-    name: 'Chinese',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '4',
-    name: 'Korean',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '5',
-    name: 'Italian',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '6',
-    name: 'Fast Food',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '7',
-    name: 'Buffet',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '8',
-    name: 'Seafood',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '9',
-    name: 'Noodle',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '10',
-    name: 'Steakhouse',
-    isSelected: false,
-    order: -1,
-  },
-  {
-    id: '11',
-    name: 'Shabu Shabu',
-    isSelected: false,
-    order: -1,
-  },
-]
+const generateAvailableItem = (cetegories: CommonCetegory[], userPreferences: Preference[]): AvailableItem[] => cetegories.map((category) => {
+  const userPreference = userPreferences && userPreferences.find((preference) => preference._id === category._id)
+  return {
+    id: category._id, 
+    name: category.name,
+    isSelected: userPreference ? true : false,
+    order: userPreference ? userPreference.order : category.order,
+  } as AvailableItem
+})
 
 export default function Register() {
 
-  const [items, setItems] = useState(fakeitems);
+  const auth = useAuth()
+  const router = useRouter();
+
+  const [categories, setCategories] = useState<CommonCetegory[]>()
+  const [items, setItems] = useState<AvailableItem[]>();
 
   const setItemsCallback = useCallback((newItems) => {
     setItems(newItems)
     console.log(newItems)
   }, [])
 
-  const router = useRouter();
-
+  useEffect(() => {
+    auth()
+    restaurantService.getCommonCetegories(router.locale).then((response) => {
+      const commonCetegories = response.data.data
+      userService.getPreferences().then((response) => {
+        const userPreferences: Preference[] = response.data
+        console.log(userPreferences)
+        console.log(generateAvailableItem(commonCetegories, userPreferences))
+        setCategories(commonCetegories)
+        setItems(generateAvailableItem(commonCetegories, userPreferences))
+      })
+    })
+  }, [])
+  
   const totalSelected = 5;
-  const isValid = () => (items.filter((item) => item.isSelected).length) === totalSelected;
+  const isValid = () => items && (items.filter((item) => item.isSelected).length) === totalSelected;
 
   const handleNext = () => {
     if (isValid()) {
-      router.push("/home")
+      const preferences: Preference[] = items.filter((item) => item.isSelected).map((item) => ({
+        _id: item.id,
+        name_en: categories.find((category) => category._id === item.id).name_en,
+        order: item.order,
+      }))
+      console.log(preferences)
+      userService.updatePreferences({ preferences }).then((result) => {
+        if (result.data.status) {
+          router.push("/home")
+        }
+      }).catch((error) => { alert(error) }) 
     }
   }
 
@@ -96,7 +66,7 @@ export default function Register() {
     <div className="container preference-page">
       <h1>Preference</h1>
       <p>Please select your restaurant preferences. Drag {totalSelected} preferences into <strong>Love box</strong> and <strong>order</strong> them by your preference.</p>
-      <DraggableArea availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>
+      { items && <DraggableArea availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/> }
       <Spacer height={100} />
       <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Next' : 'Please select 5 preferences.'} onClick={handleNext}/>
     </div>

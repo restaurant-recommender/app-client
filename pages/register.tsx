@@ -1,22 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { Button, Input } from "antd";
 import { Spacer } from "../components";
+import { useFormatter } from "../utils";
+import { authenticationService, RegisterBody } from "../services";
+import { setToken } from "../utils/auth";
+import { AuthenticationToken } from "../types";
 
 export default function Register() {
   const router = useRouter()
+  const f = useFormatter()
+
+  const [username, setUsername] = useState<string>(null)
+  const [password, setPassword] = useState<string>(null)
+
+  const handleInputUsername = (e) => { e.preventDefault(); setUsername(e.target.value) }
+  const handleInputPassword = (e) => { e.preventDefault(); setPassword(e.target.value) }
+
+  const handleRegister = () => {
+    const body: RegisterBody = { username, password }
+    authenticationService.register(body).then((response) => {
+      const result = response.data
+      if (!result.status) throw(result.code)
+      else {
+        const token: AuthenticationToken = { 
+          token: result.data.token, 
+          username: result.data.username,
+          id: result.data.id,
+        }
+        setToken(token)
+        router.push('/preference')
+      }
+    }).catch((error) => {
+      alert(f(error))
+    })
+  }
+
+  const handleLogin = () => {
+    router.push('/login')
+  }
 
   return (
     <div className="container middle register-page">
-      <h3 style={{marginBottom: 0, color: 'gray'}}>Welcome</h3>
-      <div><span className="title">Kinraidee</span> <span className="tag">(BETA)</span></div>
+      <h3 style={{marginBottom: 0, color: 'gray'}}>{f('register_topWelcome')}</h3>
+      <div><span className="title">{f('appName')}</span> <span className="tag">(BETA)</span></div>
       <Spacer />
-      <p style={{marginBottom: "0.5rem"}}>Please enter your new username.</p>
-      <Input placeholder="New Username"/>
+      <p style={{marginBottom: "0.5rem"}}>{f('register_description')}</p>
+      <Input onChange={handleInputUsername} size="large" placeholder="New Username"/>
       <Spacer rem={0.75} />
-      <Button onClick={() => {router.push("/preference")}} type="primary" size="large">Next</Button>
+      <Input onChange={handleInputPassword} size="large" placeholder="New Password"/>
+      <Spacer rem={0.75} />
+      <Button onClick={handleRegister} type="primary" size="large">{f('btn_next')}</Button>
       <Spacer />
-      <p>Already have an account? <a href="/login">Login</a> instead</p>
+      <p>{f('register_login1')}<a onClick={handleLogin}>{f('btn_login')}</a>{f('register_login2')}</p>
     </div>
   )
 }

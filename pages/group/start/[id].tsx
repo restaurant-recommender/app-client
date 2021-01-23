@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter } from "next/router"
 
 import { DraggableArea, Spacer, FixedBottomButton, RestaurantModal } from "../../../components"
-import { IAvailableItem, IRestaurant } from "../../../types"
+import { AvailableItem, IRestaurant } from "../../../types"
 
 const fakerestaurant: IRestaurant[] = [
   {
@@ -487,7 +487,7 @@ const fakerestaurant: IRestaurant[] = [
   }
 ]
 
-const fakeitems: IAvailableItem[] = [
+const fakeitems: AvailableItem[] = [
   {
     id: '1',
     name: 'ปังกะโหลก',
@@ -526,7 +526,7 @@ const fakeitems: IAvailableItem[] = [
   }
 ]
 
-const getItemsFromRestaurants = (restaurants: IRestaurant[]): IAvailableItem[] => restaurants.map((restaurant, index) => ({
+const getItemsFromRestaurants = (restaurants: IRestaurant[]): AvailableItem[] => restaurants.map((restaurant, index) => ({
   id: restaurant._id,
   name: restaurant.name,
   isSelected: false,

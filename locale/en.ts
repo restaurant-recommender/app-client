@@ -1,17 +1,32 @@
-const global = {
-  appName: "Kinraidee?",
-  logoutButton: "Logout",
-}
-
 export const en = {
-  "/home": {
-    ...global,
-    hi: "Hi, ",
-    individualTitle: "Individual Eating",
-    groupTitle: "Group Eating",
-    individualButtonLabel: "Get Individual Recommendation",
-    createGroupLabel: "Create Group",
-    joinGroupLabel: "Join Group",
-    editPreferenceLabel: "Edit Preference",
-  },
+  appName: "Kinraidee?",
+
+  btn_next: "Next",
+  btn_login: "Login",
+  btn_logout: "Logout",
+  btn_editPreferences: "Edit Preference",
+
+  auth_invalidUser: "Invalid username!",
+  auth_notSignIn: "Please login before using.",
+  
+  login_description: "Please login.",
+  login_missingForm: "Please fill your username and password",
+  login_register1: "Don't have an account yet? ",
+  login_register2: "",
+
+  register_topWelcome: "Registration",
+  register_description: "Please enter your new username and password",
+  register_login1: "Already have an account? ",
+  register_login2: " instead.",
+
+  home_hi: "Hi, ",
+  home_title_individual: "Individual Eating",
+  home_title_group: "Group Eating",
+  home_btn_individual: "Get Individual Recommendation",
+  home_btn_createGroup: "Create Group",
+  home_btn_joinGroup: "Join Group",
+
+  ERROR_AUTH_1: "Username or password is incorrect.",
+  ERROR_AUTH_2: "Username or password is incorrect.",
+  ERROR_AUTH_3: "Username is already existed.",
 };

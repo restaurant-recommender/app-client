@@ -1,4 +1,31 @@
-export type IRestaurant = {
+export type Response <T> = {
+  status: boolean
+  code?: string
+  message?: string
+  data?: T
+}
+
+export type CommonCetegory = {
+  name_th: string
+  name_en: string
+  name: string
+  _id: string
+  order: number
+}
+
+export type Preference = {
+  _id: string
+  name_en: string
+  order: number
+}
+
+export type AuthenticationToken = {
+  token: string
+  username: string
+  id: string
+}
+
+export type Restaurant = {
   _id: any;
   is_active: boolean;
   has_profile: boolean;
@@ -37,9 +64,55 @@ export type IRestaurant = {
   __v?: any;
 }
 
-export type IAvailableItem = {
+export type AvailableItem = {
   id: string;
   name: string;
   isSelected: boolean;
   order: number;
+}
+
+export type History = {
+  restaurant: string | Restaurant
+  is_love: boolean
+  is_skip: boolean
+  rating: number
+  timestamp: Date
+}
+
+export type Point = {
+  type: string
+  coordinates: [number, number]
+}
+
+export type Recommendation = {
+  _id: string
+  histories: History[]
+  users: string[] | User[]
+  location: Point
+  created_at: Date
+  completed_at: Date
+  rating: number
+  is_complete: boolean
+  is_active: boolean
+}
+
+export type User = {
+  username: string
+  password: string
+  has_profile: boolean
+  profile?: {
+      gender: 'male' | 'female'
+      birthdate: Date
+      preference: {
+          categories: {
+              category: string
+              value: number
+              original_value: number
+          }[]
+          price_range: number
+          prefer_nearby: boolean
+      }
+  }
+  recommendation_histories: Recommendation[]
+  is_active: boolean
 }

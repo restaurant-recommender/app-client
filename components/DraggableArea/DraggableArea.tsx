@@ -1,23 +1,23 @@
 import { useState, useMemo, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd-next";
 import { Checkbox } from "antd"
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { IAvailableItem } from "../../types"
+import { AvailableItem } from "../../types"
 import { Spacer } from "../"
 
 import "./DraggableArea.scss"
 import { relative } from "path";
 
 interface IDraggableArea {
-  availableItems: IAvailableItem[]
+  availableItems: AvailableItem[]
   selectedTitle?: string
   setAvailableItemsCallback: any
   clickOnIdCallback?: any // id: string
 }
 
-const getAvailableItems = (selected: IAvailableItem[], items: IAvailableItem[]): IAvailableItem[] => {
+const getAvailableItems = (selected: AvailableItem[], items: AvailableItem[]): AvailableItem[] => {
   const orderedSelected = selected.map((item, index) => ({
     id: item.id,
     name: item.name,
@@ -33,16 +33,9 @@ const getAvailableItems = (selected: IAvailableItem[], items: IAvailableItem[]):
   return orderedSelected.concat(orderedItems)
 }
 
-// fake data generator
-const getItems = (count, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k + offset}`,
-    content: `item ${k + offset}`
-  }));
-
 // a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex): IAvailableItem[] => {
-  const result = Array.from(list) as IAvailableItem[];
+const reorder = (list, startIndex, endIndex): AvailableItem[] => {
+  const result = Array.from(list) as AvailableItem[];
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
 
@@ -94,18 +87,18 @@ const getListStyle = (isDraggingOver, hasTitle) => ({
   width: '100%',
 });
 
-const getItemsFromAvailables = (availables: IAvailableItem[]) => (
+const getItemsFromAvailables = (availables: AvailableItem[]) => (
   availables.filter(a => !a.isSelected)
 )
 
-const getSelectedFromAvailables = (availables: IAvailableItem[]) => (
+const getSelectedFromAvailables = (availables: AvailableItem[]) => (
   availables.filter(a => a.isSelected)
 )
 
 export const DraggableArea = (prop: IDraggableArea) => {
-  // const [availables, setAvailable] = useState<IAvailableItem[]>(prop.availableItems)
-  const [items, setItems] = useState<IAvailableItem[]>(getItemsFromAvailables(prop.availableItems))
-  const [selected, setSelected] = useState<IAvailableItem[]>(getSelectedFromAvailables(prop.availableItems))
+  // const [availables, setAvailable] = useState<AvailableItem[]>(prop.availableItems)
+  const [items, setItems] = useState<AvailableItem[]>(getItemsFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
+  const [selected, setSelected] = useState<AvailableItem[]>(getSelectedFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
 
   useEffect(() => {
     const newAvailableItems = getAvailableItems(selected, items)
@@ -131,7 +124,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
     }
 
     if (source.droppableId === destination.droppableId) {
-      const newItems: IAvailableItem[] = reorder(
+      const newItems: AvailableItem[] = reorder(
         getList(source.droppableId),
         source.index,
         destination.index
@@ -176,7 +169,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
   // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="list-title">{prop.selectedTitle}</div>
+      <div className="list-title">{prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} /></div>
       <Droppable droppableId="selectedDropableId">
         {(provided, snapshot) => (
           <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
