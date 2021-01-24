@@ -3,6 +3,7 @@ import { SelectItem } from '../types'
 export const typeSelection: SelectItem[] = [
     { name: 'select_restaurant', value: 'restaurant' },
     { name: 'select_dessert', value: 'dessert' },
+    { name: 'select_bar', value: 'bar' },
 ]
 
 export const typeSelectionDefault: SelectItem = typeSelection[0]

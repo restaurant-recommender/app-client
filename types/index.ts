@@ -9,11 +9,13 @@ export interface Recommendation {
   _id: string
   histories: History[]
   users: string[] | User[]
+  members: Member[]
   location: Point
   created_at: Date
   completed_at: Date
   rating: number
   group_pin: string
+  type: string
   is_completed: boolean
   is_started: boolean
   is_active: boolean
@@ -24,6 +26,7 @@ export type Member = {
   username: string
   categories: string[]
   price_range: number
+  rank: string[]
   is_head: boolean
 }
 

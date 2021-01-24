@@ -15,11 +15,6 @@ import { AuthenticationToken, Member, Preference } from "../../types"
 
 const { Option } = Select;
 
-interface IMember {
-  name: string
-  isHead: boolean
-}
-
 export default function IndividualConfirmation() {
 
   const router = useRouter()
@@ -72,6 +67,7 @@ export default function IndividualConfirmation() {
         members: [member],
         location: location,
         is_group: false,
+        type: type,
       }
       // console.log(body)
       recommendationService.initial(body).then((result) => {
@@ -137,7 +133,7 @@ export default function IndividualConfirmation() {
       </Select>
 
       <Spacer />
-      <Button style={{width: '100%'}}>Edit Preference</Button>
+      <Button disabled style={{width: '100%'}}>Edit Preference</Button>
 
       {/* {type}<br/>
       {preferPrice}<br/>

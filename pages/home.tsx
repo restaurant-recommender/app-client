@@ -8,6 +8,8 @@ import { Spacer, BigButton, Line, Loading } from "../components"
 import { Color, useFormatter } from "../utils"
 import { useCookies } from "react-cookie";
 import { removeToken, useAuth } from "../utils/auth";
+import { InitializeRecommendationBody, userService } from "../services";
+import { Member, Preference } from "../types";
 
 interface IHome {
   username: string
@@ -36,8 +38,7 @@ function Home() {
   }
 
   const handleCreateGroup = () => {
-    const pin = "543123"
-    router.push(`/group/${pin}`)
+    router.push(`/group/new`)
   }
 
   const handleEditPreferences = () => {

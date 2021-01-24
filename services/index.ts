@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios"
 import { Response, AuthenticationToken, CommonCetegory, Preference, Member, Recommendation, Restaurant, History } from "../types"
 import { getToken } from "../utils/auth"
 
-const urls = {
+export const urls = {
   app_server: process.env.NEXT_PUBLIC_APP_SERVER_URL as string
 }
 
@@ -24,6 +24,7 @@ export type InitializeRecommendationBody = {
   members: Member[]
   location: [number, number]
   is_group: boolean
+  type: string
 }
 
 export type UpdateHistoryBody = {
@@ -32,6 +33,18 @@ export type UpdateHistoryBody = {
 
 export type UpdateRatingBody = {
   rating: number
+}
+
+export type JoinGroupBody = {
+  member: Member
+}
+
+export type UpdateMemberPreferPrice = {
+  prefer_price: Number
+}
+
+export type UpdateMemberRestaurantOrder = {
+  rank: string[]
 }
 
 const getId = (): string => getToken().id
@@ -58,4 +71,12 @@ export const recommendationService = {
   updateRating: async (id: string, body: UpdateRatingBody): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/rate`), body).then((response) => response.data),
   complete: async (id: string): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/complete`)).then((response) => response.data),
   getFinal: async (id: string): Promise<Response<Restaurant>> => axios.get(appServerUrl(`recommendations/${id}/final`)).then((response) => response.data),
+  getById: async (id: string): Promise<Response<Recommendation>> => axios.get(appServerUrl(`recommendations/${id}`)).then((response) => response.data),
+  update: async (id: string, body: any): Promise<Response<Recommendation>> => axios.post(appServerUrl(`recommendations/${id}`), body).then((response) => response.data),
+  updateMemberPreferPrice: async (id: string, userId: string, body: UpdateMemberPreferPrice): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/members/${userId}/price`), body).then((response) => response.data),
+  updateMemberRestaurantRank: async (id: string, userId: string,  body: UpdateMemberRestaurantOrder): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/members/${userId}/rank`), body).then((response) => response.data),
+}
+
+export const groupService = {
+  joinGroup: async (pin: string, body: JoinGroupBody): Promise<Response<Recommendation>> => axios.post(appServerUrl(`group/${pin}/join`), body).then((response) => response.data),
 }

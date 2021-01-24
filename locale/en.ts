@@ -29,6 +29,7 @@ export const en = {
 
   select_restaurant: "Restaurant",
   select_dessert: "Dessert",
+  select_bar: "Bar",
 
   select_b: "Cheaper than 100฿",
   select_bb: "100฿ - 250฿",
