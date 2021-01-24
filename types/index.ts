@@ -5,6 +5,33 @@ export type Response <T> = {
   data?: T
 }
 
+export interface Recommendation {
+  _id: string
+  histories: History[]
+  users: string[] | User[]
+  location: Point
+  created_at: Date
+  completed_at: Date
+  rating: number
+  group_pin: string
+  is_completed: boolean
+  is_started: boolean
+  is_active: boolean
+}
+
+export type Member = {
+  _id: string
+  username: string
+  categories: string[]
+  price_range: number
+  is_head: boolean
+}
+
+export type SelectItem = {
+  name: string,
+  value: string | number,
+}
+
 export type CommonCetegory = {
   name_th: string
   name_en: string
@@ -69,31 +96,19 @@ export type AvailableItem = {
   name: string;
   isSelected: boolean;
   order: number;
+  image?: string
 }
 
 export type History = {
-  restaurant: string | Restaurant
+  restaurant: string
   is_love: boolean
-  is_skip: boolean
   rating: number
-  timestamp: Date
+  timestamp: number
 }
 
 export type Point = {
   type: string
   coordinates: [number, number]
-}
-
-export type Recommendation = {
-  _id: string
-  histories: History[]
-  users: string[] | User[]
-  location: Point
-  created_at: Date
-  completed_at: Date
-  rating: number
-  is_complete: boolean
-  is_active: boolean
 }
 
 export type User = {

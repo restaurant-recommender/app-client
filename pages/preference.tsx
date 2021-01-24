@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Button, Input } from "antd";
-import { DraggableArea, Spacer, FixedBottomButton } from "../components";
+import { DraggableArea, Spacer, FixedBottomButton, Loading } from "../components";
 import { getToken, useAuth } from "../utils/auth";
 import { AvailableItem, CommonCetegory, Preference } from "../types";
 import { restaurantService, userService } from "../services";
@@ -23,6 +23,7 @@ export default function Register() {
 
   const [categories, setCategories] = useState<CommonCetegory[]>()
   const [items, setItems] = useState<AvailableItem[]>();
+  const [loading, setLoading] = useState<string>('')
 
   const setItemsCallback = useCallback((newItems) => {
     setItems(newItems)
@@ -48,6 +49,7 @@ export default function Register() {
 
   const handleNext = () => {
     if (isValid()) {
+      setLoading('Saving your preferences')
       const preferences: Preference[] = items.filter((item) => item.isSelected).map((item) => ({
         _id: item.id,
         name_en: categories.find((category) => category._id === item.id).name_en,
@@ -56,7 +58,9 @@ export default function Register() {
       console.log(preferences)
       userService.updatePreferences({ preferences }).then((result) => {
         if (result.data.status) {
-          router.push("/home")
+          router.push("/home").then(_ => {
+            setLoading('')
+          })
         }
       }).catch((error) => { alert(error) }) 
     }
@@ -64,6 +68,7 @@ export default function Register() {
 
   return (
     <div className="container preference-page">
+      <Loading message={loading} />
       <h1>Preference</h1>
       <p>Please select your restaurant preferences. Drag {totalSelected} preferences into <strong>Love box</strong> and <strong>order</strong> them by your preference.</p>
       { items && <DraggableArea availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/> }

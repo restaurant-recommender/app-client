@@ -4,7 +4,7 @@ import { Button } from "antd"
 import { useEffect, useState } from "react";
 import { faUser, faUsers, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
-import { Spacer, BigButton, Line } from "../components"
+import { Spacer, BigButton, Line, Loading } from "../components"
 import { Color, useFormatter } from "../utils"
 import { useCookies } from "react-cookie";
 import { removeToken, useAuth } from "../utils/auth";
@@ -20,18 +20,19 @@ function Home() {
   const auth = useAuth()
   // const setAuthUsername = useSetUsername()
   const [username, setUsername] = useState('testUser')
+  const [loading, setLoading] = useState<string>('')
 
   useEffect(() => {
+    setLoading('Authenticating')
     const token = auth()
     if (token) {
       setUsername(token.username)
-      console.log(token)
+      setLoading('')
     }
   }, [])
 
   const handleIndividualReccommendation = () => {
-    // TODO: Init recommendation -> get token
-    router.push(`/individual/start/faketoken`)
+    router.push(`/individual/confirm`)
   }
 
   const handleCreateGroup = () => {
@@ -45,8 +46,11 @@ function Home() {
 
   const handleLogout= () => {
     // TODO: remove user from session
+    setLoading('Loggin out')
     removeToken()
-    router.push(`/login`)
+    router.push(`/login`).then(_ => {
+      setLoading('')
+    })
   }
 
   const handleChangeLanguge= () => {
@@ -57,6 +61,7 @@ function Home() {
 
   return (
     <div className="container middle-flex bg-gray">
+      <Loading message={loading} />
       <div style={{fontSize: '1rem', color: 'gray', display: 'flex'}}>
         {f('home_hi')}{username}
         <Button style={{marginLeft: 'auto'}} onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Button>

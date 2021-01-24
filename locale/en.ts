@@ -4,6 +4,7 @@ export const en = {
   btn_next: "Next",
   btn_login: "Login",
   btn_logout: "Logout",
+  btn_register: "Register",
   btn_editPreferences: "Edit Preference",
 
   auth_invalidUser: "Invalid username!",
@@ -25,6 +26,14 @@ export const en = {
   home_btn_individual: "Get Individual Recommendation",
   home_btn_createGroup: "Create Group",
   home_btn_joinGroup: "Join Group",
+
+  select_restaurant: "Restaurant",
+  select_dessert: "Dessert",
+
+  select_b: "Cheaper than 100฿",
+  select_bb: "100฿ - 250฿",
+  select_bbb: "250฿ - 500฿",
+  select_bbbb: "More than 500฿",
 
   ERROR_AUTH_1: "Username or password is incorrect.",
   ERROR_AUTH_2: "Username or password is incorrect.",

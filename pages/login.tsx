@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router"
 import { Button, Input } from "antd";
-import { Spacer } from "../components";
+import { Spacer, Loading } from "../components";
 import { authenticationService } from "../services";
 import { useFormatter } from "../utils";
 import { setToken } from "../utils/auth";
@@ -12,6 +12,7 @@ export default function Login() {
 
   const [username, setUsername] = useState<string>(null)
   const [password, setPassword] = useState<string>(null)
+  const [loading, setLoading] = useState<string>('')
 
   const handleInputUsername = (e) => { e.preventDefault(); setUsername(e.target.value) }
   const handleInputPassword = (e) => { e.preventDefault(); setPassword(e.target.value) }
@@ -21,13 +22,16 @@ export default function Login() {
       alert(f('login_missingForm'))
       return
     }
+    setLoading('Logging in')
     authenticationService.login({ username, password }).then((response) => {
       if (response.data.status) {
         const token = response.data.data
         setToken(token)
-        router.push("/home")
+        router.push("/home").then(_ => {
+          setLoading('')
+        })
       } else { throw(f('auth_invalidUser')) }
-    }).catch((error) => { alert(error) })
+    }).catch((error) => { alert(error); setLoading(''); })
   }
 
   const handleRegister = () => {
@@ -36,6 +40,7 @@ export default function Login() {
 
   return (
     <div className="container middle register-page">
+      <Loading message={loading} />
       <div><span className="title">{f('appName')}</span> <span className="tag">(BETA)</span></div>
       <Spacer />
       <p style={{marginBottom: "0.5rem"}}>{f('login_description')}</p>

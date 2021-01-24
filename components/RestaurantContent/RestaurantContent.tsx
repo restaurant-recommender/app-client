@@ -1,5 +1,5 @@
 import { Button, Tag } from "antd";
-import { IRestaurant } from "../../types";
+import { Restaurant } from "../../types";
 import { Collapse } from "react-collapse"
 import { faMapMarkedAlt, faTimes, faStar, faThumbsUp, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { faFacebookSquare } from "@fortawesome/free-brands-svg-icons"
@@ -9,7 +9,7 @@ import { Spacer } from ".."
 import { useState } from "react";
 
 interface IRestaurantCard {
-  restaurant: IRestaurant
+  restaurant: Restaurant
   collapsable?: boolean
 }
 
@@ -30,8 +30,8 @@ export const RestaurantContent = (prop: IRestaurantCard) => {
       {/* Profile */}
       <div>
         <strong style={{ fontSize: '1.2rem' }}>
-          {`${prop.restaurant.dist.calculated.toFixed(2)} km` ?? ''}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </strong>
+          {`${prop.restaurant.dist.calculated.toFixed(0)} m` ?? ''}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </strong>
         {prop.restaurant.profile.price_range !== -1 && (
           <span>
             {'฿'.repeat(prop.restaurant.profile.price_range)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -53,7 +53,7 @@ export const RestaurantContent = (prop: IRestaurantCard) => {
   return (
     <div>
       {/* Picture */}
-      <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }} src="https://thailawyers.com/wp-content/uploads/2018/10/Open-restaurant-in-Thailand.jpg" />
+      <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }} src="https://media-cdn.tripadvisor.com/media/photo-o/09/22/c6/5c/casa-brew-garden.jpg" />
       {/* Title and Address */}
       <h2 style={{ marginBottom: '0.5rem' }}><strong>{prop.restaurant.name}</strong></h2>
 

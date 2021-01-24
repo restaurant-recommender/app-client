@@ -1,16 +1,18 @@
 import { Button, Modal } from "antd"
-import { CSSProperties, useState } from "react"
+import { CSSProperties, useEffect, useState } from "react"
 import { faFrown, faGrinStars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCookies } from "react-cookie"
 
-import { Spacer, RestaurantCard, Box, FloatButton } from "../../../components"
-import { IRestaurant } from "../../../types"
+import { Spacer, RestaurantCard, Box, FloatButton, Loading } from "../../../components"
+import { Restaurant, History } from "../../../types"
 import { Color } from "../../../utils"
 import { useRouter } from "next/router"
 import { ModalFuncProps } from "antd/lib/modal"
+import { recommendationService, UpdateHistoryBody } from "../../../services"
+import next from "next"
 
-const fakerestaurant: IRestaurant[] = [
+const fakerestaurant: Restaurant[] = [
   {
       "_id": "5fa42615a72cb5000a4a3c7c",
       "is_active": true,
@@ -495,23 +497,92 @@ const fakerestaurant: IRestaurant[] = [
 
 const fadeWhite = 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)'
 
-export default function IndividualStart() {
+function IndividualStart({ id }) {
 
-  const [cookie, setCookie] = useCookies(['user'])
+  const [histories, setHistories] = useState<History[]>([])
+  const [restaurants, setRestaurants] = useState<Restaurant[]>()
   const [modal, contextHolder] = Modal.useModal();
+  const [loading, setLoading] = useState<string>('')
 
   const router = useRouter()
+  // const { id } = router.query
+
   const [currentRestaurantIndex, setCurrentRestaurantIndex] = useState<number>(0)
+
+
+  const addHistory = (isLove: boolean) => {
+    const history: History = {
+      restaurant: restaurants[currentRestaurantIndex]._id,
+      is_love: isLove,
+      rating: 0,
+      timestamp: Date.now(),
+    }
+    histories.push(history)
+    setHistories(histories)
+    console.log(histories)
+  }
+
+  const updateAndClearHistory = async () => {
+    return recommendationService.updateHistory(id, { histories }).then((response) => {
+      if (!response.status) {
+        alert('update history error!')
+      }
+      setHistories([])
+      return
+    })
+  }
+
+  const setRestaurantFromRecommender = (restaurants: Restaurant[]) => {
+    setRestaurants(restaurants)
+    setCurrentRestaurantIndex(0)
+  }
+
+  const requestRecommendation = () => {
+    setLoading('Getting your perfect restaurants!')
+    recommendationService.request(id as string).then((response) => {
+      if (response.status) {
+        setRestaurantFromRecommender(response.data)
+        setLoading('')
+      } else {
+        console.log(response)
+        setLoading('')
+        alert('recommendation error!')
+      }
+    })
+  }
+
+  useEffect(() => {
+    // console.log(id)
+    requestRecommendation()
+  }, [])
   
   const handleSkip = () => {
-    // console.log('test')
-    // const user = cookie.user
-    // console.log(user)
-    setCurrentRestaurantIndex(currentRestaurantIndex + 1)
+    addHistory(false)
+    const nextIndex = currentRestaurantIndex + 1
+    if (nextIndex >= restaurants.length) {
+      updateAndClearHistory().then(() => {
+        requestRecommendation()
+      })
+    } else {
+      setCurrentRestaurantIndex(currentRestaurantIndex + 1)
+    }
   }
 
   const handleLove = () => {
-    router.push('/individual/finish/faketoken')
+    setLoading('Completing recommendation')
+    addHistory(true)
+    updateAndClearHistory().then(() => {
+      recommendationService.complete(id).then((response) => {
+        if (response.status) {
+          router.push(`/individual/finish/${id}`).then((_) => {
+            setLoading('')
+          })
+        } else {
+          alert('Completing recommendation error!')
+          setLoading('')
+        }
+      })
+    })
   }
 
   const handleHome = () => {
@@ -538,22 +609,31 @@ export default function IndividualStart() {
 
   return (
     <div className="container">
+      <Loading message={loading} />
       <Box display="flex" justifyContent="space-between" marginBottom="1rem">
         <Button onClick={handleCancel} danger>Back</Button>
         <Button>Setting</Button>
       </Box>
 
       <Spacer />
-      <RestaurantCard style={{margin: 'auto'}} restaurant={fakerestaurant[currentRestaurantIndex]} />
-      <Box height="120px" />
-      
-      <Box position="fixed" bottom="0" left="0" height="120px" display="flex" width="100%" background={fadeWhite}>
-        <Box margin="auto" display="flex" width="100%" justifyContent="space-around">
-          <FloatButton onClick={handleSkip} type="secondary"><FontAwesomeIcon icon={faFrown}/>&nbsp;&nbsp;Nah</FloatButton>
-          <FloatButton onClick={handleLove} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;Love</FloatButton>
+      { restaurants && <div>
+        <RestaurantCard style={{margin: 'auto'}} restaurant={restaurants[currentRestaurantIndex]} />
+        <Box height="120px" />
+        
+        <Box position="fixed" bottom="0" left="0" height="120px" display="flex" width="100%" background={fadeWhite}>
+          <Box margin="auto" display="flex" width="100%" justifyContent="space-around">
+            <FloatButton onClick={handleSkip} type="secondary"><FontAwesomeIcon icon={faFrown}/>&nbsp;&nbsp;Nah</FloatButton>
+            <FloatButton onClick={handleLove} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;Love</FloatButton>
+          </Box>
         </Box>
-      </Box>
+      </div>}
       {contextHolder}
     </div>
   )
 }
+
+IndividualStart.getInitialProps = async (context) => {
+  return { id: context.query.id }
+}
+
+export default IndividualStart

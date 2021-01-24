@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import { Button, Dropdown, Menu } from "antd"
-import { faEllipsisH, faCrown, faLink, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 
@@ -18,25 +18,9 @@ const fakemembers = [
     isHead: false,
   },
   {
-    name: 'Kraimairuu',
+    name: 'Unchalisa Taetragool',
     isHead: false,
   },
-  {
-    name: 'Kraimairuu Ja',
-    isHead: false,
-  },
-  {
-    name: 'Kraimairuu Loor',
-    isHead: false,
-  },
-  {
-    name: 'Kraimairuu Eiei',
-    isHead: false,
-  },
-  {
-    name: 'Kraimairuu Hahaha',
-    isHead: false,
-  }
 ]
 
 interface IMember {
@@ -45,6 +29,7 @@ interface IMember {
 }
 
 export default function GroupConfirmation({ hostname }) {
+  const [location, setLocation] = useState<[number, number]>([13.736717, 100.523186])
   const [members, setMembers] = useState<IMember[]>(fakemembers)
   const [isShareSheetVisible, setIsShareSheetVisible] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState<boolean>(false)
@@ -123,14 +108,17 @@ export default function GroupConfirmation({ hostname }) {
 
   return (
     <div className="container group-confirmation-page">
-      <div className="header">
-        <Button onClick={handleCancel} className="center-button">Cancel</Button>
+      <Box lineHeight="64px" height="64px" display="flex">
+        <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;Back</Button>
+        <Box flexGrow={1} />
+        <Button onClick={handleShare} style={{margin: "auto"}} className="center-button">Share&nbsp;&nbsp;<FontAwesomeIcon icon={faExternalLinkAlt} /></Button>
+      </Box>
+      <Box height="64px" marginTop="-64px">
         {pinCodeBox}
-        <Button onClick={handleShare} className="center-button">Share</Button>
-      </div>
+      </Box>
       <Spacer />
 
-      <Map />
+      <Map location={location}/>
       <Spacer rem={2}/>
 
       <div>

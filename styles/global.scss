@@ -51,6 +51,43 @@
     }
 }
 
+.ant-radio-group {
+    display: flex !important;
+    width: 100% !important;
+}
+
+.ant-radio-button-wrapper {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.ant-select-selection-item {
+    text-align: center;
+}
+
+.ant-select-selection-placeholder {
+    text-align: center;
+}
+
+.ant-rate-star {
+    font-size: 2.5rem !important;
+}
+
+// .ant-btn {
+//     background: #f0f0f0 !important;
+//     border-color: #f0f0f0 !important;
+// }
+
+// .ant-btn:focus {
+//     background: #f0f0f0 !important;
+//     border-color: #f0f0f0 !important;
+// }
+
+// .ant-btn-primary {
+//     background: #fe8019 !important;
+//     border-color:#fe8019  !important;
+// }
+
 .ant-modal-body {
     box-shadow: 0px 0px 30px 1px #00000090
 }
@@ -60,7 +97,7 @@
 }
 
 .ant-rate-star-full {
-    color: #fadb14 !important;
+    color: #fe8019 !important;
 }
 
 .ant-drawer-content {

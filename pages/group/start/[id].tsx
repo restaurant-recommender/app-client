@@ -526,16 +526,26 @@ const fakeitems: AvailableItem[] = [
   }
 ]
 
+const imageUrls = [
+    'https://scontent.fbkk2-8.fna.fbcdn.net/v/t1.0-9/35188947_1815268218539122_1972186559268519936_o.jpg?_nc_cat=102&ccb=2&_nc_sid=e3f864&_nc_ohc=A6aUwdpUZ4kAX9trVs-&_nc_ht=scontent.fbkk2-8.fna&oh=2a00a77178054c501445826b66f74342&oe=6031F71B',
+    'https://www.julietsmile.com/wp-content/uploads/2017/12/A-Ramen-The-Street-Ratchada-11.jpg',
+    'https://media-cdn.tripadvisor.com/media/photo-o/09/22/c6/5c/casa-brew-garden.jpg',
+    'https://kiji.life/eats/wp-content/uploads/2018/03/08-2.jpg',
+    'https://cdn.eatigo.com/restaurant-image/410_a7697ed8-b8a7-4c29-844f-1bc35ec628e6.jpg',
+    'https://cdn.eatigo.com/restaurant-image/410_a7697ed8-b8a7-4c29-844f-1bc35ec628e6.jpg',
+]
+
 const getItemsFromRestaurants = (restaurants: IRestaurant[]): AvailableItem[] => restaurants.map((restaurant, index) => ({
   id: restaurant._id,
   name: restaurant.name,
   isSelected: false,
   order: index + 1,
+  image: imageUrls[index],
 }))
 
 export default function GroupStart() {
   const [restaurants, setRestaurants] = useState<IRestaurant[]>(fakerestaurant)
-  const [items, setItems] = useState(getItemsFromRestaurants(restaurants))
+  const [items, setItems] = useState<AvailableItem[]>(getItemsFromRestaurants(restaurants))
   const [showRestaurant, setShowrestaurant] = useState<IRestaurant>(restaurants[0])
   const [isShowRestaurant, setIsShowrestaurant] = useState<boolean>(false)
   const router = useRouter()
@@ -574,8 +584,8 @@ export default function GroupStart() {
     <div className="container">
       {/* {id} */}
       <h1>Restaurants</h1>
-      <p>Please order given restaurants by your preferences. Drag all {totalSelected} restaurants into <strong>Love box</strong> and <strong>order</strong> them as your wish.</p>
-      <DraggableArea clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>
+      <p>Please order given restaurants by your preferences. Drag all {totalSelected} restaurants into <strong>Love box</strong> and <strong>rank</strong> them as your wish.</p>
+      <DraggableArea hasThumnail clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>
       <Spacer height={100} />
       <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Finish' : 'Please order all restaurants.'} onClick={handleNext}/>
       <RestaurantModal isVisible={isShowRestaurant} restuarant={showRestaurant} onCancelCallback={closeModalCallback} />

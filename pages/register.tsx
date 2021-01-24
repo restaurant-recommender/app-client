@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { Button, Input } from "antd";
-import { Spacer } from "../components";
+import { Loading, Spacer } from "../components";
 import { useFormatter } from "../utils";
 import { authenticationService, RegisterBody } from "../services";
 import { setToken } from "../utils/auth";
@@ -13,12 +13,14 @@ export default function Register() {
 
   const [username, setUsername] = useState<string>(null)
   const [password, setPassword] = useState<string>(null)
+  const [loading, setLoading] = useState<string>('')
 
   const handleInputUsername = (e) => { e.preventDefault(); setUsername(e.target.value) }
   const handleInputPassword = (e) => { e.preventDefault(); setPassword(e.target.value) }
 
   const handleRegister = () => {
     const body: RegisterBody = { username, password }
+    setLoading('Creating new account')
     authenticationService.register(body).then((response) => {
       const result = response.data
       if (!result.status) throw(result.code)
@@ -29,10 +31,12 @@ export default function Register() {
           id: result.data.id,
         }
         setToken(token)
+        setLoading('')
         router.push('/preference')
       }
     }).catch((error) => {
       alert(f(error))
+      setLoading('')
     })
   }
 
@@ -42,6 +46,7 @@ export default function Register() {
 
   return (
     <div className="container middle register-page">
+      <Loading message={loading} />
       <h3 style={{marginBottom: 0, color: 'gray'}}>{f('register_topWelcome')}</h3>
       <div><span className="title">{f('appName')}</span> <span className="tag">(BETA)</span></div>
       <Spacer />

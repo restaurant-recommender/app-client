@@ -5,17 +5,22 @@ import { faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { AvailableItem } from "../../types"
-import { Spacer } from "../"
+import { Spacer, Box } from "../"
 
 import "./DraggableArea.scss"
 import { relative } from "path";
+
+const imageurl = "https://media-cdn.tripadvisor.com/media/photo-o/0e/cc/0a/dc/restaurant-chocolat.jpg"
 
 interface IDraggableArea {
   availableItems: AvailableItem[]
   selectedTitle?: string
   setAvailableItemsCallback: any
   clickOnIdCallback?: any // id: string
+  hasThumnail?: boolean
 }
+
+const thumbnailSize = "84px"
 
 const getAvailableItems = (selected: AvailableItem[], items: AvailableItem[]): AvailableItem[] => {
   const orderedSelected = selected.map((item, index) => ({
@@ -61,18 +66,20 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle, isLast) => ({
+const getItemStyle = (isDragging, draggableStyle, isLast, hasThumnail) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
   display: 'flex',
   justifyContent: 'space-between',
-  padding: grid * 2,
+  padding: hasThumnail ? 0 : grid * 2,
   margin: !isLast ? `0 0 ${grid}px 0` : '0',
   borderRadius: '8px',
 
+  height: hasThumnail ? thumbnailSize : 'unset',
+
   // change background colour if dragging
   background: isDragging ? '#bae7ff' : '#ffffff',
-  border: isDragging ? 'solid 4px #1890ff' : 'none',
+  boxShadow: isDragging ? "0 0 0 4pt #1890ff" : 'none',
   position: 'relative',
   // styles we need to apply on draggables
   ...draggableStyle
@@ -81,7 +88,8 @@ const getItemStyle = (isDragging, draggableStyle, isLast) => ({
 const getListStyle = (isDraggingOver, hasTitle) => ({
   borderRadius: '14px',
   background: isDraggingOver ? '#ffe7ba' : '#e5e5e5',
-  border: hasTitle ? 'solid 4px #fe8019' : 'none',
+  // border: hasTitle ? 'solid 4px #fe8019' : 'none',
+  boxShadow: hasTitle ? '0 0 0 4px #fe8019' : 'none',
   padding: grid,
   marginTop: '-12px',
   width: '100%',
@@ -149,18 +157,33 @@ export const DraggableArea = (prop: IDraggableArea) => {
     }
   };
 
-  const itemComponent = (item, index, showRanking, isLast) => (
+  const itemComponent = (item: AvailableItem, index, showRanking, isLast) => (
     <Draggable
       key={item.id}
       draggableId={item.id}
       index={index}>
       {(provided, snapshot) => (
-        <div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast)}>
+        prop.hasThumnail ? 
+        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
+          <Box width={thumbnailSize} height={thumbnailSize} background="red" flexShrink={0} borderRadius="8px 0 0 8px" overflow="hidden">
+            <img src={item.image} width={thumbnailSize} height={thumbnailSize} style={{objectFit: 'cover', zoom: '2', transform: 'translate(-25%, -25%)'}} />
+          </Box>
+          {showRanking && (<Box display="flex" zIndex={100} width={thumbnailSize} height={thumbnailSize} background="#00000050" flexShrink={0} borderRadius="8px 0 0 8px" marginLeft={'-' + thumbnailSize}>
+            <div className="rank-badge" style={{background: "white", color: "#101010", margin:"auto", zIndex: 101}}>{index + 1}</div>
+          </Box>)}
+          <Box display="flex" flexGrow={1} >
+            <Box margin="auto 1rem">{item.name}</Box>
+          </Box>
+          <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem', marginRight: '1rem'}}/>
+          <div className="draggable-knob" {...provided.dragHandleProps}/>
+        </div>)
+        :
+        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
           {showRanking && <div className="rank-badge">{index + 1}</div>}
           <div style={{flexGrow: 1, maxWidth: '75%'}}>{item.name}</div>
           <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem'}}/>
           <div className="draggable-knob" {...provided.dragHandleProps}/>
-        </div>
+        </div>)
       )}
     </Draggable>
   )
@@ -169,7 +192,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
   // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="list-title">{prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} /></div>
+      <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>{prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} /></div>
       <Droppable droppableId="selectedDropableId">
         {(provided, snapshot) => (
           <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
