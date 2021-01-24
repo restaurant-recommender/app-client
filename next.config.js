@@ -9,7 +9,13 @@ if (typeof require !== "undefined") {
   require.extensions[".less"] = (file) => {};
 }
 
+console.log(isProd)
+
 module.exports = withCSS({
+  env: {
+    NEXT_PUBLIC_APP_SERVER_URL: isProd ? "https://neutron-dot-restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3001"
+  },
+  distDir: 'build',
   cssModules: true,
   cssLoaderOptions: {
     importLoaders: 1,

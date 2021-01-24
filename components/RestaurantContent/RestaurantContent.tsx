@@ -16,6 +16,15 @@ interface IRestaurantCard {
 export const RestaurantContent = (prop: IRestaurantCard) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const openGoogleMap = (latitude, longitude) => {
+    const url = `https://www.google.com/maps/search/${latitude},${longitude}`
+    window.open(url, '_blank')
+  }
+
+  const openFacebookLink = (link) => {
+    window.open(link, '_blank')
+  }
+
   const moreInformation = (
     <>
     <Spacer />
@@ -53,14 +62,14 @@ export const RestaurantContent = (prop: IRestaurantCard) => {
   return (
     <div>
       {/* Picture */}
-      <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }} src="https://media-cdn.tripadvisor.com/media/photo-o/09/22/c6/5c/casa-brew-garden.jpg" />
+      <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }} src="https://blog.traveloka.com/th/wp-content/uploads/sites/5/2020/04/kom-koem-6.jpg" />
       {/* Title and Address */}
       <h2 style={{ marginBottom: '0.5rem' }}><strong>{prop.restaurant.name}</strong></h2>
 
       {/* Link */}
       <div style={{ display: 'flex' }}>
-        <Button style={{ color: Color.blue7, background: Color.blue1, borderColor: Color.blue1, marginRight: '1rem' }} icon={<FontAwesomeIcon style={{ color: Color.blue7 }} icon={faMapMarkedAlt} />}>&nbsp;&nbsp;Map</Button>
-        <Button style={{ color: Color.blue7, background: Color.blue1, borderColor: Color.blue1, }} icon={<FontAwesomeIcon style={{ color: Color.blue7 }} icon={faFacebookSquare} />}>&nbsp;&nbsp;Page</Button>
+        <Button onClick={() => { openGoogleMap(prop.restaurant.location.coordinates[1], prop.restaurant.location.coordinates[0]) }} style={{ color: Color.blue7, background: Color.blue1, borderColor: Color.blue1, marginRight: '1rem' }} icon={<FontAwesomeIcon style={{ color: Color.blue7 }} icon={faMapMarkedAlt} />}>&nbsp;&nbsp;Map</Button>
+        <Button onClick={() => { openFacebookLink(prop.restaurant.link) }} style={{ color: Color.blue7, background: Color.blue1, borderColor: Color.blue1, }} icon={<FontAwesomeIcon style={{ color: Color.blue7 }} icon={faFacebookSquare} />}>&nbsp;&nbsp;Page</Button>
       </div>
 
       {prop.collapsable ? (
