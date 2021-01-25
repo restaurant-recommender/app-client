@@ -1,10 +1,11 @@
 import { useRouter } from "next/router"
 import { Button, Rate } from "antd"
-import { Restaurant } from "../../../types"
+import { AuthenticationToken, Restaurant } from "../../types"
 
-import { Loading, RestaurantCard, Spacer, BottomDrawer, Box } from "../../../components"
+import { Loading, RestaurantCard, Spacer, BottomDrawer, Box } from "../../components"
 import { useEffect, useState } from "react"
-import { recommendationService, UpdateRatingBody } from "../../../services"
+import { recommendationService, UpdateRatingBody } from "../../services"
+import { useAuth } from "../../utils/auth"
 
 function IndividualFinish({ id }) {
   const router = useRouter()
@@ -13,9 +14,14 @@ function IndividualFinish({ id }) {
   const [rating, setRating] = useState<number>(0)
   const [restaurant, setRestaurant] = useState<Restaurant>()
   const [ratingDrawer, setRatingDrawer] = useState<boolean>(false)
+  const [token, setToken] = useState<AuthenticationToken>()
+
+  const auth = useAuth()
 
   useEffect(() => {
     setLoading('Finalizing')
+    const authToken = auth()
+    setToken(authToken)
     recommendationService.getFinal(id).then((response) => {
       console.log(response)
       if (response.status) {
@@ -41,7 +47,7 @@ function IndividualFinish({ id }) {
       alert('Please choose 1-5 stars')
     } else {
       const body: UpdateRatingBody = { rating }
-      recommendationService.updateRating(id, body).then((_) => {
+      recommendationService.updateRating(id, token.id, body).then((_) => {
         alert('Thank you for your rating! This system cannot be completed without you. <3')
         setRatingDrawer(false)
       })

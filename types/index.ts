@@ -16,6 +16,8 @@ export interface Recommendation {
   rating: number
   group_pin: string
   type: string
+  sugessted_restaurants: Restaurant[]
+  final_restaurant: Restaurant
   is_completed: boolean
   is_started: boolean
   is_active: boolean
@@ -27,6 +29,7 @@ export type Member = {
   categories: string[]
   price_range: number
   rank: string[]
+  rating?: number
   is_head: boolean
 }
 

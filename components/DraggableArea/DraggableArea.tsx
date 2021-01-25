@@ -18,6 +18,7 @@ interface IDraggableArea {
   setAvailableItemsCallback: any
   clickOnIdCallback?: any // id: string
   hasThumnail?: boolean
+  disabled?: boolean
 }
 
 const thumbnailSize = "84px"
@@ -174,15 +175,15 @@ export const DraggableArea = (prop: IDraggableArea) => {
           <Box display="flex" flexGrow={1} >
             <Box margin="auto 1rem">{item.name}</Box>
           </Box>
-          <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem', marginRight: '1rem'}}/>
-          <div className="draggable-knob" {...provided.dragHandleProps}/>
+          {!prop.disabled && <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem', marginRight: '1rem'}}/>}
+          {!prop.disabled && <div className="draggable-knob" {...provided.dragHandleProps}/>}
         </div>)
         :
         (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
           {showRanking && <div className="rank-badge">{index + 1}</div>}
           <div style={{flexGrow: 1, maxWidth: '75%'}}>{item.name}</div>
-          <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem'}}/>
-          <div className="draggable-knob" {...provided.dragHandleProps}/>
+          {!prop.disabled && <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem'}}/>}
+          {!prop.disabled && <div className="draggable-knob" {...provided.dragHandleProps}/>}
         </div>)
       )}
     </Draggable>

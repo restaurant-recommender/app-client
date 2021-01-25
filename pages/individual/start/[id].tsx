@@ -574,7 +574,7 @@ function IndividualStart({ id }) {
     updateAndClearHistory().then(() => {
       recommendationService.complete(id).then((response) => {
         if (response.status) {
-          router.push(`/individual/finish/${id}`).then((_) => {
+          router.push(`/finish/${id}`).then((_) => {
             setLoading('')
           })
         } else {

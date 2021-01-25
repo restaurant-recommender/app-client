@@ -53,7 +53,13 @@ function GroupConfirmation({ pin, hostname }) {
       setRecommendation(updatedRecommendation)
       console.log('updated')
       console.log(updatedRecommendation)
-      // setMembers(updatedRecommendation.members)
+      // TODO: check if start -> router push
+      if (updatedRecommendation.is_started) {
+        setLoading('Starting group recommendation')
+        router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
+          console.log('')
+        })
+      }
     })
   }
 
@@ -158,8 +164,18 @@ function GroupConfirmation({ pin, hostname }) {
 
   const handleStart = () => {
     // TODO: wait for other members
-
-    router.push("/group/start/fakegrouprecommendationid")
+    setLoading('Starting recommednation')
+    recommendationService.request(recommendation._id).then((result) => {
+      if (result.status) {
+        socket.emit('group-update', recommendation._id)
+        const restaurants = result.data
+        recommendationService.update(recommendation._id, { recommendation: { sugessted_restaurants: restaurants, is_started: true }}).then((_) => {
+          router.push(`/group/start/${recommendation._id}`)
+        })
+      } else {
+        alert('Getting recommendation error!')
+      }
+    })
   }
 
   const handleCopyLink = () => {
