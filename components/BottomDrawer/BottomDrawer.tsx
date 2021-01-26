@@ -4,7 +4,7 @@ interface IBottomDrawer {
   visible: boolean
   children?: any
   onClose: any
-  height?: number
+  height?: string
 }
 
 export const BottomDrawer = (prop: IBottomDrawer) => {

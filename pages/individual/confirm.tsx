@@ -61,6 +61,7 @@ export default function IndividualConfirmation() {
         username: authToken.username,
         categories: sortedPreferences,
         price_range: preferPrice,
+        rank: null,
         is_head: false,
       }
       const body: InitializeRecommendationBody = {

@@ -1,10 +1,10 @@
 import "react";
 import { useRouter } from "next/router"
-import { Button } from "antd"
+import { Button, Input, Modal } from "antd"
 import { useEffect, useState } from "react";
 import { faUser, faUsers, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
-import { Spacer, BigButton, Line, Loading } from "../components"
+import { Spacer, BigButton, Line, Loading, Box } from "../components"
 import { Color, useFormatter } from "../utils"
 import { useCookies } from "react-cookie";
 import { removeToken, useAuth } from "../utils/auth";
@@ -23,6 +23,8 @@ function Home() {
   // const setAuthUsername = useSetUsername()
   const [username, setUsername] = useState('testUser')
   const [loading, setLoading] = useState<string>('')
+  const [inputPin, setInputPin] = useState<string>('')
+  const [isJoinModal, setIsJoinModal] = useState(false);
 
   useEffect(() => {
     setLoading('Authenticating')
@@ -32,6 +34,20 @@ function Home() {
       setLoading('')
     }
   }, [])
+
+
+  const showJoinModal = () => {
+    setIsJoinModal(true);
+  };
+
+  const handleJoinConfirm = () => {
+    router.push(`/group/${inputPin}`)
+    setIsJoinModal(false);
+  };
+
+  const handleCloseJoinModal = () => {
+    setIsJoinModal(false);
+  };
 
   const handleIndividualReccommendation = () => {
     router.push(`/individual/confirm`)
@@ -45,6 +61,15 @@ function Home() {
     router.push(`/preference`)
   }
 
+  const handleJoinGroup = () => {
+    showJoinModal()
+  }
+
+  const onChangeInputPin = e => {
+    e.preventDefault()
+    setInputPin(e.target.value)
+  }
+  
   const handleLogout= () => {
     // TODO: remove user from session
     setLoading('Loggin out')
@@ -81,7 +106,7 @@ function Home() {
           <div style={{display: 'flex'}}>
             <BigButton onClick={handleCreateGroup} title={f('home_btn_createGroup')} iconColor={Color.orange} bold icon={faUsers} />
             <Spacer width={24} />
-            <BigButton title={f('home_btn_joinGroup')} iconColor={Color.blue} bold icon={faSignInAlt} />
+            <BigButton onClick={handleJoinGroup} title={f('home_btn_joinGroup')} iconColor={Color.blue} bold icon={faSignInAlt} />
           </div>
           <Spacer />
         </div>
@@ -90,7 +115,19 @@ function Home() {
       <Spacer />
 
       <Button onClick={handleEditPreferences} style={{maxWidth: '560px', margin: 'auto'}}>{f('btn_editPreferences')}</Button>
-      
+
+      <div className="join-modal">
+        <Modal visible={isJoinModal} footer={false} onCancel={handleCloseJoinModal}>
+          <h2>Join Group</h2>
+          <p>Please fill the group pin from other members in the group</p>
+          <Input onChange={onChangeInputPin} size="large" placeholder="XXXXXX"/>
+          <Spacer />
+          <Box display="flex">
+            <Button onClick={handleCloseJoinModal} style={{marginLeft: 'auto'}}>Cancel</Button>
+            <Button onClick={handleJoinConfirm} type="primary" style={{marginLeft: '1rem'}}>Join</Button>
+          </Box>
+        </Modal>
+      </div>
     </div>
   )
 }

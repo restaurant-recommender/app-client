@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { Button, Rate } from "antd"
-import { AuthenticationToken, Restaurant } from "../../types"
+import { AuthenticationToken, Recommendation, Restaurant } from "../../types"
 
 import { Loading, RestaurantCard, Spacer, BottomDrawer, Box } from "../../components"
 import { useEffect, useState } from "react"
@@ -15,6 +15,8 @@ function IndividualFinish({ id }) {
   const [restaurant, setRestaurant] = useState<Restaurant>()
   const [ratingDrawer, setRatingDrawer] = useState<boolean>(false)
   const [token, setToken] = useState<AuthenticationToken>()
+  const [summaryDrawer, setSummaryDrawer] = useState<boolean>(false)
+  const [recommendation, setRecommendation] = useState<Recommendation>()
 
   const auth = useAuth()
 
@@ -25,9 +27,17 @@ function IndividualFinish({ id }) {
     recommendationService.getFinal(id).then((response) => {
       console.log(response)
       if (response.status) {
+        console.log('------------------------')
+        console.log(response)
         setRestaurant(response.data)
         setLoading('')
         setRatingDrawer(true)
+        recommendationService.getById(id).then((response) => {
+          console.log(response)
+          if (response.status) {
+            setRecommendation(response.data)
+          }
+        })
       } else {
         alert('server error!')
       }
@@ -70,13 +80,21 @@ function IndividualFinish({ id }) {
       <div style={{flexGrow: 1, overflow:'scroll', display: 'flex', borderRadius: '8px'}}>
         { restaurant && <RestaurantCard collapsable style={{margin: 'auto'}} restaurant={restaurant} />}
       </div>
+      <Spacer />
+      <Button onClick={() => { setSummaryDrawer(true) }}>Summary</Button>
+      <Spacer />
       <Button size="large" onClick={handleHome}>Home</Button>
-      <BottomDrawer height={240} visible={ratingDrawer} onClose={() => {}}>
+      <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {}}>
         <Spacer />
         <Box textAlign="center">Please rate this recommenation.</Box>
         <Box textAlign="center"><Rate onChange={handleInputRating} /></Box>
         <Spacer rem={2}/>
         <Box textAlign="center"><Button onClick={handleRate} type="primary" size="large" style={{width: '100%'}}>Submit</Button></Box>
+      </BottomDrawer>
+      <BottomDrawer height="calc(100% - 60px)" visible={summaryDrawer} onClose={() => { setSummaryDrawer(false) }}>
+        <h3>Summary</h3>
+        <Spacer />
+        {recommendation && recommendation.final_restaurants.map((r) => <RestaurantCard collapsable restaurant={r} style={{marginBottom: '1rem'}} />)}
       </BottomDrawer>
     </div>
   )

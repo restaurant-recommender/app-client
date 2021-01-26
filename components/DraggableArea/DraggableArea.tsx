@@ -166,7 +166,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
       {(provided, snapshot) => (
         prop.hasThumnail ? 
         (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
-          <Box width={thumbnailSize} height={thumbnailSize} background="red" flexShrink={0} borderRadius="8px 0 0 8px" overflow="hidden">
+          <Box width={thumbnailSize} height={thumbnailSize} background="#fe8019" flexShrink={0} borderRadius="8px 0 0 8px" overflow="hidden">
             <img src={item.image} width={thumbnailSize} height={thumbnailSize} style={{objectFit: 'cover', zoom: '2', transform: 'translate(-25%, -25%)'}} />
           </Box>
           {showRanking && (<Box display="flex" zIndex={100} width={thumbnailSize} height={thumbnailSize} background="#00000050" flexShrink={0} borderRadius="8px 0 0 8px" marginLeft={'-' + thumbnailSize}>

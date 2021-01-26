@@ -10,7 +10,7 @@ import { groupService, InitializeRecommendationBody, recommendationService, urls
 import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading } from "../../components"
 import { useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference, Recommendation } from "../../types"
-import { preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
+import { defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
 import { useFormatter } from "../../utils"
 
 const { Option } = Select;
@@ -18,7 +18,7 @@ const { Option } = Select;
 function GroupConfirmation({ pin, hostname }) {
   const [groupPin, setGroupPin] = useState<string>(pin)
   const [loading, setLoading] = useState<string>()
-  const [location, setLocation] = useState<[number, number]>([13.736717, 100.523186])
+  const [location, setLocation] = useState<[number, number]>()
   const [members, setMembers] = useState<Member[]>()
   const [isShareSheetVisible, setIsShareSheetVisible] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState<boolean>(false)
@@ -63,44 +63,57 @@ function GroupConfirmation({ pin, hostname }) {
     })
   }
 
-  const createGroup = async (): Promise<Recommendation> => {
-    setLoading('Creating group')
-    return userService.getPreferences().then((result) => {
-      const authToken = auth()
-      setToken(authToken)
-      const preferences: Preference[] = result.data
-      const sortedPreferences: string[] = preferences.sort((a, b) => a.order - b.order).map((preference) => preference.name_en)
-      const member: Member = {
-        _id: authToken.id,
-        username: authToken.username,
-        categories: sortedPreferences,
-        price_range: null,
-        rank: [],
-        is_head: true,
-      }
-      const body: InitializeRecommendationBody = {
-        members: [member],
-        location: location,
-        is_group: true,
-        type: 'restaurant',
-      }
-      console.log(body)
-      return recommendationService.initial(body).then((result) => {
-        if (result.status) {
-          const newRecommendation = result.data
-          setRecommendation(newRecommendation)
-          setGroupPin(newRecommendation.group_pin)
-          setMembers(newRecommendation.members)
-          router.push(`/group/${newRecommendation.group_pin}`, undefined, { shallow: true })
-          setLoading('')
-          return newRecommendation
-        } else {
-          alert('unkown error... at create group')
-          setLoading('')
-          return null
-        }
+  const createGroup = async () => {
+    setLoading('Getting current location')
+    const authToken = auth()
+    setToken(authToken)
+    console.log(authToken)
+    if (!("geolocation" in navigator)) {
+      alert('Geolocation is disabled')
+      setLocation(defaultLocation)
+    } else {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation([position.coords.latitude, position.coords.longitude])
+        const fetchedLoaction = [position.coords.latitude, position.coords.longitude] as [number, number]
+        setLoading('Creating group')
+        return userService.getPreferences().then((result) => {
+          const authToken = auth()
+          setToken(authToken)
+          const preferences: Preference[] = result.data
+          const sortedPreferences: string[] = preferences.sort((a, b) => a.order - b.order).map((preference) => preference.name_en)
+          const member: Member = {
+            _id: authToken.id,
+            username: authToken.username,
+            categories: sortedPreferences,
+            price_range: null,
+            rank: [],
+            is_head: true,
+          }
+          const body: InitializeRecommendationBody = {
+            members: [member],
+            location: fetchedLoaction,
+            is_group: true,
+            type: 'restaurant',
+          }
+          console.log(body)
+          return recommendationService.initial(body).then((result) => {
+            if (result.status) {
+              const newRecommendation = result.data
+              setRecommendation(newRecommendation)
+              setGroupPin(newRecommendation.group_pin)
+              setMembers(newRecommendation.members)
+              router.push(`/group/${newRecommendation.group_pin}`, undefined, { shallow: true })
+              setLoading('')
+              return newRecommendation
+            } else {
+              alert('unkown error... at create group')
+              setLoading('')
+              return null
+            }
+          })
+        })
       })
-    })
+    }
   }
 
   const joinGroup = async (): Promise<Recommendation> => {
@@ -126,9 +139,9 @@ function GroupConfirmation({ pin, hostname }) {
           setLoading('')
           return newRecommendation
         } else {
-          alert('unkown error...')
+          alert(`Cannot find group with pin ${pin}`)
           setLoading('')
-          return null
+          router.push('/home')
         }
       })
     })
@@ -136,14 +149,14 @@ function GroupConfirmation({ pin, hostname }) {
 
   useEffect(() => {
     if (pin === 'new') {
-      createGroup().then((result) => {
-        console.log(result)
-      })
+      createGroup()
     } else {
       joinGroup().then((result) => {
         console.log(result)
         // groupHasUpdate()
-        socket.emit('group-update', result._id)
+        if (result) {
+          socket.emit('group-update', result._id)
+        }
       })
     }
     // setupSocket()
@@ -184,7 +197,7 @@ function GroupConfirmation({ pin, hostname }) {
   }
 
   /* TODO: change to correct hostname */
-  const getShareLink = () => `https://kinrai.dee${router.asPath}`
+  const getShareLink = () => `${process.env.NEXT_PUBLIC_APP_CLIENT_URL}${router.asPath}`
 
   const getMember = (): Member => recommendation && recommendation.members.find((member) => member._id.toString() === token.id.toString())
 
@@ -261,7 +274,8 @@ function GroupConfirmation({ pin, hostname }) {
       </Box>
       <Spacer />
 
-      {process.env.NODE_ENV === 'production' && <Map location={location}/>}
+      <Map location={location}/>
+      {/* {process.env.NODE_ENV === 'production' && <Map location={location}/>} */}
       <Spacer rem={2}/>
 
       {recommendation && getMember().is_head && <>
@@ -278,8 +292,8 @@ function GroupConfirmation({ pin, hostname }) {
         <h2 style={{fontWeight: 'bolder'}}>Members</h2>
         {members && membersList}
       </div>
-      {type}<br/>
-      {preferPrice}<br/>
+      {/* {type}<br/>
+      {preferPrice}<br/> */}
       <Spacer height={140} />
       
       <FixedBottom style={{flexDirection: 'column', height: '140px'}}>
@@ -296,7 +310,7 @@ function GroupConfirmation({ pin, hostname }) {
         </div>
       </FixedBottom>
 
-      <BottomDrawer height={500} visible={isShareSheetVisible} onClose={() => { setIsShareSheetVisible(false) }}>
+      <BottomDrawer height="500px" visible={isShareSheetVisible} onClose={() => { setIsShareSheetVisible(false) }}>
         <Box width="100%" textAlign="center">
           {pinCodeBox}
           <Spacer rem={2} />

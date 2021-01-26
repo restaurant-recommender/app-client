@@ -1,11 +1,11 @@
 import { Button, Tag } from "antd";
-import { IRestaurant } from "../../types";
+import { Restaurant } from "../../types";
 import { RestaurantContent } from "../../components";
 
 import "./RestaurantCard.scss"
 
 interface IRestaurantCard {
-  restaurant: IRestaurant
+  restaurant: Restaurant
   collapsable?: boolean
   style?: any
 }

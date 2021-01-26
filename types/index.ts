@@ -17,7 +17,7 @@ export interface Recommendation {
   group_pin: string
   type: string
   sugessted_restaurants: Restaurant[]
-  final_restaurant: Restaurant
+  final_restaurants: Restaurant[]
   is_completed: boolean
   is_started: boolean
   is_active: boolean

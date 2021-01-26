@@ -92,6 +92,12 @@
     box-shadow: 0px 0px 30px 1px #00000090
 }
 
+.join-modal {
+    .ant-modal-body {
+        box-shadow: 0px 0px 0px 0px #ffffff
+    }
+}
+
 .ant-rate-star {
     font-size: 2rem;
 }
