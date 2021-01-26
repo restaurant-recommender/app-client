@@ -16,7 +16,7 @@ import { useFormatter } from "../../utils"
 const { Option } = Select;
 
 function GroupConfirmation({ pin, hostname }) {
-  const [groupPin, setGroupPin] = useState<string>(pin)
+  const [groupPin, setGroupPin] = useState<string>(pin !== 'new' ? pin : '')
   const [loading, setLoading] = useState<string>()
   const [location, setLocation] = useState<[number, number]>()
   const [members, setMembers] = useState<Member[]>()
