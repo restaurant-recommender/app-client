@@ -546,7 +546,7 @@ function IndividualStart({ id }) {
       } else {
         console.log(response)
         setLoading('')
-        alert('recommendation error!')
+        alert(response.message)
       }
     })
   }

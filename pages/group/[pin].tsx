@@ -30,7 +30,9 @@ function GroupConfirmation({ pin, hostname }) {
   const auth = useAuth()
   const f = useFormatter()
 
-  const socket = io(urls.app_server)
+  const socket = io(urls.app_server, {
+    transports: ['websocket'],
+  })
 
   socket.on('group-update', (id) => {
     console.log(id)
@@ -118,9 +120,9 @@ function GroupConfirmation({ pin, hostname }) {
 
   const joinGroup = async (): Promise<Recommendation> => {
     setLoading('Joining group')
+    const authToken = auth()
+    setToken(authToken)
     return userService.getPreferences().then((result) => {
-      const authToken = auth()
-      setToken(authToken)
       const preferences: Preference[] = result.data
       const sortedPreferences: string[] = preferences.sort((a, b) => a.order - b.order).map((preference) => preference.name_en)
       const member: Member = {
@@ -136,6 +138,8 @@ function GroupConfirmation({ pin, hostname }) {
           const newRecommendation = result.data
           setRecommendation(newRecommendation)
           setMembers(newRecommendation.members)
+          const newLocation = [newRecommendation.location.coordinates[1], newRecommendation.location.coordinates[0]] as [number, number]
+          setLocation(newLocation)
           setLoading('')
           return newRecommendation
         } else {
@@ -186,7 +190,8 @@ function GroupConfirmation({ pin, hostname }) {
           router.push(`/group/start/${recommendation._id}`)
         })
       } else {
-        alert('Getting recommendation error!')
+        setLoading('')
+        alert(result.message)
       }
     })
   }

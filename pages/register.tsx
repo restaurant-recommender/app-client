@@ -53,7 +53,7 @@ export default function Register() {
       <p style={{marginBottom: "0.5rem"}}>{f('register_description')}</p>
       <Input onChange={handleInputUsername} size="large" placeholder="New Username"/>
       <Spacer rem={0.75} />
-      <Input onChange={handleInputPassword} size="large" placeholder="New Password"/>
+      <Input.Password onChange={handleInputPassword} size="large" placeholder="New Password"/>
       <Spacer rem={0.75} />
       <Button onClick={handleRegister} type="primary" size="large">{f('btn_next')}</Button>
       <Spacer />

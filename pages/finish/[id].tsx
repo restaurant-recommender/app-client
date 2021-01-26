@@ -81,7 +81,7 @@ function IndividualFinish({ id }) {
         { restaurant && <RestaurantCard collapsable style={{margin: 'auto'}} restaurant={restaurant} />}
       </div>
       <Spacer />
-      <Button onClick={() => { setSummaryDrawer(true) }}>Summary</Button>
+      <Button size="large" onClick={() => { setSummaryDrawer(true) }}>Summary</Button>
       <Spacer />
       <Button size="large" onClick={handleHome}>Home</Button>
       <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {}}>

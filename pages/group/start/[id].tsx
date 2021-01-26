@@ -37,7 +37,9 @@ function GroupStart({ id }) {
   const auth = useAuth()
   const router = useRouter()
 
-  const socket = io(urls.app_server)
+  const socket = io(urls.app_server, {
+    transports: ['websocket'],
+  })
 
   socket.on('group-rank-update', (id) => {
     console.log('new rank update!')

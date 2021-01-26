@@ -46,7 +46,7 @@ export default function Login() {
       <p style={{marginBottom: "0.5rem"}}>{f('login_description')}</p>
       <Input size="large" onChange={handleInputUsername} placeholder="Username"/>
       <Spacer rem={0.75} />
-      <Input size="large" onChange={handleInputPassword} placeholder="Password"/>
+      <Input.Password size="large" onChange={handleInputPassword} placeholder="Password"/>
       <Spacer rem={0.75} />
       <Button onClick={handleLogin} type="primary" size="large">{f('btn_login')}</Button>
       <Spacer />
