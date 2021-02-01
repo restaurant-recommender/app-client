@@ -17,13 +17,13 @@ export default function Home() {
   const f = useFormatter()
   const auth = useAuth()
 
-  const [username, setUsername] = useState('testUser')
+  const [username, setUsername] = useState('')
   const [loading, setLoading] = useState<string>('')
   const [inputPin, setInputPin] = useState<string>('')
   const [isJoinModal, setIsJoinModal] = useState(false)
 
   useEffect(() => {
-    setLoading('Authenticating')
+    setLoading(f('loading_authenticating'))
     const token = auth()
     if (token) {
       setUsername(token.username)
@@ -68,7 +68,7 @@ export default function Home() {
   
   const handleLogout= () => {
     // TODO: remove user from session
-    setLoading('Loggin out')
+    setLoading(f('loading_loggingOut'))
     removeToken()
     router.push(`/login`).then(_ => {
       setLoading('')
@@ -146,12 +146,12 @@ export default function Home() {
       <Box height={headerHeight} width="100%" background="transparent" position="fixed" display="flex" zIndex={20} fontSize="14px" color="white" fontWeight="bold" lineHeight={headerHeight} justifyContent="flex-end" padding="0 2rem">
         <Box onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Box>
         <Box margin="0 1rem 0 1rem" color="#ffffff60">|</Box>
-        <Box onClick={handleLogout}>Logout</Box>
+        <Box onClick={handleLogout}>{f('btn_logout')}</Box>
       </Box>
       <Box height={`calc(100vh - ${headerHeight})`} width="100%" background="transparent" position="fixed" overflow="scroll" marginTop={headerHeight} zIndex={20}>
         <Box background="#fafafa" borderRadius="24px 24px 0 0" zIndex={10} width="100%" padding="2rem" marginTop={`calc(250px - ${headerHeight})`} boxShadow="0px 4px 40px rgba(0, 0, 0, 0.25)">
           <Box width="100%" maxWidth="375px" margin="0 auto">
-            <Box color="#00000060" marginBottom="-0.5rem">{f('home_hi')}Chanchana</Box>
+            <Box color="#00000060" marginBottom="-0.5rem">{f('home_hi')}{username}</Box>
             <h1 style={{fontSize: '36px'}}>{f('appName')}</h1>
             {individualButton}
             {devider}
@@ -166,13 +166,13 @@ export default function Home() {
       </Box>
 
       <Modal visible={isJoinModal} footer={false} onCancel={handleCloseJoinModal}>
-          <h2>Join Group</h2>
-          <p>Please fill the group pin from other members in the group</p>
+          <h2>{f('home_title_joinGroup')}</h2>
+          <p>{f('home_desc_joinGroup')}</p>
           <Input onChange={onChangeInputPin} size="large" placeholder="XXXXXX"/>
           <Spacer />
           <Box display="flex">
-            <Button onClick={handleCloseJoinModal} style={{marginLeft: 'auto'}}>Cancel</Button>
-            <Button onClick={handleJoinConfirm} type="primary" style={{marginLeft: '1rem'}}>Join</Button>
+            <Button onClick={handleCloseJoinModal} style={{marginLeft: 'auto'}}>{f('btn_cancel')}</Button>
+            <Button onClick={handleJoinConfirm} type="primary" style={{marginLeft: '1rem'}}>{f('btn_join')}</Button>
           </Box>
         </Modal>
     </Box>

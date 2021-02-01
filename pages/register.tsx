@@ -20,7 +20,7 @@ export default function Register() {
 
   const handleRegister = () => {
     const body: RegisterBody = { username, password }
-    setLoading('Creating new account')
+    setLoading(f('loading_creatingNewAccount'))
     authenticationService.register(body).then((response) => {
       const result = response.data
       if (!result.status) throw(result.code)

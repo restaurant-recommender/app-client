@@ -9,6 +9,7 @@ import { Spacer, Box } from "../"
 
 import "./DraggableArea.scss"
 import { relative } from "path";
+import { useFormatter } from "../../utils";
 
 const imageurl = "https://media-cdn.tripadvisor.com/media/photo-o/0e/cc/0a/dc/restaurant-chocolat.jpg"
 
@@ -109,6 +110,8 @@ export const DraggableArea = (prop: IDraggableArea) => {
   const [items, setItems] = useState<AvailableItem[]>(getItemsFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
   const [selected, setSelected] = useState<AvailableItem[]>(getSelectedFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
 
+  const f = useFormatter()
+
   useEffect(() => {
     const newAvailableItems = getAvailableItems(selected, items)
     // console.log(newAvailableItems)
@@ -199,7 +202,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
           <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
             {selected.length == 0 && 
               <div style={{textAlign: 'center', color: 'gray'}}>
-                Drag item from bottom to this box.
+                {f('input_draggableSelected')}
               </div>
             }
             {selected.map((item, index) => (itemComponent(item, index, true, (index + 1 === selected.length))))}
@@ -215,7 +218,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
             style={getListStyle(snapshot.isDraggingOver, false)}>
             {items.length == 0 && 
               <div style={{textAlign: 'center', color: 'gray'}}>
-                Drag item from top to this box to remove.
+                {f('input_draggableNonSelected')}
               </div>
             }
             {items.map((item, index) => (itemComponent(item, index, false, (index + 1 === items.length))))}

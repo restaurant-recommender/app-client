@@ -9,6 +9,7 @@ import { DraggableArea, Spacer, FixedBottomButton, RestaurantModal, Loading, Box
 import { AvailableItem, Restaurant, Recommendation, AuthenticationToken } from "../../../types"
 import { recommendationService, urls } from "../../../services"
 import { useAuth } from "../../../utils/auth"
+import { useFormatter } from "../../../utils"
 
 // const imageUrls = [
 //     'https://scontent.fbkk2-8.fna.fbcdn.net/v/t1.0-9/35188947_1815268218539122_1972186559268519936_o.jpg?_nc_cat=102&ccb=2&_nc_sid=e3f864&_nc_ohc=A6aUwdpUZ4kAX9trVs-&_nc_ht=scontent.fbkk2-8.fna&oh=2a00a77178054c501445826b66f74342&oe=6031F71B',
@@ -39,6 +40,7 @@ function GroupStart({ id }) {
   const [isSubmited, setIsSubmited] = useState<boolean>(false)
   const auth = useAuth()
   const router = useRouter()
+  const f = useFormatter()
 
   const socket = io(urls.app_server, {
     transports: ['websocket'],
@@ -58,7 +60,7 @@ function GroupStart({ id }) {
         const updatedRecommendation = result.data
         setRecommendation(updatedRecommendation)
         if (updatedRecommendation.is_completed) {
-          setLoading('Finishing recommendation')
+          setLoading(f('loading_finishingRecommendation'))
           router.push(`/finish/${recommendation._id}`).then(_ => {
             setLoading('')
           })
@@ -136,13 +138,13 @@ function GroupStart({ id }) {
     <div className="container">
       <Loading message={loading} />
       <Box display="flex">
-        <h1>Restaurants</h1>
-        <Button style={{margin: 'auto 0 1.2rem auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateRecommendationAndCheckForCompleted() }}/>&nbsp;&nbsp;Refresh</Button>
+        <h1>{f('group_title')}</h1>
+        <Button style={{margin: 'auto 0 1.2rem auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateRecommendationAndCheckForCompleted() }}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
       </Box>
-      <p>Please order given restaurants by your preferences. Drag all {totalSelected} restaurants into <strong>Love box</strong> and <strong>rank</strong> them as your wish.</p>
-      {items && <DraggableArea disabled={isSubmited} hasThumnail clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>}
+      <p>{f('group_desc')}</p>
+      {items && <DraggableArea disabled={isSubmited} hasThumnail clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
       <Spacer height={100} />
-      <FixedBottomButton disabled={!isValid() || isSubmited} title={isSubmited ? `Waiting for other member (${memberProgressText})` : isValid() ? 'Finish' : 'Please order all restaurants.'} onClick={handleNext}/>
+      <FixedBottomButton disabled={!isValid() || isSubmited} title={isSubmited ? `${f('group_btn_waitingForOthers')} (${memberProgressText})` : isValid() ? f('btn_finish') : f('group_btn_requireOrdering')} onClick={handleNext}/>
       <RestaurantModal isVisible={isShowRestaurant} restuarant={showRestaurant} onCancelCallback={closeModalCallback} />
     </div>
   )

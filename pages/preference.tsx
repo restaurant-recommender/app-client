@@ -5,6 +5,7 @@ import { DraggableArea, Spacer, FixedBottomButton, Loading } from "../components
 import { getToken, useAuth } from "../utils/auth";
 import { AvailableItem, CommonCetegory, Preference } from "../types";
 import { restaurantService, userService } from "../services";
+import { useFormatter } from "../utils";
 
 const generateAvailableItem = (cetegories: CommonCetegory[], userPreferences: Preference[]): AvailableItem[] => cetegories.map((category) => {
   const userPreference = userPreferences && userPreferences.find((preference) => preference._id === category._id)
@@ -20,6 +21,7 @@ export default function Register() {
 
   const auth = useAuth()
   const router = useRouter();
+  const f = useFormatter()
 
   const [categories, setCategories] = useState<CommonCetegory[]>()
   const [items, setItems] = useState<AvailableItem[]>();
@@ -49,7 +51,7 @@ export default function Register() {
 
   const handleNext = () => {
     if (isValid()) {
-      setLoading('Saving your preferences')
+      setLoading(f('loading_savingPreferences'))
       const preferences: Preference[] = items.filter((item) => item.isSelected).map((item) => ({
         _id: item.id,
         name_en: categories.find((category) => category._id === item.id).name_en,

@@ -19,10 +19,10 @@ export default function Login() {
 
   const handleLogin = () => {
     if (!username || !password) {
-      alert(f('login_missingForm'))
+      alert(f('alert_missingForm'))
       return
     }
-    setLoading('Logging in')
+    setLoading(f('loading_loggingIn'))
     authenticationService.login({ username, password }).then((response) => {
       if (response.data.status) {
         const token = response.data.data

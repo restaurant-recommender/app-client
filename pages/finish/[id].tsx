@@ -6,6 +6,7 @@ import { Loading, RestaurantCard, Spacer, BottomDrawer, Box } from "../../compon
 import { useEffect, useState } from "react"
 import { recommendationService, UpdateRatingBody } from "../../services"
 import { useAuth } from "../../utils/auth"
+import { useFormatter } from "../../utils"
 
 function IndividualFinish({ id }) {
   const router = useRouter()
@@ -19,9 +20,10 @@ function IndividualFinish({ id }) {
   const [recommendation, setRecommendation] = useState<Recommendation>()
 
   const auth = useAuth()
+  const f = useFormatter()
 
   useEffect(() => {
-    setLoading('Finalizing')
+    setLoading(f('loading_finalizing'))
     const authToken = auth()
     setToken(authToken)
     recommendationService.getFinal(id).then((response) => {
@@ -76,27 +78,27 @@ function IndividualFinish({ id }) {
     <div className="container middle-flex" style={{background: '#F87400'}}>
       <Loading message={loading} />
       <Spacer />
-      <h1 style={{color: 'white', textAlign: 'center', marginBottom: '1rem'}}><strong>Have a great meal!</strong></h1>
+      <h1 style={{color: 'white', textAlign: 'center', marginBottom: '1rem'}}><strong>{f('finish_title')}</strong></h1>
       <div style={{flexGrow: 1, overflow:'scroll', display: 'flex', borderRadius: '8px'}}>
         { restaurant && <RestaurantCard collapsable style={{margin: 'auto'}} restaurant={restaurant} />}
       </div>
       <Spacer />
-      <Button size="large" onClick={() => { setSummaryDrawer(true) }}>Summary</Button>
+      <Button size="large" onClick={() => { setSummaryDrawer(true) }}>{f('finish_btn_summary')}</Button>
       <Spacer />
-      <Button size="large" onClick={handleHome}>Home</Button>
+      <Button size="large" onClick={handleHome}>{f('btn_home')}</Button>
       <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {}}>
         <Spacer />
-        <Box textAlign="center">Please rate this recommenation.</Box>
+        <Box textAlign="center">{f('finish_title_rate')}</Box>
         <Box textAlign="center"><Rate onChange={handleInputRating} /></Box>
         <Spacer rem={2}/>
-        <Box textAlign="center"><Button onClick={handleRate} type="primary" size="large" style={{width: '100%'}}>Submit</Button></Box>
+        <Box textAlign="center"><Button onClick={handleRate} type="primary" size="large" style={{width: '100%'}}>{f('btn_submit')}</Button></Box>
       </BottomDrawer>
       <BottomDrawer height="calc(100% - 60px)" visible={summaryDrawer} onClose={() => { setSummaryDrawer(false) }}>
-        <h3>Summary</h3>
+        <h3>{f('finish_btn_summary')}</h3>
         <Spacer />
         {recommendation && recommendation.final_restaurants.map((r, index) => 
           <>
-            <h4 style={{marginTop: '1.5rem'}}>Rank {index + 1}</h4>
+            <h4 style={{marginTop: '1.5rem'}}>{f('finish_rank')} {index + 1}</h4>
             <RestaurantCard collapsable restaurant={r} style={{marginBottom: '1rem'}} />
             <Box width="100%" background="#00000040" height="2px" marginBottom="1.5rem"/>
           </>

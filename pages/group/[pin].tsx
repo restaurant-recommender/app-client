@@ -49,7 +49,7 @@ function GroupConfirmation({ pin, hostname }) {
       console.log(updatedRecommendation)
       // TODO: check if start -> router push
       if (updatedRecommendation.is_started) {
-        setLoading('Starting group recommendation')
+        setLoading(f('loading_startingGroupRecommendation'))
         router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
           console.log('')
         })
@@ -58,18 +58,18 @@ function GroupConfirmation({ pin, hostname }) {
   }
 
   const createGroup = async () => {
-    setLoading('Getting current location')
+    setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
     console.log(authToken)
     if (!("geolocation" in navigator)) {
-      alert('Geolocation is disabled')
+      alert(f('alert_geolocationIsDisabled'))
       setLocation(defaultLocation)
     } else {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation([position.coords.latitude, position.coords.longitude])
         const fetchedLoaction = [position.coords.latitude, position.coords.longitude] as [number, number]
-        setLoading('Creating group')
+        setLoading(f('loading_creatingGroup'))
         return userService.getPreferences().then((result) => {
           const authToken = auth()
           setToken(authToken)
@@ -111,7 +111,7 @@ function GroupConfirmation({ pin, hostname }) {
   }
 
   const joinGroup = async (): Promise<Recommendation> => {
-    setLoading('Joining group')
+    setLoading(f('loading_joiningGroup'))
     const authToken = auth()
     setToken(authToken)
     return userService.getPreferences().then((result) => {
@@ -135,7 +135,7 @@ function GroupConfirmation({ pin, hostname }) {
           setLoading('')
           return newRecommendation
         } else {
-          alert(`Cannot find group with pin ${pin}`)
+          alert(`${f('alert_groupNotFound')} ${pin}`)
           setLoading('')
           router.push('/home')
         }
@@ -173,7 +173,7 @@ function GroupConfirmation({ pin, hostname }) {
 
   const handleStart = () => {
     // TODO: wait for other members
-    setLoading('Starting recommednation')
+    setLoading(f('loading_startingRecommendation'))
     recommendationService.request(recommendation._id).then((result) => {
       if (result.status) {
         socket.emit('group-update', recommendation._id)
@@ -253,7 +253,7 @@ function GroupConfirmation({ pin, hostname }) {
 
   const pinCodeBox = (
     <Box flexGrow={1} textAlign="center">
-      <Box color="gray">Pin Code</Box>
+      <Box color="gray">{f('confirm_pinCode')}</Box>
       <Box fontSize="1.5rem" fontWeight="bolder">{groupPin && groupPin.slice(0, 3)} {groupPin && groupPin.slice(3, 6)}</Box>
     </Box>
   )
@@ -262,9 +262,9 @@ function GroupConfirmation({ pin, hostname }) {
     <div className="container group-confirmation-page">
       <Loading message={loading} />
       <Box lineHeight="64px" height="64px" display="flex">
-        <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;Back</Button>
+        <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{f('btn_back')}</Button>
         <Box flexGrow={1} />
-        <Button onClick={handleShare} style={{margin: "auto"}} className="center-button">Share&nbsp;&nbsp;<FontAwesomeIcon icon={faExternalLinkAlt} /></Button>
+        <Button onClick={handleShare} style={{margin: "auto"}} className="center-button">{f('btn_share')}&nbsp;&nbsp;<FontAwesomeIcon icon={faExternalLinkAlt} /></Button>
       </Box>
       <Box height="64px" marginTop="-64px">
         {pinCodeBox}
@@ -277,7 +277,7 @@ function GroupConfirmation({ pin, hostname }) {
 
       {recommendation && getMember().is_head && <>
         <h3>
-          Craving for...
+          {f('confirm_cravingFor')}
         </h3>
         <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
           { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
@@ -287,8 +287,8 @@ function GroupConfirmation({ pin, hostname }) {
 
       <div>
         <Box display="flex">
-          <h2 style={{fontWeight: 'bolder'}}>Members</h2>
-          <Button style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateGroup() }}/>&nbsp;&nbsp;Refresh</Button>
+          <h2 style={{fontWeight: 'bolder'}}>{f('confirm_title_members')}</h2>
+          <Button style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateGroup() }}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
         </Box>
         {members && membersList}
       </div>
@@ -299,14 +299,14 @@ function GroupConfirmation({ pin, hostname }) {
       <FixedBottom style={{flexDirection: 'column', height: '140px'}}>
         <div style={{width:'300px', margin:'auto', display: 'flex', marginTop: '1.5rem', marginBottom: '1rem', justifyContent: 'space-around'}}>
         {/* <Button style={{}}>Set Prefer Price</Button> */}
-        <Select allowClear style={{ width: "100%" }} onChange={handleSelectPricePrefer} placeholder="Set prefer price range">
+        <Select allowClear style={{ width: "100%" }} onChange={handleSelectPricePrefer} placeholder={f('confirm_input_preferPrice')}>
           { preferPriceSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
         </Select>
         {/* <Box width="0.5rem" />
         <Button disabled style={{}}>Edit Preference</Button> */}
         </div>
         <div style={{width:'100%', display: 'flex'}}>
-          {recommendation && <Button disabled={recommendation && getMember().is_head ? false : true} onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>{recommendation && getMember().is_head ? 'Start' : 'Please wait for host to start'}</Button>}
+          {recommendation && <Button disabled={recommendation && getMember().is_head ? false : true} onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>{recommendation && getMember().is_head ? f('btn_start') : f('confirm_btn_waitForHost')}</Button>}
         </div>
       </FixedBottom>
 
@@ -316,7 +316,7 @@ function GroupConfirmation({ pin, hostname }) {
           <Spacer rem={2} />
           <QRCode value={getShareLink()}/>
           <Spacer rem={2} />
-          <Button onClick={handleCopyLink} style={{width: '256px'}}><FontAwesomeIcon icon={isCopied ? faCheck : faLink}/>&nbsp;&nbsp;{isCopied ? 'Copied' : 'Copy'} to Clipboard</Button>
+          <Button onClick={handleCopyLink} style={{width: '256px'}}><FontAwesomeIcon icon={isCopied ? faCheck : faLink}/>&nbsp;&nbsp;{isCopied ? f('btn_copied') : f('btn_copyLink')}</Button>
         </Box>
       </BottomDrawer>
     </div>

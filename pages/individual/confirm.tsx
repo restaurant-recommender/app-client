@@ -30,12 +30,12 @@ export default function IndividualConfirmation() {
   const [token, getToken] = useState<AuthenticationToken>()
 
   useEffect(() => {
-    setLoading('Getting current location')
+    setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
     console.log(authToken)
     if (!("geolocation" in navigator)) {
-      alert('Geolocation is disabled')
+      alert(f('alert_geolocationIsDisabled'))
       setLocation(defaultLocation)
       setLoading('')
     } else {
@@ -51,7 +51,7 @@ export default function IndividualConfirmation() {
   }
 
   const handleStart = () => {
-    setLoading('Getting your perfect restaurant!')
+    setLoading(f('loading_gettingRestaurants'))
     userService.getPreferences().then((result) => {
       const authToken = auth()
       const preferences: Preference[] = result.data
@@ -107,9 +107,9 @@ export default function IndividualConfirmation() {
     <div className="container group-confirmation-page">
       <Loading message={loading} />
       <Box height="32px">
-        <Button onClick={handleBack}><FontAwesomeIcon icon={faChevronLeft}/>&nbsp;&nbsp;Back</Button>
+        <Button onClick={handleBack}><FontAwesomeIcon icon={faChevronLeft}/>&nbsp;&nbsp;{f('btn_back')}</Button>
         <Box marginTop="-32px" lineHeight="32px" textAlign="center" fontSize="1rem" fontWeight="bold">
-          Individual Eating
+          {f('confirm_title_individual')}
         </Box>
       </Box>
       <Spacer />
@@ -118,7 +118,7 @@ export default function IndividualConfirmation() {
       <Spacer rem={2}/>
 
       <h3>
-        Craving for...
+        {f('confirm_cravingFor')}
       </h3>
       <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
         { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
@@ -127,14 +127,14 @@ export default function IndividualConfirmation() {
       <Spacer rem={2}/>
 
       <h3>
-        Your preferences
+        {f('confirm_yourPreference')}
       </h3>
-      <Select allowClear style={{ width: "100%" }} onChange={handleSelectPricePrefer} placeholder="Set prefer price range">
+      <Select allowClear style={{ width: "100%" }} onChange={handleSelectPricePrefer} placeholder={f('confirm_input_preferPrice')}>
         { preferPriceSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
       </Select>
 
       <Spacer />
-      <Button disabled style={{width: '100%'}}>Edit Preference</Button>
+      <Button disabled style={{width: '100%'}}>{f('btn_editPreferences')}</Button>
 
       {/* {type}<br/>
       {preferPrice}<br/>
@@ -143,7 +143,7 @@ export default function IndividualConfirmation() {
       <Spacer height={100} />
       
       <FixedBottom>
-          <Button onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>Start</Button>
+          <Button onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>{f('btn_start')}</Button>
       </FixedBottom>
     </div>
   )
