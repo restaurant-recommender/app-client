@@ -94,7 +94,13 @@ function IndividualFinish({ id }) {
       <BottomDrawer height="calc(100% - 60px)" visible={summaryDrawer} onClose={() => { setSummaryDrawer(false) }}>
         <h3>Summary</h3>
         <Spacer />
-        {recommendation && recommendation.final_restaurants.map((r) => <RestaurantCard collapsable restaurant={r} style={{marginBottom: '1rem'}} />)}
+        {recommendation && recommendation.final_restaurants.map((r, index) => 
+          <>
+            <h4 style={{marginTop: '1.5rem'}}>Rank {index + 1}</h4>
+            <RestaurantCard collapsable restaurant={r} style={{marginBottom: '1rem'}} />
+            <Box width="100%" background="#00000040" height="2px" marginBottom="1.5rem"/>
+          </>
+        )}
       </BottomDrawer>
     </div>
   )

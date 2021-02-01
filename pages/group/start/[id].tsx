@@ -1,8 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter } from "next/router"
+import { Button } from 'antd'
 import io from 'socket.io-client'
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { DraggableArea, Spacer, FixedBottomButton, RestaurantModal, Loading } from "../../../components"
+import { DraggableArea, Spacer, FixedBottomButton, RestaurantModal, Loading, Box } from "../../../components"
 import { AvailableItem, Restaurant, Recommendation, AuthenticationToken } from "../../../types"
 import { recommendationService, urls } from "../../../services"
 import { useAuth } from "../../../utils/auth"
@@ -132,7 +135,10 @@ function GroupStart({ id }) {
   return (
     <div className="container">
       <Loading message={loading} />
-      <h1>Restaurants</h1>
+      <Box display="flex">
+        <h1>Restaurants</h1>
+        <Button style={{margin: 'auto 0 1.2rem auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateRecommendationAndCheckForCompleted() }}/>&nbsp;&nbsp;Refresh</Button>
+      </Box>
       <p>Please order given restaurants by your preferences. Drag all {totalSelected} restaurants into <strong>Love box</strong> and <strong>rank</strong> them as your wish.</p>
       {items && <DraggableArea disabled={isSubmited} hasThumnail clickOnIdCallback={showRestaurantModalCallback} availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/>}
       <Spacer height={100} />

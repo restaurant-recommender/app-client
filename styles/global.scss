@@ -51,6 +51,15 @@
     }
 }
 
+.btn {
+    transition: 0.2s;
+    background: white;
+}
+
+.btn:active {
+    background: #d1d1d1;
+}
+
 .ant-radio-group {
     display: flex !important;
     width: 100% !important;

@@ -1,30 +1,26 @@
-import "react";
-import { useRouter } from "next/router"
-import { Button, Input, Modal } from "antd"
-import { useEffect, useState } from "react";
-import { faUser, faUsers, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
-
-import { Spacer, BigButton, Line, Loading, Box } from "../components"
-import { Color, useFormatter } from "../utils"
-import { useCookies } from "react-cookie";
+import { Box, Loading, Spacer } from "../components";
+import Image from 'next/image'
+import { faChevronRight, faUsers, faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useFormatter } from "../utils";
+import { useRouter } from "next/router";
 import { removeToken, useAuth } from "../utils/auth";
-import { InitializeRecommendationBody, userService } from "../services";
-import { Member, Preference } from "../types";
+import { useEffect, useState } from "react";
+import Modal from "antd/lib/modal/Modal";
+import { Button, Input } from "antd";
 
-interface IHome {
-  username: string
-}
+const headerHeight = "56px"
 
-function Home() {
+export default function Home() {
 
   const router = useRouter()
   const f = useFormatter()
   const auth = useAuth()
-  // const setAuthUsername = useSetUsername()
+
   const [username, setUsername] = useState('testUser')
   const [loading, setLoading] = useState<string>('')
   const [inputPin, setInputPin] = useState<string>('')
-  const [isJoinModal, setIsJoinModal] = useState(false);
+  const [isJoinModal, setIsJoinModal] = useState(false)
 
   useEffect(() => {
     setLoading('Authenticating')
@@ -85,39 +81,91 @@ function Home() {
     router.push('/home', '/home', { locale: router.locale === 'th' ? 'en' : 'th' })
   }
 
+  const individualButton = (
+    <Box onClick={handleIndividualReccommendation} className="btn" width="100%" boxShadow="0px 4px 28px rgba(0, 0, 0, 0.1)" borderRadius="14px" display="flex" padding="0.5rem" marginBottom="2rem">
+      <Box flexShrink={0} width="100px" height="96px">
+        <Image src="/btn_individual.svg" alt="" width="100" height="96" />
+      </Box>
+      <Box flexShrink={1} flexGrow={1} margin="auto 1rem">
+        <Box fontSize="18px" fontWeight="bold">{f('home_title_individual')}</Box>
+        <Box fontSize="10px" color="#00000060">{f('home_desc_individual')}</Box>
+      </Box>
+      <FontAwesomeIcon icon={faChevronRight} style={{margin: 'auto 0.5rem auto 0', fontSize: "14px"}} />
+    </Box>
+  )
+
+  const groupButton = (
+    <Box background="#ffffff" borderRadius="8px" height="74px" width="100%" boxShadow="0px 4px 28px rgba(0, 0, 0, 0.1)" display="flex" marginBottom="2rem" >
+      <Box onClick={handleCreateGroup} className="btn" width="calc(50% - 1px)" display="flex" borderRadius="8px 0 0 8px">
+        <Box margin="auto">
+          <Box textAlign="center"><FontAwesomeIcon icon={faUserPlus} style={{fontSize: '24px', color: '#FF8A00'}} /></Box>
+          <Box fontWeight="bold">{f('home_btn_createGroup')}</Box>
+        </Box>
+      </Box>
+      <Box width="2px" height="100%" background="rgba(0, 0, 0, 0.15)" />
+      <Box onClick={handleJoinGroup} className="btn" width="calc(50% - 1px)" display="flex" borderRadius="0 8px 8px 0">
+        <Box margin="auto">
+          <Box textAlign="center"><FontAwesomeIcon icon={faUsers} style={{fontSize: '24px', color: '#1890FF'}} /></Box>
+          <Box fontWeight="bold">{f('home_btn_joinGroup')}</Box>
+        </Box>
+      </Box>
+    </Box>
+  )
+
+  const ListButton = ({ onClick, title }) => (
+    <Box className="btn" onClick={onClick} width="100%" boxShadow="0px 4px 28px rgba(0, 0, 0, 0.1)" borderRadius="14px" display="flex" padding="1rem" marginBottom="1rem">
+      <Box>{title}</Box>
+      <FontAwesomeIcon icon={faChevronRight} style={{margin: 'auto 0.5rem auto auto', fontSize: "14px"}} />
+    </Box>
+  )
+
+  const groupCard = (
+    <Box height="286px" width="100%" background="linear-gradient(184.21deg, #FF5B53 25.73%, #FFA300 75.76%)" boxShadow="0px 4px 28px rgba(0, 0, 0, 0.1)" borderRadius="14px" padding="1rem" marginBottom="2rem" >
+      {groupButton}
+      <Box width="100%" display="flex">
+        <Box width="279px" height="150px" margin="0 auto">
+          <Image src="/group_card.svg" alt="" width="279" height="150" />
+        </Box>
+      </Box>
+    </Box>
+  )
+
+  const devider = (
+    <Box height="1px" width="100%" background="#00000015" marginBottom="2rem" />
+  )
+
   return (
-    <div className="container middle-flex bg-gray">
+    <Box display="block" width="100%">
       <Loading message={loading} />
-      <div style={{fontSize: '1rem', color: 'gray', display: 'flex'}}>
-        {f('home_hi')}{username}
-        <Button style={{marginLeft: 'auto'}} onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Button>
-        <Button style={{marginLeft: '1rem'}} danger onClick={handleLogout}>{f('btn_logout')}</Button>
-      </div>
-      <div style={{fontSize: '3rem', fontWeight: 'bolder'}}>{f('appName')}</div>
-      <Spacer />
-      <Line />
-      <div style={{flexGrow: 1, display: 'flex', overflow: 'scroll', marginLeft: '-1.5rem', marginRight: '-1.5rem'}}>
-        <div style={{margin: 'auto', width: '100%', maxWidth: '560px', padding: '0 1.5rem'}}>
-          <Spacer />
-          <h3>{f('home_title_individual')}</h3>
-          <BigButton onClick={handleIndividualReccommendation} title={f('home_btn_individual')} iconColor={Color.orange} bold icon={faUser} />
-          <Spacer line rem={3}/>
-          <h3>{f('home_title_group')}</h3>
-          <div style={{display: 'flex'}}>
-            <BigButton onClick={handleCreateGroup} title={f('home_btn_createGroup')} iconColor={Color.orange} bold icon={faUsers} />
-            <Spacer width={24} />
-            <BigButton onClick={handleJoinGroup} title={f('home_btn_joinGroup')} iconColor={Color.blue} bold icon={faSignInAlt} />
-          </div>
-          <Spacer />
-        </div>
-      </div>
-      <Line />
-      <Spacer />
+      <Box background="linear-gradient(180.12deg, #FF912C 0.1%, #FF3F49 75.73%)" height="350px" width="100%" display="flex" position="fixed" zIndex={-10}>
+        <Box width="320" height="282" margin="auto auto 0 auto">
+          <Image src="/home_hero.svg" alt="" width="320" height="282" />
+        </Box>
+      </Box>
 
-      <Button onClick={handleEditPreferences} style={{maxWidth: '560px', margin: 'auto'}}>{f('btn_editPreferences')}</Button>
+      <Box height={headerHeight} width="100%" background="transparent" position="fixed" display="flex" zIndex={20} fontSize="14px" color="white" fontWeight="bold" lineHeight={headerHeight} justifyContent="flex-end" padding="0 2rem">
+        <Box onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Box>
+        <Box margin="0 1rem 0 1rem" color="#ffffff60">|</Box>
+        <Box onClick={handleLogout}>Logout</Box>
+      </Box>
+      <Box height={`calc(100vh - ${headerHeight})`} width="100%" background="transparent" position="fixed" overflow="scroll" marginTop={headerHeight} zIndex={20}>
+        <Box background="#fafafa" borderRadius="24px 24px 0 0" zIndex={10} width="100%" padding="2rem" marginTop={`calc(250px - ${headerHeight})`} boxShadow="0px 4px 40px rgba(0, 0, 0, 0.25)">
+          <Box width="100%" maxWidth="375px" margin="0 auto">
+            <Box color="#00000060" marginBottom="-0.5rem">{f('home_hi')}Chanchana</Box>
+            <h1 style={{fontSize: '36px'}}>{f('appName')}</h1>
+            {individualButton}
+            {devider}
+            <Box fontWeight="bold" fontSize="18px" marginBottom="0.4rem">{f('home_title_group')}</Box>
+            <Box color="#00000060" marginBottom="1rem">{f('home_desc_group')}</Box>
+            {groupCard}
+            {devider}
+            <ListButton onClick={handleEditPreferences} title={f('btn_editPreferences')} />
+            <ListButton onClick={() => {}} title={f('btn_about')} />
+          </Box>
+        </Box>
+      </Box>
 
-      <div className="join-modal">
-        <Modal visible={isJoinModal} footer={false} onCancel={handleCloseJoinModal}>
+      <Modal visible={isJoinModal} footer={false} onCancel={handleCloseJoinModal}>
           <h2>Join Group</h2>
           <p>Please fill the group pin from other members in the group</p>
           <Input onChange={onChangeInputPin} size="large" placeholder="XXXXXX"/>
@@ -127,9 +175,6 @@ function Home() {
             <Button onClick={handleJoinConfirm} type="primary" style={{marginLeft: '1rem'}}>Join</Button>
           </Box>
         </Modal>
-      </div>
-    </div>
+    </Box>
   )
 }
-
-export default Home

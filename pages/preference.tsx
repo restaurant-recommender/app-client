@@ -73,7 +73,7 @@ export default function Register() {
       <p>Please select your restaurant preferences. Drag {totalSelected} preferences into <strong>Love box</strong> and <strong>order</strong> them by your preference.</p>
       { items && <DraggableArea availableItems={items} selectedTitle="Love" setAvailableItemsCallback={setItemsCallback}/> }
       <Spacer height={100} />
-      <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Next' : 'Please select 5 preferences.'} onClick={handleNext}/>
+      <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Done' : 'Please select 5 preferences.'} onClick={handleNext}/>
     </div>
   )
 }

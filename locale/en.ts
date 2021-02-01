@@ -6,6 +6,7 @@ export const en = {
   btn_logout: "Logout",
   btn_register: "Register",
   btn_editPreferences: "Edit Preference",
+  btn_about: "About",
 
   auth_invalidUser: "Invalid username!",
   auth_notSignIn: "Please login before using.",
@@ -22,7 +23,9 @@ export const en = {
 
   home_hi: "Hi, ",
   home_title_individual: "Individual Eating",
+  home_desc_individual: "Get your nearby restaurants recommendation",
   home_title_group: "Group Eating",
+  home_desc_group: "Have an eating companion? Create your own eating group or join your friend’s existing group. ",
   home_btn_individual: "Get Individual Recommendation",
   home_btn_createGroup: "Create Group",
   home_btn_joinGroup: "Join Group",

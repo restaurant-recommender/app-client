@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import { Button, Dropdown, Menu, Radio, Select } from "antd"
-import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 import io from 'socket.io-client'
@@ -35,14 +35,6 @@ function GroupConfirmation({ pin, hostname }) {
   })
 
   socket.on('group-update', (id) => {
-    console.log(id)
-    console.log('new update!')
-    if (recommendation) {
-      console.log('----------------')
-      console.log(id)
-      console.log(recommendation._id)
-      console.log('----------------')
-    }
     if (recommendation && id === recommendation._id) {
       updateGroup();
       console.log('updated!')
@@ -248,11 +240,11 @@ function GroupConfirmation({ pin, hostname }) {
         <CardList>
           <div style={{flexGrow: 1, fontWeight: 'bold'}}>{member.username}</div>
           <span style={{margin: 'auto'}}><span style={{color:'gray'}}>{'฿'.repeat(member.price_range)}</span>&nbsp;&nbsp;{member.is_head && <FontAwesomeIcon icon={faCrown}/>}</span>
-          <Dropdown overlay={memberMenu} trigger={['click']}>
+          {/* <Dropdown overlay={memberMenu} trigger={['click']}>
             <div style={{width: '40px', height: '40px', margin: 'auto', textAlign: 'center', display: 'flex'}}>
               <FontAwesomeIcon icon={faEllipsisH} style={{margin: 'auto'}} onClick={e => e.preventDefault()}/>
             </div>
-          </Dropdown>
+          </Dropdown> */}
         </CardList>
         <Spacer />
       </div>
@@ -294,7 +286,10 @@ function GroupConfirmation({ pin, hostname }) {
       </>}
 
       <div>
-        <h2 style={{fontWeight: 'bolder'}}>Members</h2>
+        <Box display="flex">
+          <h2 style={{fontWeight: 'bolder'}}>Members</h2>
+          <Button style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateGroup() }}/>&nbsp;&nbsp;Refresh</Button>
+        </Box>
         {members && membersList}
       </div>
       {/* {type}<br/>
