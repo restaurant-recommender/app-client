@@ -57,8 +57,11 @@ export const en = {
   confirm_pinCode: "Pin Code",
   confirm_btn_waitForHost: "Please wait for host to start",
 
+  preference_title: "Preference",
+  preference_desc: "Please select your restaurant preferences. Drag 5 preferences into Love box and order them by your preference.",
+
   group_title: "Suggested",
-  group_desc: "Please order given restaurants by your preferences. Drag all 6 restaurants into 'Love' box and rank them as your wish.",
+  group_desc: "Please rank given restaurants by your preferences. Drag all 6 restaurants into 'Love' box and rank them as your wish.",
   group_btn_requireOrdering: "Please order all restaurants",
   group_btn_waitingForOthers: "Waiting for other member",
 

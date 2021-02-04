@@ -62,8 +62,7 @@ export const RestaurantContent = (prop: IRestaurantCard) => {
   return (
     <div>
       {/* Picture */}
-      {/* {prop.restaurant.cover_url && <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0', background: '#fe8019' }} src={prop.restaurant.cover_url} />} */}
-      {false && <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0', background: '#fe8019' }} src={prop.restaurant.cover_url} />}
+      {prop.restaurant.cover_url && <img style={{ margin: '-24px -24px 24px -24px', width: 'calc(100% + 48px)', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0', background: '#fe8019' }} src={prop.restaurant.cover_url} />}
       {/* Title and Address */}
       <h2 style={{ marginBottom: '0.5rem' }}><strong>{prop.restaurant.name}</strong></h2>
 

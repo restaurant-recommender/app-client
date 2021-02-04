@@ -60,7 +60,6 @@ function IndividualFinish({ id }) {
     } else {
       const body: UpdateRatingBody = { rating }
       recommendationService.updateRating(id, token.id, body).then((_) => {
-        alert('Thank you for your rating! This system cannot be completed without you. <3')
         setRatingDrawer(false)
       })
     }
@@ -86,7 +85,7 @@ function IndividualFinish({ id }) {
       <Button size="large" onClick={() => { setSummaryDrawer(true) }}>{f('finish_btn_summary')}</Button>
       <Spacer />
       <Button size="large" onClick={handleHome}>{f('btn_home')}</Button>
-      <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {}}>
+      <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {setRatingDrawer(false)}}>
         <Spacer />
         <Box textAlign="center">{f('finish_title_rate')}</Box>
         <Box textAlign="center"><Rate onChange={handleInputRating} /></Box>

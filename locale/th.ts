@@ -32,12 +32,12 @@ export const th = {
   
   login_description: "กรุณาเข้าสู่ระบบ",
   login_register1: "ยังไม่มีบัญชีใช่มั้ย? กรุณา",
-  login_register2: "",
+  login_register2: " ",
 
   register_topWelcome: "สมัครสมาชิก",
   register_description: "กรุณากรอก Username และ Password ที่ต้องการ",
   register_login1: "มีบัญชีอยู่แล้วใช่มั้ย? กรุณา",
-  register_login2: "",
+  register_login2: " ",
 
   home_hi: "สวัสดี ",
   home_title_individual: "กินคนเดียว",
@@ -56,6 +56,9 @@ export const th = {
   confirm_yourPreference: "ความชื่นชอบของคุณ",
   confirm_pinCode: "รหัสกลุ่ม",
   confirm_btn_waitForHost: "กรุณารอให้หัวกลุ่มกดเริ่ม",
+
+  preference_title: "ความชื่นชอบ",
+  preference_desc: "กรุณาเรียงลำดับความสนใจต่อประเภทร้านอาหาร 5 อันดับจากมากไปถึงน้อย",
 
   group_title: "ร้านแนะนำ",
   group_desc: "กรุณาเรียงลำดับความสนใจของคุณต่อร้านอาหารจากมากไปถึงน้อยดังต่อไปนี้ โดยลากร้านอาหารทั้ง 6 ร้านเข้ามาอยู่ในกล่อง Love และจัดลำดับ",

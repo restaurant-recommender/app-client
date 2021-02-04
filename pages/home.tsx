@@ -148,8 +148,8 @@ export default function Home() {
         <Box margin="0 1rem 0 1rem" color="#ffffff60">|</Box>
         <Box onClick={handleLogout}>{f('btn_logout')}</Box>
       </Box>
-      <Box height={`calc(100vh - ${headerHeight})`} width="100%" background="transparent" position="fixed" overflow="scroll" marginTop={headerHeight} zIndex={20}>
-        <Box background="#fafafa" borderRadius="24px 24px 0 0" zIndex={10} width="100%" padding="2rem" marginTop={`calc(250px - ${headerHeight})`} boxShadow="0px 4px 40px rgba(0, 0, 0, 0.25)">
+      {/* <Box height={`calc(100vh - ${headerHeight})`} width="100%" background="transparent" position="fixed" overflow="scroll" marginTop={headerHeight} zIndex={20}> */}
+        <Box background="#fafafa" borderRadius="24px 24px 0 0" zIndex={10} width="100%" padding="2rem" marginTop="250px" boxShadow="0px 4px 40px rgba(0, 0, 0, 0.25)">
           <Box width="100%" maxWidth="375px" margin="0 auto">
             <Box color="#00000060" marginBottom="-0.5rem">{f('home_hi')}{username}</Box>
             <h1 style={{fontSize: '36px'}}>{f('appName')}</h1>
@@ -163,7 +163,7 @@ export default function Home() {
             <ListButton onClick={() => {}} title={f('btn_about')} />
           </Box>
         </Box>
-      </Box>
+      {/* </Box> */}
 
       <Modal visible={isJoinModal} footer={false} onCancel={handleCloseJoinModal}>
           <h2>{f('home_title_joinGroup')}</h2>

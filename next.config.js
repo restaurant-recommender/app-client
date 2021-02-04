@@ -13,8 +13,10 @@ console.log(isProd)
 
 module.exports = withCSS({
   env: {
-    NEXT_PUBLIC_APP_SERVER_URL: isProd ? "https://neutron-dot-restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3001",
-    NEXT_PUBLIC_APP_CLIENT_URL: isProd ? "https://restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3000"
+    // NEXT_PUBLIC_APP_SERVER_URL: isProd ? "https://neutron-dot-restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3001",
+    NEXT_PUBLIC_APP_SERVER_URL: "http://localhost:3001",
+    NEXT_PUBLIC_APP_CLIENT_URL: "http://localhost:8080"
+    // NEXT_PUBLIC_APP_CLIENT_URL: isProd ? "https://restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3000"
   },
   distDir: 'build',
   cssModules: true,
