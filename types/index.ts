@@ -46,6 +46,12 @@ export type CommonCetegory = {
   order: number
 }
 
+export type Category = {
+  name_th: string
+  name_en: string
+  _id: string
+}
+
 export type Preference = {
   _id: string
   name_en: string

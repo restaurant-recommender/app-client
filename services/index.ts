@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios"
-import { Response, AuthenticationToken, CommonCetegory, Preference, Member, Recommendation, Restaurant, History } from "../types"
+import { Response, AuthenticationToken, CommonCetegory, Preference, Member, Recommendation, Restaurant, History, Category } from "../types"
 import { getToken } from "../utils/auth"
 
 export const urls = {
@@ -57,6 +57,8 @@ export const authenticationService = {
 
 export const restaurantService = {
   getCommonCetegories: async (lang: string = 'en'): Promise<AxiosResponse<Response<CommonCetegory[]>>> => axios.get(appServerUrl(`categories/common?lang=${lang}`)),
+  getCetegories: async (): Promise<AxiosResponse<Category[]>> => axios.get(appServerUrl(`categories`)),
+  searchRestaurant: async (query: object): Promise<AxiosResponse<Restaurant[]>> => axios.post(appServerUrl('restaurants/search'), query),
 }
 
 export const userService = {
