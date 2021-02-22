@@ -9,14 +9,15 @@ if (typeof require !== "undefined") {
   require.extensions[".less"] = (file) => {};
 }
 
-console.log(isProd)
+console.log(`Production Build: ${isProd}`)
 
 module.exports = withCSS({
   env: {
-    // NEXT_PUBLIC_APP_SERVER_URL: isProd ? "https://neutron-dot-restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3001",
-    NEXT_PUBLIC_APP_SERVER_URL: "http://localhost:3001",
-    NEXT_PUBLIC_APP_CLIENT_URL: "http://localhost:8080"
-    // NEXT_PUBLIC_APP_CLIENT_URL: isProd ? "https://restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3000"
+    NEXT_PUBLIC_APP_SERVER_URL: isProd ? "https://neutron-dot-restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3001",
+    NEXT_PUBLIC_SOCKETIO_SERVER_URL: isProd ? "" : "http://localhost:3003",
+    // NEXT_PUBLIC_APP_SERVER_URL: "http://localhost:3001",
+    // NEXT_PUBLIC_APP_CLIENT_URL: "http://localhost:8080"
+    NEXT_PUBLIC_APP_CLIENT_URL: isProd ? "https://restaurant-recommender-system.et.r.appspot.com" : "http://localhost:3000"
   },
   distDir: 'build',
   cssModules: true,

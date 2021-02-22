@@ -3,7 +3,8 @@ import { Response, AuthenticationToken, CommonCetegory, Preference, Member, Reco
 import { getToken } from "../utils/auth"
 
 export const urls = {
-  app_server: process.env.NEXT_PUBLIC_APP_SERVER_URL as string
+  app_server: process.env.NEXT_PUBLIC_APP_SERVER_URL as string,
+  socketio_server: process.env.NEXT_PUBLIC_SOCKETIO_SERVER_URL as string
 }
 
 export type LoginBody = {
