@@ -8,12 +8,14 @@ interface IRestaurantCard {
   restaurant: Restaurant
   collapsable?: boolean
   style?: any
+  children?: any
 }
 
 export const RestaurantCard = (prop: IRestaurantCard) => {
   return (
     <div style={prop.style} className="restaurant-card">
       <RestaurantContent collapsable={prop.collapsable} restaurant={prop.restaurant} />
+      {prop.children}
     </div>
   )
 }

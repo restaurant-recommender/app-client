@@ -69,7 +69,7 @@ export const userService = {
 
 export const recommendationService = {
   initial: async (body: InitializeRecommendationBody): Promise<Response<Recommendation>> => axios.post(appServerUrl('recommendations/init'), body).then((response) => response.data),
-  request: async (id: string): Promise<Response<Restaurant[]>> => axios.get(appServerUrl(`recommendations/${id}/request`)).then((response) => response.data),
+  request: async (id: string, count: number): Promise<Response<Restaurant[]>> => axios.get(appServerUrl(`recommendations/${id}/request?count=${count}`)).then((response) => response.data),
   updateHistory: async (id: string, body: UpdateHistoryBody): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/history`), body).then((response) => response.data),
   updateRating: async (id: string, userId: string, body: UpdateRatingBody): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/members/${userId}/rate`), body).then((response) => response.data),
   complete: async (id: string): Promise<Response<null>> => axios.post(appServerUrl(`recommendations/${id}/complete`)).then((response) => response.data),

@@ -174,7 +174,7 @@ function GroupConfirmation({ pin, hostname }) {
   const handleStart = () => {
     // TODO: wait for other members
     setLoading(f('loading_startingRecommendation'))
-    recommendationService.request(recommendation._id).then((result) => {
+    recommendationService.request(recommendation._id, 6).then((result) => {
       if (result.status) {
         socket.emit('group-update', recommendation._id)
         const restaurants = result.data

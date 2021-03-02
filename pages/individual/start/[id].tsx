@@ -27,9 +27,9 @@ function IndividualStart({ id }) {
   const [currentRestaurantIndex, setCurrentRestaurantIndex] = useState<number>(0)
 
 
-  const addHistory = (isLove: boolean) => {
+  const addHistory = (restaurant: Restaurant, isLove: boolean) => {
     const history: History = {
-      restaurant: restaurants[currentRestaurantIndex]._id,
+      restaurant: restaurant._id,
       is_love: isLove,
       rating: 0,
       timestamp: Date.now(),
@@ -56,7 +56,7 @@ function IndividualStart({ id }) {
 
   const requestRecommendation = () => {
     setLoading(f('loading_gettingRestaurants'))
-    recommendationService.request(id as string).then((response) => {
+    recommendationService.request(id as string, 10).then((response) => {
       if (response.status) {
         setRestaurantFromRecommender(response.data)
         setLoading('')
@@ -73,21 +73,20 @@ function IndividualStart({ id }) {
     requestRecommendation()
   }, [])
   
-  const handleSkip = () => {
-    addHistory(false)
-    const nextIndex = currentRestaurantIndex + 1
-    if (nextIndex >= restaurants.length) {
+  const handleSkip = (restaurant: Restaurant) => {
+    addHistory(restaurant, false)
+    const remainingRestaurants = restaurants.filter(r => r._id !== restaurant._id)
+    setRestaurants(remainingRestaurants)
+    if (remainingRestaurants.length === 0) {
       updateAndClearHistory().then(() => {
         requestRecommendation()
       })
-    } else {
-      setCurrentRestaurantIndex(currentRestaurantIndex + 1)
     }
   }
 
-  const handleLove = () => {
+  const handleLove = (restaurant: Restaurant) => {
     setLoading(f('loading_finishingRecommendation'))
-    addHistory(true)
+    addHistory(restaurant, true)
     updateAndClearHistory().then(() => {
       recommendationService.complete(id).then((response) => {
         if (response.status) {
@@ -133,7 +132,7 @@ function IndividualStart({ id }) {
       </Box>
 
       <Spacer />
-      { restaurants && <div>
+      {/* { restaurants && <div>
         <RestaurantCard style={{margin: 'auto'}} restaurant={restaurants[currentRestaurantIndex]} />
         <Box height="120px" />
         
@@ -143,7 +142,19 @@ function IndividualStart({ id }) {
             <FloatButton onClick={handleLove} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;{f('btn_love')}</FloatButton>
           </Box>
         </Box>
-      </div>}
+      </div>} */}
+      {
+        restaurants &&
+        restaurants.map((restaurant) => (
+          <RestaurantCard restaurant={restaurant} style={{marginBottom: '2rem'}}>
+            <Box display="flex" marginTop="1rem" justifyContent="space-between">
+              <FloatButton onClick={() => { handleSkip(restaurant) }} type="secondary"><FontAwesomeIcon icon={faFrown}/>&nbsp;&nbsp;{f('btn_nah')}</FloatButton>
+              <FloatButton onClick={() => { handleLove(restaurant) }} type="primary"><FontAwesomeIcon icon={faGrinStars}/>&nbsp;&nbsp;{f('btn_love')}</FloatButton>
+            </Box>
+          </RestaurantCard>
+        ))
+      }
+      <Spacer />
       {contextHolder}
     </div>
   )
