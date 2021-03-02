@@ -15,7 +15,7 @@ import { useFormatter } from "../../utils"
 
 const { Option } = Select;
 
-function GroupConfirmation({ pin, hostname }) {
+function GroupConfirmation({ pin, disableNearby }) {
   const [groupPin, setGroupPin] = useState<string>(pin !== 'new' ? pin : '')
   const [loading, setLoading] = useState<string>()
   const [location, setLocation] = useState<[number, number]>()
@@ -57,55 +57,60 @@ function GroupConfirmation({ pin, hostname }) {
     })
   }
 
+  const initGroup = async (location: [number, number]) => {
+    setLoading(f('loading_creatingGroup'))
+    return userService.getPreferences().then((result) => {
+      const authToken = auth()
+      setToken(authToken)
+      const preferences: Preference[] = result.data
+      const sortedPreferences: string[] = preferences.sort((a, b) => a.order - b.order).map((preference) => preference.name_en)
+      const member: Member = {
+        _id: authToken.id,
+        username: authToken.username,
+        categories: sortedPreferences,
+        price_range: null,
+        rank: [],
+        is_head: true,
+      }
+      const body: InitializeRecommendationBody = {
+        members: [member],
+        location: location,
+        is_group: true,
+        type: 'restaurant',
+      }
+      console.log(body)
+      return recommendationService.initial(body).then((result) => {
+        if (result.status) {
+          const newRecommendation = result.data
+          setRecommendation(newRecommendation)
+          setGroupPin(newRecommendation.group_pin)
+          setMembers(newRecommendation.members)
+          router.push(`/group/${newRecommendation.group_pin}`, undefined, { shallow: true })
+          setLoading('')
+          return newRecommendation
+        } else {
+          alert('unkown error... at create group')
+          setLoading('')
+          return null
+        }
+      })
+    })
+  }
+
   const createGroup = async () => {
     setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
     console.log(authToken)
-    if (!("geolocation" in navigator)) {
-      alert(f('alert_geolocationIsDisabled'))
+    if (!("geolocation" in navigator) || disableNearby) {
+      // alert(f('alert_geolocationIsDisabled'))
       setLocation(defaultLocation)
+      initGroup(defaultLocation)
     } else {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation([position.coords.latitude, position.coords.longitude])
         const fetchedLoaction = [position.coords.latitude, position.coords.longitude] as [number, number]
-        setLoading(f('loading_creatingGroup'))
-        return userService.getPreferences().then((result) => {
-          const authToken = auth()
-          setToken(authToken)
-          const preferences: Preference[] = result.data
-          const sortedPreferences: string[] = preferences.sort((a, b) => a.order - b.order).map((preference) => preference.name_en)
-          const member: Member = {
-            _id: authToken.id,
-            username: authToken.username,
-            categories: sortedPreferences,
-            price_range: null,
-            rank: [],
-            is_head: true,
-          }
-          const body: InitializeRecommendationBody = {
-            members: [member],
-            location: fetchedLoaction,
-            is_group: true,
-            type: 'restaurant',
-          }
-          console.log(body)
-          return recommendationService.initial(body).then((result) => {
-            if (result.status) {
-              const newRecommendation = result.data
-              setRecommendation(newRecommendation)
-              setGroupPin(newRecommendation.group_pin)
-              setMembers(newRecommendation.members)
-              router.push(`/group/${newRecommendation.group_pin}`, undefined, { shallow: true })
-              setLoading('')
-              return newRecommendation
-            } else {
-              alert('unkown error... at create group')
-              setLoading('')
-              return null
-            }
-          })
-        })
+        initGroup(fetchedLoaction)
       })
     }
   }
@@ -324,7 +329,7 @@ function GroupConfirmation({ pin, hostname }) {
 }
 
 GroupConfirmation.getInitialProps = async (context) => {
-  return { pin: context.query.pin }
+  return { pin: context.query.pin, disableNearby: context.query.defaultloc }
 }
 
 export default GroupConfirmation
