@@ -73,6 +73,7 @@ export const th = {
   individual_title_goHomeModal: "กลับไปหน้าหลัก?",
   individual_desc_goHomeModal: "ต้องการยกเลิกการแนะนำครั้งนี้และกลับสู่หน้าหลักใช่ไหม",
   individual_btn_goHomeModal: "ใช่, กลับไปที่หน้าหลัก",
+  individual_btn_requireSelect: "กรุณาเลือก 1 ร้าน",
 
   loading_authenticating: "กำลังตรวจสอบบัญชี",
   loading_loggingIn: "กำลังเข้าสู่ระบบ",

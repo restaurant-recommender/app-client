@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd-next"
-import { faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faHeart, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { RestaurantList } from '../../components'
 
@@ -20,6 +20,7 @@ interface IRestaurantListArea {
   hasThumnail?: boolean
   disabled?: boolean
   selectedCount?: number
+  type: 'drag' | 'checkbox'
 }
 
 // Test URL: http://localhost:3000/group/start/603dfacc3bf9035d7746a11b
@@ -101,8 +102,8 @@ const getSelectedFromAvailables = (availables: RestaurantAvailableItem[]) => (
 )
 
 export const RestaurantListArea = (prop: IRestaurantListArea) => {
-  const [items, setItems] = useState<RestaurantAvailableItem[]>(getItemsFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
-  const [selected, setSelected] = useState<RestaurantAvailableItem[]>(getSelectedFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
+  const [items, setItems] = useState<RestaurantAvailableItem[]>(prop.availableItems.filter(a => !a.isSelected).sort((a, b) => a.order - b.order))
+  const [selected, setSelected] = useState<RestaurantAvailableItem[]>(prop.availableItems.filter(a => a.isSelected).sort((a, b) => a.order - b.order))
 
   const f = useFormatter()
 
@@ -111,6 +112,11 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
     console.log(newAvailableItems)
     prop.setAvailableItemsCallback(newAvailableItems)
   }, [items, selected])
+
+  // useEffect(() => {
+  //   setItems(getItemsFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
+  //   setSelected(getSelectedFromAvailables(prop.availableItems).sort((a, b) => a.order - b.order))
+  // }, [prop.availableItems])
 
   const getList = (id) => {
     switch (id) {
@@ -154,6 +160,34 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
     }
   };
 
+  const handleCheckbox = (restaurantId: string) => {
+    const filteredItems = items.filter((item) => item.restaurant._id === restaurantId)
+    const filteredSelected = selected.filter((item) => item.restaurant._id === restaurantId)
+    console.log('------------------------')
+    console.log(filteredItems)
+    console.log(filteredSelected)
+    if (filteredItems.length) {
+      const item = filteredItems[0]
+      selected.push({
+        restaurant: item.restaurant,
+        isSelected: true,
+        order: items.length,
+      })
+      setItems(items.filter((item) => item.restaurant._id !== restaurantId))
+      setSelected(selected)
+    }
+    else if (filteredSelected.length) {
+      const item = filteredSelected[0]
+      items.push({
+        restaurant: item.restaurant,
+        isSelected: false,
+        order: selected.length,
+      })
+      setSelected(selected.filter((item) => item.restaurant._id !== restaurantId))
+      setItems(items)
+    }
+  }
+
   const itemComponent = (item: RestaurantAvailableItem, index, showRanking, isLast) => (
     <Draggable
       key={item.restaurant._id}
@@ -163,11 +197,20 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
         <div ref={provided.innerRef} {...provided.draggableProps}>
           {/* marginBottom: isLast ? '0': '8px',  */}
           <RestaurantList restaurant={item.restaurant} style={{background: snapshot.isDragging ? '#bae7ff' : '#ffffff', boxShadow: snapshot.isDragging ? "0 0 0 4pt #1890ff" : 'none', position: 'relative'}}>
-            {!prop.disabled && <div {...provided.dragHandleProps} style={{width: '100%', height: '100%', display:'flex'}}>
-              <Box background="#ffffff" borderRadius="50%" width="32px" height="32px" margin="auto" display="flex">
-                <FontAwesomeIcon icon={faBars} style={{margin: 'auto'}}/>
+            {
+              !prop.disabled && 
+              prop.type === 'drag' ?
+              <div {...provided.dragHandleProps} style={{width: '100%', height: '100%', display:'flex'}}>
+                <Box background="#ffffff" borderRadius="50%" width="32px" height="32px" margin="auto" display="flex">
+                  <FontAwesomeIcon icon={faBars} style={{margin: 'auto'}}/>
+                </Box>
+              </div>
+              :
+              <Box onClick={() => { handleCheckbox(item.restaurant._id) }} width="24px" height="24px" margin="auto" background={item.isSelected ? '#fe8019' : '#e0e0e0'} borderRadius="4px" display="flex" boxShadow="0 0 0 4px white">
+                <FontAwesomeIcon icon={faCheck} style={{color: item.isSelected ? '#ffffff' : '#afafaf', margin: 'auto'}}/>
+                <div {...provided.dragHandleProps} style={{display: 'none'}} />
               </Box>
-            </div>}
+            }
           </RestaurantList>
           {!isLast && <Spacer height={8}/>}
           {/* <div /> */}

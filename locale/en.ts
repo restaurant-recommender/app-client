@@ -73,6 +73,7 @@ export const en = {
   individual_title_goHomeModal: "Go Home?",
   individual_desc_goHomeModal: "Do you want to cancel the recommendation and go back to home page?",
   individual_btn_goHomeModal: "Yes, go home",
+  individual_btn_requireSelect: "Please select 1 restaurant",
 
   loading_authenticating: "Authenticating",
   loading_loggingIn: "Logging in",

@@ -15,7 +15,7 @@ import { AuthenticationToken, Member, Preference } from "../../types"
 
 const { Option } = Select;
 
-export default function IndividualConfirmation() {
+function IndividualConfirmation({ disableNearby }) {
 
   const router = useRouter()
   const f = useFormatter()
@@ -34,8 +34,7 @@ export default function IndividualConfirmation() {
     const authToken = auth()
     setToken(authToken)
     console.log(authToken)
-    if (!("geolocation" in navigator)) {
-      alert(f('alert_geolocationIsDisabled'))
+    if (!("geolocation" in navigator) || disableNearby) {
       setLocation(defaultLocation)
       setLoading('')
     } else {
@@ -148,3 +147,9 @@ export default function IndividualConfirmation() {
     </div>
   )
 }
+
+IndividualConfirmation.getInitialProps = async (context) => {
+  return { disableNearby: context.query.defaultloc }
+}
+
+export default IndividualConfirmation
