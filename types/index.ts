@@ -111,6 +111,12 @@ export type AvailableItem = {
   image?: string
 }
 
+export type RestaurantAvailableItem = {
+  restaurant: Restaurant
+  isSelected: boolean;
+  order: number;
+}
+
 export type History = {
   restaurant: string
   is_love: boolean

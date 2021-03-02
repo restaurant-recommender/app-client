@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode } from "react"
 
 interface IBox extends CSSProperties {
+  id?: string
   children?: ReactNode
   onClick?: any
   className?: string
@@ -8,7 +9,7 @@ interface IBox extends CSSProperties {
 
 export const Box = (prop: IBox) => {
   return (
-    <div className={prop.className} onClick={prop.onClick} style={prop}>
+    <div id={prop.id} className={prop.className} onClick={prop.onClick} style={prop}>
       {prop.children}
     </div>
   )

@@ -1,0 +1,33 @@
+.list-title {
+    // background: #e0e0e0;
+    background: #fe8019;
+    color: white;
+    border-radius: 14px 14px 0 0;
+    padding: 0rem 4px 1rem 12px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    height: 62px;
+    display: flex;
+    align-items: center;
+}
+
+.rank-badge {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    background: dimgray;
+    text-align: center;
+    margin-right: 0.5rem;
+    line-height: 1.5rem;
+}
+
+.draggable-knob {
+    width: 80px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent;
+}
