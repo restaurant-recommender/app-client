@@ -93,6 +93,9 @@ export const en = {
   alert_geolocationIsDisabled: "Cannot get your current location because your geolocation is disabled",
   alert_groupNotFound: "Cannot find group with pin",
 
+  favorite_saveSuccess: "Added to your favorite!",
+  favorite_removeSuccess: "Removed from your favorite!",
+
   select_restaurant: "Restaurant",
   select_dessert: "Dessert",
   select_bar: "Bar",

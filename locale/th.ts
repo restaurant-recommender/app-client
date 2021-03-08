@@ -93,6 +93,9 @@ export const th = {
   alert_geolocationIsDisabled: "ไม่สามารถดึงตำแหน่งของคุณ เนื่องจาก Grolocation ของคุณถูกปิด",
   alert_groupNotFound: "ไม่สามารถหากลุ่มที่มีรหัสกลุ่ม",
 
+  favorite_saveSuccess: "เพิ่มเข้าในรายการที่คุณชื่นชอบสำเร็จ",
+  favorite_removeSuccess: "นำออกจากรยการที่คุณชื่นชอบแล้ว",
+
   select_restaurant: "ร้านอาหาร",
   select_dessert: "ขนม",
   select_bar: "บาร์",

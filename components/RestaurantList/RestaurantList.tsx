@@ -4,7 +4,7 @@ import { RestaurantContent } from "../../components";
 import { Box } from "../Box/Box";
 import { useEffect, useState } from "react";
 import { Collapse } from "react-collapse"
-import { Color } from "../../utils"
+import { Color, useFormatter } from "../../utils"
 import { faMapMarkedAlt, faTimes, faStar, faThumbsUp, faChevronDown, faChevronUp, faBookmark } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons'
 import { faFacebookSquare } from "@fortawesome/free-brands-svg-icons"
@@ -31,6 +31,8 @@ const transitionTime = '0.5s'
 export const RestaurantList = (prop: IRestaurantCard) => {
   const [isDetailed, setIsDetailed] = useState<boolean>(prop.expanded)
   const [isSaved, setIsSaved] = useState<boolean>()
+
+  const f = useFormatter()
   
   useEffect(() => {
     favoriteService.check(prop.restaurant._id).then((response) => {
@@ -55,7 +57,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
     if (isSaved) {
       favoriteService.remove(prop.restaurant._id).then((response) => {
         if (response.status) {
-          message.success('Removed from your favorite!')
+          message.success(f('favorite_removeSuccess'))
           setIsSaved(false)
         }
       })
@@ -63,7 +65,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
     else if (!isSaved) {
       favoriteService.add(prop.restaurant._id).then((response) => {
         if (response.status) {
-          message.success('Added to your favorite!')
+          message.success(f('favorite_saveSuccess'))
           setIsSaved(true)
         }
       })
