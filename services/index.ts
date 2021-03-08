@@ -83,3 +83,10 @@ export const recommendationService = {
 export const groupService = {
   joinGroup: async (pin: string, body: JoinGroupBody): Promise<Response<Recommendation>> => axios.post(appServerUrl(`group/${pin}/join`), body).then((response) => response.data),
 }
+
+export const favoriteService = {
+  get: async (): Promise<Response<Restaurant[]>> => axios.get(appServerUrl(`users/${getId()}/favorites`)).then((response) => response.data),
+  add: async (restaurantId: string): Promise<Response<void>> => axios.get(appServerUrl(`users/${getId()}/favorites/add/${restaurantId}`)).then((response) => response.data),
+  remove: async (restaurantId: string): Promise<Response<void>> => axios.get(appServerUrl(`users/${getId()}/favorites/remove/${restaurantId}`)).then((response) => response.data),
+  check: async (restaurantId: string): Promise<Response<boolean>> => axios.get(appServerUrl(`users/${getId()}/favorites/check/${restaurantId}`)).then((response) => response.data),
+}

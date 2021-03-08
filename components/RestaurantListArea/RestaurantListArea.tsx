@@ -196,7 +196,7 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
       {(provided, snapshot) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
           {/* marginBottom: isLast ? '0': '8px',  */}
-          <RestaurantList restaurant={item.restaurant} style={{background: snapshot.isDragging ? '#bae7ff' : '#ffffff', boxShadow: snapshot.isDragging ? "0 0 0 4pt #1890ff" : 'none', position: 'relative'}}>
+          <RestaurantList expandable restaurant={item.restaurant} style={{background: snapshot.isDragging ? '#bae7ff' : '#ffffff', boxShadow: snapshot.isDragging ? "0 0 0 4pt #1890ff" : 'none', position: 'relative'}}>
             {
               !prop.disabled && 
               prop.type === 'drag' ?
