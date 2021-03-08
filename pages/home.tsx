@@ -57,6 +57,10 @@ export default function Home() {
     router.push(`/preference`)
   }
 
+  const handleFavorite = () => {
+    router.push(`/favorite`)
+  }
+
   const handleJoinGroup = () => {
     showJoinModal()
   }
@@ -159,6 +163,7 @@ export default function Home() {
             <Box color="#00000060" marginBottom="1rem">{f('home_desc_group')}</Box>
             {groupCard}
             {devider}
+            <ListButton onClick={handleFavorite} title={f('btn_favorite')} />
             <ListButton onClick={handleEditPreferences} title={f('btn_editPreferences')} />
             <ListButton onClick={() => {}} title={f('btn_about')} />
           </Box>

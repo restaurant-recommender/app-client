@@ -7,6 +7,7 @@ export const th = {
   btn_logout: "ออกจากระบบ",
   btn_register: "สมัครสมาชิก",
   btn_editPreferences: "แก้ไขความชื่นชอบ",
+  btn_favorite: "ร้านที่ชื่นชอบ",
   btn_about: "เกี่ยวกับ",
   btn_start: "เริ่มต้น",
   btn_back: "กลับ",
@@ -75,6 +76,7 @@ export const th = {
   individual_btn_goHomeModal: "ใช่, กลับไปที่หน้าหลัก",
   individual_btn_requireSelect: "กรุณาเลือก 1 ร้าน",
 
+  loading: "กำลังโหลด",
   loading_authenticating: "กำลังตรวจสอบบัญชี",
   loading_loggingIn: "กำลังเข้าสู่ระบบ",
   loading_loggingOut: "กำลังออกจากระบบ",
@@ -95,6 +97,7 @@ export const th = {
 
   favorite_saveSuccess: "เพิ่มเข้าในรายการที่คุณชื่นชอบสำเร็จ",
   favorite_removeSuccess: "นำออกจากรยการที่คุณชื่นชอบแล้ว",
+  favorite_title: "รายการที่ชื่นชอบ",
 
   select_restaurant: "ร้านอาหาร",
   select_dessert: "ขนม",

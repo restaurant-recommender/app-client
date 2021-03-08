@@ -90,24 +90,26 @@ export const RestaurantList = (prop: IRestaurantCard) => {
   const handleToggleExpand = () => { setIsDetailed(!isDetailed) }
 
   const detail = (
-    <Box transition={transitionTime} padding='1rem' opacity={isDetailed ? 1 : 0}>
+    <Box transition={transitionTime} position="relative" padding='1rem' opacity={isDetailed ? 1 : 0}>
       <Box display="flex" width="100%">
         <Box marginBottom="0.5rem" fontSize="18px" flexGrow={1} fontWeight="bold">{prop.restaurant.name}</Box>
-        <Box zIndex={20} onClick={handleSave} width="32px" display="flex" flexDirection="column">
+        <Box zIndex={20} flexShrink={0} onClick={handleSave} width="32px" display="flex" flexDirection="column">
           <FontAwesomeIcon icon={isSaved ? faBookmark : farBookmark} style={{ fontSize: 24, color: isSaved ? Color.blue : 'gray', margin: '0 auto' }} />
-          <Box margin="2px auto 0" fontSize="8px" color={isSaved ? Color.blue3 : "#a5a5a5"}>{isSaved ? 'Saved' : 'Save'}</Box>
+          <Box margin="2px auto 0" fontSize="8px" color={isSaved ? Color.blue : "#a5a5a5"}>{isSaved ? 'Saved' : 'Save'}</Box>
         </Box>
       </Box>
 
-      <p style={{ fontSize: '10px', color: 'gray'}}>{prop.restaurant.address}</p>
-
-      <Spacer rem={0.2} />
-
-      {/* Category */}
       <div>
         {prop.restaurant.profile.categories.map(({ _id, name_en }) => <Tag key={_id} style={{ padding: '2px 6px', background: '#e5e5e5', border: 'none', marginBottom: '4px', marginRight: '4px' }}>{name_en}</Tag>)}
       </div>
-      <Spacer line />
+      <Spacer rem={0.8} />
+
+      <Box fontSize="10px" color="gray">{prop.restaurant.address}</Box>
+
+      <Spacer rem={0.5} />
+
+      {/* Category */}
+      
 
       <Box display="flex">
         <Button size="small" onClick={(e) => { openGoogleMap(e, prop.restaurant.location.coordinates[1], prop.restaurant.location.coordinates[0]) }} style={{ color: Color.blue7, background: Color.blue1, borderColor: Color.blue1, marginRight: '1rem' }} icon={<FontAwesomeIcon style={{ color: Color.blue7 }} icon={faMapMarkedAlt} />}>&nbsp;&nbsp;Map</Button>
@@ -119,9 +121,9 @@ export const RestaurantList = (prop: IRestaurantCard) => {
 
       {/* Profile */}
       <div>
-        <strong style={{ fontSize: '1rem' }}>
+        {'dist' in prop.restaurant && <strong style={{ fontSize: '1rem' }}>
           {`${prop.restaurant.dist.calculated.toFixed(0)} m` ?? ''}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </strong>
+        </strong>}
         {prop.restaurant.profile.price_range !== -1 && (
           <span>
             {'฿'.repeat(prop.restaurant.profile.price_range)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -144,7 +146,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
 
   return (
     <Box onClick={prop.expandable && handleToggleExpand} overflow="hidden" width='100%' background="#ffffff" borderRadius="8px" {...prop.style} boxShadow={shadow}>
-      <Box maxHeight={isDetailed ? '92px' : '72px'} overflow="hidden" transition={transitionTime} display='flex'>
+      <Box maxHeight={isDetailed ? '92px' : '72px'} overflow="hidden" transition={transitionTime} display='flex' position="relative">
         <Box borderRadius={isDetailed ? '8px 8px 0 0' : '8px 0 0 8px'} transition={transitionTime} display="flex" overflow='hidden' flexShrink={0} height={isDetailed ? '96px' : '72px'} width={isDetailed ? '100%' : '72px'}>
           <img src={prop.restaurant.cover_url ?? imageurl} style={{transition: transitionTime, position: 'relative', objectFit: 'cover', minHeight: isDetailed ? '96px' : '72px', minWidth: isDetailed ? '100%' : '72px'}} />
         </Box>

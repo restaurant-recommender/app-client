@@ -7,6 +7,7 @@ export const en = {
   btn_logout: "Logout",
   btn_register: "Register",
   btn_editPreferences: "Edit Preference",
+  btn_favorite: "Your Favorites",
   btn_about: "About",
   btn_start: "Start",
   btn_back: "Back",
@@ -75,6 +76,7 @@ export const en = {
   individual_btn_goHomeModal: "Yes, go home",
   individual_btn_requireSelect: "Please select 1 restaurant",
 
+  loading: "Loading",
   loading_authenticating: "Authenticating",
   loading_loggingIn: "Logging in",
   loading_loggingOut: "Logging out",
@@ -95,6 +97,7 @@ export const en = {
 
   favorite_saveSuccess: "Added to your favorite!",
   favorite_removeSuccess: "Removed from your favorite!",
+  favorite_title: "Favorites",
 
   select_restaurant: "Restaurant",
   select_dessert: "Dessert",
