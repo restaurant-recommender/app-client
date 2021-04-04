@@ -22,6 +22,7 @@ interface IRestaurantCard {
   style?: any
   children?: any
   expandable?: boolean
+  rank?: number
 }
 
 const imageurl = "http://www.colleges-fenway.org/wp-content/uploads/2018/09/food-festival-1.jpg"
@@ -150,6 +151,9 @@ export const RestaurantList = (prop: IRestaurantCard) => {
         <Box borderRadius={isDetailed ? '8px 8px 0 0' : '8px 0 0 8px'} transition={transitionTime} display="flex" overflow='hidden' flexShrink={0} height={isDetailed ? '96px' : '72px'} width={isDetailed ? '100%' : '72px'}>
           <img src={prop.restaurant.cover_url ?? imageurl} style={{transition: transitionTime, position: 'relative', objectFit: 'cover', minHeight: isDetailed ? '96px' : '72px', minWidth: isDetailed ? '100%' : '72px'}} />
         </Box>
+        {prop.rank && <Box borderRadius='8px 0 0 8px' display="flex" transition={transitionTime} height={isDetailed ? '96px' : '72px'} width={isDetailed ? '100%' : '72px'} background={isDetailed ? '#00000000' : '#00000070'} position="absolute">
+          <Box transition={transitionTime} opacity={isDetailed ? 0 : 1} width="24px" height="24px" borderRadius="50%" margin="auto" background="#ffffff" textAlign="center" fontWeight="bold" lineHeight="24px">{prop.rank}</Box>
+        </Box>}
         <Box overflow="hidden" transition={transitionTime} padding={prop.children ? '0 72px 0 1rem' : '0 1rem'} margin='auto 0' flexShrink={1} opacity={isDetailed ? 0 : 1}>{prop.restaurant.name}</Box>
         <Box transition={transitionTime} width="48px" display="flex" position="absolute" right="0" height={isDetailed ? '96px' : '72px'} top="0">
           {prop.children}
