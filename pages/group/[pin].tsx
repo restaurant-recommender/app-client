@@ -42,12 +42,12 @@ function GroupConfirmation({ pin, disableNearby }) {
   })
 
   const updateGroup = () => {
+    console.log('inside update group')
     recommendationService.getById(recommendation._id).then((result) => {
       const updatedRecommendation = result.data
       setRecommendation(updatedRecommendation)
       console.log('updated')
       console.log(updatedRecommendation)
-      // TODO: check if start -> router push
       if (updatedRecommendation.is_started) {
         setLoading(f('loading_startingGroupRecommendation'))
         router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
@@ -133,6 +133,12 @@ function GroupConfirmation({ pin, disableNearby }) {
       return groupService.joinGroup(pin, { member }).then((result) => {
         if (result.status) {
           const newRecommendation = result.data
+          if (newRecommendation.is_started) {
+            setLoading(f('loading_startingGroupRecommendation'))
+            router.push(`/group/start/${newRecommendation._id}`).then((_) => {
+              console.log('')
+            })
+          }
           setRecommendation(newRecommendation)
           setMembers(newRecommendation.members)
           const newLocation = [newRecommendation.location.coordinates[1], newRecommendation.location.coordinates[0]] as [number, number]
@@ -177,7 +183,6 @@ function GroupConfirmation({ pin, disableNearby }) {
   }
 
   const handleStart = () => {
-    // TODO: wait for other members
     setLoading(f('loading_startingRecommendation'))
     recommendationService.request(recommendation._id, 6).then((result) => {
       if (result.status) {
@@ -198,7 +203,6 @@ function GroupConfirmation({ pin, disableNearby }) {
     navigator.clipboard.writeText(getShareLink())
   }
 
-  /* TODO: change to correct hostname */
   const getShareLink = () => `${process.env.NEXT_PUBLIC_APP_CLIENT_URL}${router.asPath}`
 
   const getMember = (): Member => recommendation && recommendation.members.find((member) => member._id.toString() === token.id.toString())
@@ -296,7 +300,7 @@ function GroupConfirmation({ pin, disableNearby }) {
       <div>
         <Box display="flex">
           <h2 style={{fontWeight: 'bolder'}}>{f('confirm_title_members')}</h2>
-          <Button style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateGroup() }}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
+          <Button onClick={updateGroup} style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
         </Box>
         {members && membersList}
       </div>
