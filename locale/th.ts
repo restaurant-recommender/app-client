@@ -59,6 +59,7 @@ export const th = {
   confirm_yourPreference: "ความชื่นชอบของคุณ",
   confirm_pinCode: "รหัสกลุ่ม",
   confirm_btn_waitForHost: "กรุณารอให้หัวกลุ่มกดเริ่ม",
+  confirm_btn_waitForOtherMembers: "กรุณารอสมาชิกเข้าร่วม",
 
   preference_title: "ความชื่นชอบ",
   preference_desc: "กรุณาเรียงลำดับความสนใจต่อประเภทร้านอาหาร 5 อันดับจากมากไปถึงน้อย",

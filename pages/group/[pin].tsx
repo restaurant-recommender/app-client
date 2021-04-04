@@ -314,7 +314,15 @@ function GroupConfirmation({ pin, disableNearby }) {
         <Button disabled style={{}}>Edit Preference</Button> */}
         </div>
         <div style={{width:'100%', display: 'flex'}}>
-          {recommendation && <Button disabled={recommendation && getMember().is_head ? false : true} onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>{recommendation && getMember().is_head ? f('btn_start') : f('confirm_btn_waitForHost')}</Button>}
+          {recommendation && 
+            <Button disabled={recommendation && getMember().is_head && recommendation.members.length > 1 ? false : true} onClick={handleStart} type="primary" size="large" style={{width:'300px', margin:'auto'}}>
+              {recommendation && 
+                getMember().is_head && recommendation.members.length > 1 ? f('btn_start') :
+                getMember().is_head && recommendation.members.length <= 1 ? f('confirm_btn_waitForOtherMembers') :
+                f('confirm_btn_waitForHost')
+              }
+            </Button>
+          }
         </div>
       </FixedBottom>
 

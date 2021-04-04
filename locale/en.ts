@@ -59,6 +59,7 @@ export const en = {
   confirm_yourPreference: "Your preferences",
   confirm_pinCode: "Pin Code",
   confirm_btn_waitForHost: "Please wait for host to start",
+  confirm_btn_waitForOtherMembers: "Please wait for other members",
 
   preference_title: "Preference",
   preference_desc: "Please select your restaurant preferences. Drag 5 preferences into Love box and order them by your preference.",
