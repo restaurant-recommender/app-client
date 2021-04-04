@@ -112,7 +112,7 @@ function GroupStart({ id }) {
         <Button style={{margin: 'auto 0 1.2rem auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateRecommendationAndCheckForCompleted() }}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
       </Box>
       <p>{f('group_desc')}</p>
-      {items && <RestaurantListArea type="drag" disabled={isSubmited} selectedCount={6} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
+      {items && <RestaurantListArea type="drag" showRanking disabled={isSubmited} selectedCount={6} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
       <Spacer height={100} />
       <FixedBottomButton disabled={!isValid() || isSubmited} title={isSubmited ? `${f('group_btn_waitingForOthers')} (${memberProgressText})` : isValid() ? f('btn_finish') : f('group_btn_requireOrdering')} onClick={handleNext}/>
     </div>

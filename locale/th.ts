@@ -27,6 +27,8 @@ export const th = {
 
   input_draggableSelected: "ลากสิ่งที่ต้องการจากด้านล่างมาที่กล่องนี้.",
   input_draggableNonSelected: "ลากสิ่งที่ต้องการจะลบจากด้านบนมาที่กล่องนี้",
+  input_checkableSelected: "กดที่เครื่องหมายเช็คถูกเพื่อเลือกเข้ากล่องนี้",
+  input_checkableNonSelected: "กดที่เครื่องหมายเช็คถูกเพื่อนำออก",
 
   auth_invalidUser: "ข้อมูล Username หรือ Password ผิด",
   auth_notSignIn: "กรุณาเข้าสู่ระบบก่อนใช้งาน",
