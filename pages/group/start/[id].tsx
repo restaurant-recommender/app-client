@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/router"
 import { Button } from 'antd'
 import io from 'socket.io-client'
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSyncAlt, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { RestaurantListArea, Spacer, FixedBottomButton, Loading, Box } from "../../../components"
 import { Restaurant, Recommendation, AuthenticationToken, RestaurantAvailableItem } from "../../../types"
 import { recommendationService, urls } from "../../../services"
 import { useAuth } from "../../../utils/auth"
-import { useFormatter } from "../../../utils"
+import { Color, useFormatter } from "../../../utils"
 
 const getItemsFromRestaurants = (restaurants: Restaurant[]): RestaurantAvailableItem[] => restaurants.map((restaurant, index) => ({
   restaurant: restaurant,
@@ -41,16 +41,20 @@ function GroupStart({ id }) {
     }
   })
 
+  const finish = (recommendationId: string) => {
+    setLoading(f('loading_finishingRecommendation'))
+    router.push(`/finish/${recommendationId}`).then(_ => {
+      setLoading('')
+    })
+  }
+
   const updateRecommendationAndCheckForCompleted = () => {
     recommendationService.getById(recommendation._id).then((result) => {
       if (result.status) {
         const updatedRecommendation = result.data
         setRecommendation(updatedRecommendation)
         if (updatedRecommendation.is_completed) {
-          setLoading(f('loading_finishingRecommendation'))
-          router.push(`/finish/${recommendation._id}`).then(_ => {
-            setLoading('')
-          })
+          finish(updatedRecommendation._id)
         }
       } else {
         alert('update data error!')
@@ -63,6 +67,10 @@ function GroupStart({ id }) {
     console.log(newItems)
   }, [])
 
+  const submited = () => {
+    setIsSubmited(true)
+  }
+
   useEffect(() => {
     const authToken = auth()
     setToken(authToken)
@@ -72,7 +80,13 @@ function GroupStart({ id }) {
         setRecommendation(fetchedRecommendation)
         setTotalSelected(fetchedRecommendation.sugessted_restaurants.length)
         setItems(getItemsFromRestaurants(fetchedRecommendation.sugessted_restaurants))
-        console.log(fetchedRecommendation)
+        const memberRank = fetchedRecommendation.members.find((e) => e._id.toString() === authToken.id.toString()).rank
+        if (memberRank && memberRank.length > 0) {
+          submited()
+          if (fetchedRecommendation.is_completed) {
+            finish(fetchedRecommendation._id)
+          }
+        }
       } else {
         console.log(result)
         alert('getting recommendation error!')
@@ -88,9 +102,9 @@ function GroupStart({ id }) {
       recommendationService.updateMemberRestaurantRank(recommendation._id, token.id, { rank: orderedRestaurant }).then((result) => {
         if (result.status) {
           const updatedRecommendation = result.data
-          setIsSubmited(true)
-          setLoading(`${f('group_btn_waitingForOthers')} (${memberProgressText})`)
           socket.emit('group-rank-update', recommendation._id)
+          submited()
+          updateRecommendationAndCheckForCompleted()
           console.log(updatedRecommendation)
         } else {
           console.log(result)
@@ -104,18 +118,35 @@ function GroupStart({ id }) {
 
   const memberProgressText = recommendation && `${recommendation.members.filter((member) => member.rank && member.rank.length > 0).length}/${recommendation.members.length}`
 
-  return (
-    <div className="container">
-      <Loading message={loading} />
-      <Box display="flex">
-        <h1>{f('group_title')}</h1>
-        <Button style={{margin: 'auto 0 1.2rem auto'}}><FontAwesomeIcon icon={faSyncAlt} onClick={() => { updateRecommendationAndCheckForCompleted() }}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
+  const waitingDialog = (
+    <Box position="fixed" display="flex" zIndex={100} background="#000000a0" top={0} width="100%" height="100%">
+      <Box display="flex" margin="auto" background="#ffffff" width="240px" height="240px" borderRadius="16px">
+        <Box margin="auto">
+          <Spacer />
+          <Box display="flex"><FontAwesomeIcon icon={faCircleNotch} spin style={{margin: "auto", fontSize: "4rem", color: Color.orange}}/></Box>
+          <Spacer />
+          <Box textAlign="center" fontSize="2rem" fontWeight="bold">{memberProgressText}</Box>
+          <Box>{f('group_btn_waitingForOthers')}</Box>
+          {/* <Box display="flex"><Button onClick={updateRecommendationAndCheckForCompleted} style={{margin: "auto"}}><FontAwesomeIcon icon={faSyncAlt}/>&nbsp;&nbsp;{f('btn_refresh')}</Button></Box> */}
+        </Box>
       </Box>
-      <p>{f('group_desc')}</p>
-      {items && <RestaurantListArea type="drag" showRanking disabled={isSubmited} selectedCount={6} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
-      <Spacer height={100} />
-      <FixedBottomButton disabled={!isValid() || isSubmited} title={isSubmited ? `${f('group_btn_waitingForOthers')} (${memberProgressText})` : isValid() ? f('btn_finish') : f('group_btn_requireOrdering')} onClick={handleNext}/>
-    </div>
+    </Box>
+  ) 
+
+  return (
+    <Box>
+      <div className="container">
+        <Loading message={loading} />
+        <Box display="flex">
+          <h1>{f('group_title')}</h1>
+        </Box>
+        <p>{f('group_desc')}</p>
+        {items && <RestaurantListArea type="drag" showRanking disabled={isSubmited} selectedCount={6} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
+        <Spacer height={100} />
+        <FixedBottomButton disabled={!isValid() || isSubmited} title={isSubmited ? `${f('group_btn_waitingForOthers')} (${memberProgressText})` : isValid() ? f('btn_finish') : f('group_btn_requireOrdering')} onClick={handleNext}/>
+      </div>
+      {isSubmited && waitingDialog}
+    </Box>
   )
 }
 
