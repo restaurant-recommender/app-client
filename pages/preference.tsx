@@ -73,7 +73,7 @@ export default function Register() {
       <Loading message={loading} />
       <h1>{f('preference_title')}</h1>
       <p>{f('preference_desc')}</p>
-      { items && <DraggableArea availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/> }
+      { items && <DraggableArea selectedCount={5} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/> }
       <Spacer height={100} />
       <FixedBottomButton disabled={!isValid()} title={isValid() ? 'Done' : 'Please select 5 preferences.'} onClick={handleNext}/>
     </div>

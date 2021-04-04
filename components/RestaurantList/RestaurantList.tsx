@@ -93,7 +93,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
     <Box transition={transitionTime} position="relative" padding='1rem' opacity={isDetailed ? 1 : 0}>
       <Box display="flex" width="100%">
         <Box marginBottom="0.5rem" fontSize="18px" flexGrow={1} fontWeight="bold">{prop.restaurant.name}</Box>
-        <Box zIndex={20} flexShrink={0} onClick={handleSave} width="32px" display="flex" flexDirection="column">
+        <Box zIndex={5} flexShrink={0} onClick={handleSave} width="32px" display="flex" flexDirection="column">
           <FontAwesomeIcon icon={isSaved ? faBookmark : farBookmark} style={{ fontSize: 24, color: isSaved ? Color.blue : 'gray', margin: '0 auto' }} />
           <Box margin="2px auto 0" fontSize="8px" color={isSaved ? Color.blue : "#a5a5a5"}>{isSaved ? 'Saved' : 'Save'}</Box>
         </Box>

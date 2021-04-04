@@ -199,12 +199,13 @@ function IndividualStart({ id }) {
   return (
     <div className="container">
       <Loading message={loading} />
-      <Box display="block" justifyContent="flex-start" marginBottom="1rem">
+      <Box top="-1rem" left="-1rem" position="fixed" width="100%" height="128px" background="white" zIndex={10}/>
+      <Box position="fixed" display="block" justifyContent="flex-start" marginBottom="1rem" zIndex={15}>
         <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{f('btn_back')}</Button>
         <Box display="inline-block" fontSize="1.2rem" fontWeight="bold" marginLeft="1rem">Recommended</Box>
       </Box>
-
-      {items && <RestaurantListArea type="checkbox" selectedCount={1} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
+      <Spacer height={64} />
+      {items && <RestaurantListArea fixedBox type="checkbox" selectedCount={1} availableItems={items} selectedTitle={f('title_love')} setAvailableItemsCallback={setItemsCallback}/>}
       <Spacer />
       <Box display="flex" justifyContent="space-around">
         <Button onClick={handleLoadMore}>Show More</Button>

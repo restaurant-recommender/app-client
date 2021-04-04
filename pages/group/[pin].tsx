@@ -284,9 +284,12 @@ function GroupConfirmation({ pin, disableNearby }) {
         <h3>
           {f('confirm_cravingFor')}
         </h3>
-        <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
+        {/* <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
           { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
-        </Radio.Group>
+        </Radio.Group> */}
+        <Select style={{ width: "100%" }} onChange={handleSelectPricePrefer} defaultValue={typeSelectionDefault.value}>
+          { typeSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
+        </Select>
         <Spacer />
       </>}
 

@@ -89,6 +89,7 @@ function GroupStart({ id }) {
         if (result.status) {
           const updatedRecommendation = result.data
           setIsSubmited(true)
+          setLoading(`${f('group_btn_waitingForOthers')} (${memberProgressText})`)
           socket.emit('group-rank-update', recommendation._id)
           console.log(updatedRecommendation)
         } else {

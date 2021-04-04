@@ -20,6 +20,7 @@ interface IDraggableArea {
   clickOnIdCallback?: any // id: string
   hasThumnail?: boolean
   disabled?: boolean
+  selectedCount?: number
 }
 
 const thumbnailSize = "84px"
@@ -196,7 +197,10 @@ export const DraggableArea = (prop: IDraggableArea) => {
   // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>{prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} /></div>
+      <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>{prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} />
+          {prop.selectedCount && <Box marginLeft='auto' background="#00000020" borderRadius="8px" padding="0 1rem" fontSize="1.2rem" height="38px" lineHeight="38px">
+            {selected.length}/{prop.selectedCount}
+          </Box>}</div>
       <Droppable droppableId="selectedDropableId">
         {(provided, snapshot) => (
           <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>

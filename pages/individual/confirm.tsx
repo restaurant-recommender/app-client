@@ -119,9 +119,9 @@ function IndividualConfirmation({ disableNearby }) {
       <h3>
         {f('confirm_cravingFor')}
       </h3>
-      <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
-        { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
-      </Radio.Group>
+      <Select style={{ width: "100%" }} onChange={handleSelectPricePrefer} defaultValue={typeSelectionDefault.value}>
+        { typeSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
+      </Select>
 
       <Spacer rem={2}/>
 
@@ -133,7 +133,7 @@ function IndividualConfirmation({ disableNearby }) {
       </Select>
 
       <Spacer />
-      <Button disabled style={{width: '100%'}}>{f('btn_editPreferences')}</Button>
+      {/* <Button disabled style={{width: '100%'}}>{f('btn_editPreferences')}</Button> */}
 
       {/* {type}<br/>
       {preferPrice}<br/>

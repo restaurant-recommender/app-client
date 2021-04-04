@@ -21,6 +21,7 @@ interface IRestaurantListArea {
   disabled?: boolean
   selectedCount?: number
   type: 'drag' | 'checkbox'
+  fixedBox?: boolean
 }
 
 // Test URL: http://localhost:3000/group/start/603dfacc3bf9035d7746a11b
@@ -102,10 +103,18 @@ const getSelectedFromAvailables = (availables: RestaurantAvailableItem[]) => (
 )
 
 export const RestaurantListArea = (prop: IRestaurantListArea) => {
+  const getBoxHeight = (): number => document.getElementById('pin-box').clientHeight
+
+  const [boxHeight, setBoxHeight] = useState<number>(0)
   const [items, setItems] = useState<RestaurantAvailableItem[]>(prop.availableItems.filter(a => !a.isSelected).sort((a, b) => a.order - b.order))
   const [selected, setSelected] = useState<RestaurantAvailableItem[]>(prop.availableItems.filter(a => a.isSelected).sort((a, b) => a.order - b.order))
 
   const f = useFormatter()
+
+  useEffect(() => {
+    setBoxHeight(getBoxHeight())
+    console.log(getBoxHeight())
+  }, [items, selected])
 
   useEffect(() => {
     const newAvailableItems = getAvailableItems(selected, items)
@@ -245,41 +254,47 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
   // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>
-        {prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} />
-        {prop.selectedCount && <Box marginLeft='auto' background="#00000020" borderRadius="8px" padding="0 1rem" fontSize="1.2rem" height="38px" lineHeight="38px">
-          {selected.length}/{prop.selectedCount}
-        </Box>}
-      </div>
-      <Droppable droppableId="selectedDropableId">
-        {(provided, snapshot) => (
-          <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
-            {selected.length == 0 && 
-              <div style={{textAlign: 'center', color: 'gray'}}>
-                {f('input_draggableSelected')}
-              </div>
-            }
-            {selected.map((item, index) => (itemComponent(item, index, true, (index + 1 === selected.length))))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+      <Box id="pin-box" zIndex={100} position={prop.fixedBox ? 'fixed' : 'relative'} width={prop.fixedBox ? 'calc(100% - 3rem)' : '100%'} boxShadow={ prop.fixedBox ? '0px 6px 40px 0px rgba(0,0,0,0.2)' : ''}>
+        <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>
+          {prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} />
+          {prop.selectedCount && <Box marginLeft='auto' background="#00000020" borderRadius="8px" padding="0 1rem" fontSize="1.2rem" height="38px" lineHeight="38px">
+            {selected.length}/{prop.selectedCount}
+          </Box>}
+        </div>
+        <Droppable droppableId="selectedDropableId">
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
+              {selected.length == 0 && 
+                <div style={{textAlign: 'center', color: 'gray'}}>
+                  {f('input_draggableSelected')}
+                </div>
+              }
+              {selected.map((item, index) => (itemComponent(item, index, true, (index + 1 === selected.length))))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </Box>
+      { prop.fixedBox && <Box height={boxHeight} transition="0.2s" />}
       <Spacer rem={2}/>
-      <Droppable droppableId="itemsDropableId">
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            style={getListStyle(snapshot.isDraggingOver, false)}>
-            {items.length == 0 && 
-              <div style={{textAlign: 'center', color: 'gray'}}>
-                {f('input_draggableNonSelected')}
-              </div>
-            }
-            {items.map((item, index) => (itemComponent(item, index, false, (index + 1 === items.length))))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+      <Box>
+        <Droppable droppableId="itemsDropableId">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver, false)}>
+              {items.length == 0 && 
+                <div style={{textAlign: 'center', color: 'gray'}}>
+                  {f('input_draggableNonSelected')}
+                </div>
+              }
+              {items.map((item, index) => (itemComponent(item, index, false, (index + 1 === items.length))))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </Box>
+      
     </DragDropContext>
   );
 }
