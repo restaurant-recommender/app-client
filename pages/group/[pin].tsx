@@ -186,10 +186,10 @@ function GroupConfirmation({ pin, disableNearby }) {
     setLoading(f('loading_startingRecommendation'))
     recommendationService.request(recommendation._id, 6).then((result) => {
       if (result.status) {
-        socket.emit('group-update', recommendation._id)
         const restaurants = result.data
         recommendationService.update(recommendation._id, { recommendation: { sugessted_restaurants: restaurants, is_started: true }}).then((_) => {
           router.push(`/group/start/${recommendation._id}`)
+          socket.emit('group-update', recommendation._id)
         })
       } else {
         setLoading('')

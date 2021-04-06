@@ -5,7 +5,7 @@ import { Box } from "../Box/Box";
 import { useEffect, useState } from "react";
 import { Collapse } from "react-collapse"
 import { Color, useFormatter } from "../../utils"
-import { faMapMarkedAlt, faTimes, faStar, faThumbsUp, faChevronDown, faChevronUp, faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { faMapMarkedAlt, faTimes, faStar, faThumbsUp, faChevronDown, faChevronUp, faBookmark, faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons'
 import { faFacebookSquare } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -149,7 +149,13 @@ export const RestaurantList = (prop: IRestaurantCard) => {
     <Box onClick={prop.expandable && handleToggleExpand} overflow="hidden" width='100%' background="#ffffff" borderRadius="8px" {...prop.style} boxShadow={shadow}>
       <Box maxHeight={isDetailed ? '92px' : '72px'} overflow="hidden" transition={transitionTime} display='flex' position="relative">
         <Box borderRadius={isDetailed ? '8px 8px 0 0' : '8px 0 0 8px'} transition={transitionTime} display="flex" overflow='hidden' flexShrink={0} height={isDetailed ? '96px' : '72px'} width={isDetailed ? '100%' : '72px'}>
-          <img src={prop.restaurant.cover_url ?? imageurl} style={{transition: transitionTime, position: 'relative', objectFit: 'cover', minHeight: isDetailed ? '96px' : '72px', minWidth: isDetailed ? '100%' : '72px'}} />
+          {prop.restaurant.cover_url ? 
+            <img src={prop.restaurant.cover_url} style={{transition: transitionTime, position: 'relative', objectFit: 'cover', minHeight: isDetailed ? '96px' : '72px', minWidth: isDetailed ? '100%' : '72px'}} />
+            :
+            <Box display="flex" background={Color.orange} width="100%" height="100%">
+              <FontAwesomeIcon icon={faUtensils} style={{ margin: 'auto', fontSize: '24px', color: '#fffffff0' }} />
+            </Box>
+          }
         </Box>
         {prop.rank && <Box borderRadius='8px 0 0 8px' display="flex" transition={transitionTime} height={isDetailed ? '96px' : '72px'} width={isDetailed ? '100%' : '72px'} background={isDetailed ? '#00000000' : '#00000070'} position="absolute">
           <Box transition={transitionTime} opacity={isDetailed ? 0 : 1} width="24px" height="24px" borderRadius="50%" margin="auto" background="#ffffff" textAlign="center" fontWeight="bold" lineHeight="24px">{prop.rank}</Box>

@@ -134,7 +134,7 @@ function GroupStart({ id }) {
   ) 
 
   return (
-    <Box>
+    <Box width="100%">
       <div className="container">
         <Loading message={loading} />
         <Box display="flex">
