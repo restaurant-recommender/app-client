@@ -152,7 +152,7 @@ export default function Home() {
         </Box>
       </Box>
 
-      <Box height={headerHeight} width="100%" background="transparent" position="fixed" display="flex" zIndex={20} fontSize="14px" color="white" fontWeight="bold" lineHeight={headerHeight} justifyContent="flex-end" padding="0 2rem">
+      <Box height={headerHeight} width="100%" background="transparent" position="fixed" display="flex" zIndex={-10} fontSize="14px" color="white" fontWeight="bold" lineHeight={headerHeight} justifyContent="flex-end" padding="0 2rem">
         <Box onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Box>
         <Box margin="0 1rem 0 1rem" color="#ffffff60">|</Box>
         <Box onClick={handleLogout}>{f('btn_logout')}</Box>
