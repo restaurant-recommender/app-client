@@ -87,6 +87,8 @@ const grid = 8
 // });
 
 const getListStyle = (isDraggingOver, hasTitle) => ({
+  maxHeight: '480px',
+  overflow: 'scroll',
   borderRadius: '14px',
   background: isDraggingOver ? '#ffe7ba' : '#e5e5e5',
   boxShadow: hasTitle ? '0 0 0 4px #fe8019' : 'none',
