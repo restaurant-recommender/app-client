@@ -10,7 +10,8 @@ import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons'
 import { faFacebookSquare } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spacer } from "../Spacer/Spacer";
-import { favoriteService } from "../../services";
+import { favoriteService, trackingService } from "../../services";
+import { ActivityEvent } from "../../utils/constant";
 
 // import "./RestaurantCard.scss"
 
@@ -45,11 +46,13 @@ export const RestaurantList = (prop: IRestaurantCard) => {
   const openGoogleMap = (e, latitude, longitude) => {
     e.stopPropagation()
     const url = `https://www.google.com/maps/search/${latitude},${longitude}`
+    trackingService.track(ActivityEvent.MAP_LINK_CLICK)
     window.open(url, '_blank')
   }
 
   const openFacebookLink = (e, link) => {
     e.stopPropagation()
+    trackingService.track(ActivityEvent.FACEBOOK_LINK_CLICK)
     window.open(link, '_blank')
   }
 
@@ -64,6 +67,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
       })
     }
     else if (!isSaved) {
+      trackingService.track(ActivityEvent.SAVE_FAVORITE_CLICK)
       favoriteService.add(prop.restaurant._id).then((response) => {
         if (response.status) {
           message.success(f('favorite_saveSuccess'))
@@ -88,7 +92,10 @@ export const RestaurantList = (prop: IRestaurantCard) => {
   //   }
   // }, [])
 
-  const handleToggleExpand = () => { setIsDetailed(!isDetailed) }
+  const handleToggleExpand = () => { 
+    setIsDetailed(!isDetailed)
+    trackingService.track(ActivityEvent.EXPAND_RESTAURANT_DETAIL)
+  }
 
   const detail = (
     <Box transition={transitionTime} position="relative" padding='1rem' opacity={isDetailed ? 1 : 0}>

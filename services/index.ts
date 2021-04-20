@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 import { Response, AuthenticationToken, CommonCetegory, Preference, Member, Recommendation, Restaurant, History, Category } from "../types"
-import { getToken } from "../utils/auth"
+import { getToken, hasToken } from "../utils/auth"
 
 export const urls = {
   app_server: process.env.NEXT_PUBLIC_APP_SERVER_URL as string,
@@ -89,4 +89,16 @@ export const favoriteService = {
   add: async (restaurantId: string): Promise<Response<void>> => axios.get(appServerUrl(`users/${getId()}/favorites/add/${restaurantId}`)).then((response) => response.data),
   remove: async (restaurantId: string): Promise<Response<void>> => axios.get(appServerUrl(`users/${getId()}/favorites/remove/${restaurantId}`)).then((response) => response.data),
   check: async (restaurantId: string): Promise<Response<boolean>> => axios.get(appServerUrl(`users/${getId()}/favorites/check/${restaurantId}`)).then((response) => response.data),
+}
+
+export const trackingService = {
+  track: async (eventId: number, context: string = null): Promise<Response<void>> => {
+    const body = {
+      user_id: hasToken() && getToken().id,
+      username: hasToken() && getToken().username,
+      event_id: eventId,
+      context,
+    }
+    return axios.post(appServerUrl('tracks/'), body).then((response) => response.data)
+  },
 }

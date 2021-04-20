@@ -4,8 +4,9 @@ import { Button, Input } from "antd";
 import { DraggableArea, Spacer, FixedBottomButton, Loading } from "../components";
 import { getToken, useAuth } from "../utils/auth";
 import { AvailableItem, CommonCetegory, Preference } from "../types";
-import { restaurantService, userService } from "../services";
+import { restaurantService, trackingService, userService } from "../services";
 import { useFormatter } from "../utils";
+import { ActivityEvent } from "../utils/constant";
 
 const generateAvailableItem = (cetegories: CommonCetegory[], userPreferences: Preference[]): AvailableItem[] => cetegories.map((category) => {
   const userPreference = userPreferences && userPreferences.find((preference) => preference._id === category._id)
@@ -34,6 +35,7 @@ export default function Register() {
 
   useEffect(() => {
     auth()
+    trackingService.track(ActivityEvent.PREFERENCE_PAGE)
     restaurantService.getCommonCetegories(router.locale).then((response) => {
       const commonCetegories = response.data.data
       userService.getPreferences().then((response) => {

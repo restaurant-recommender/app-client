@@ -4,9 +4,10 @@ import { AuthenticationToken, Recommendation, Restaurant } from "../../types"
 
 import { Loading, RestaurantCard, Spacer, BottomDrawer, Box } from "../../components"
 import { useEffect, useState } from "react"
-import { recommendationService, UpdateRatingBody } from "../../services"
+import { recommendationService, trackingService, UpdateRatingBody } from "../../services"
 import { useAuth } from "../../utils/auth"
 import { useFormatter } from "../../utils"
+import { ActivityEvent } from "../../utils/constant"
 
 function IndividualFinish({ id }) {
   const router = useRouter()
@@ -38,6 +39,11 @@ function IndividualFinish({ id }) {
           console.log(response)
           if (response.status) {
             setRecommendation(response.data)
+            if(response.data.final_restaurants.length > 1) {
+              trackingService.track(ActivityEvent.GROUP_SUCCESS_PAGE)
+            } else {
+              trackingService.track(ActivityEvent.INDIVIDUAL_SUCCESS_PAGE)
+            }
           }
         })
       } else {
@@ -65,6 +71,11 @@ function IndividualFinish({ id }) {
     }
   }
 
+  const handleShowSummary = () => {
+    trackingService.track(ActivityEvent.SUMMARY_CLICK)
+    setSummaryDrawer(true)
+  }
+
 
   // const rateDialog = (
   //   <div style={{background: '#ffffff3f', textAlign: 'center', padding: '1rem', marginTop: '1rem', marginBottom: '1rem', borderRadius: '8px'}}>
@@ -82,7 +93,7 @@ function IndividualFinish({ id }) {
         { restaurant && <RestaurantCard collapsable style={{margin: 'auto'}} restaurant={restaurant} />}
       </div>
       <Spacer />
-      {recommendation && recommendation.final_restaurants.length > 1 && <Button size="large" onClick={() => { setSummaryDrawer(true) }}>{f('finish_btn_summary')}</Button>}
+      {recommendation && recommendation.final_restaurants.length > 1 && <Button size="large" onClick={handleShowSummary}>{f('finish_btn_summary')}</Button>}
       <Spacer />
       <Button size="large" onClick={handleHome}>{f('btn_home')}</Button>
       <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {setRatingDrawer(false)}}>

@@ -8,6 +8,7 @@ const TOKEN = 'token'
 const USERNAME = 'username'
 const ID = 'id'
 
+export const hasToken = (): boolean => Cookies.get(USERNAME) && Cookies.get(ID)
 
 export const getToken = (): AuthenticationToken => {
   const token = Cookies.get(TOKEN)

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 import { Button, Input } from "antd";
 import { Loading, Spacer } from "../components";
 import { useFormatter } from "../utils";
-import { authenticationService, RegisterBody } from "../services";
+import { authenticationService, RegisterBody, trackingService } from "../services";
 import { setToken } from "../utils/auth";
 import { AuthenticationToken } from "../types";
+import { ActivityEvent } from "../utils/constant";
 
 export default function Register() {
   const router = useRouter()
@@ -17,6 +18,10 @@ export default function Register() {
 
   const handleInputUsername = (e) => { e.preventDefault(); setUsername(e.target.value) }
   const handleInputPassword = (e) => { e.preventDefault(); setPassword(e.target.value) }
+
+  useEffect(() => {
+    trackingService.track(ActivityEvent.REGISTER_PAGE)
+  })
 
   const handleRegister = () => {
     const body: RegisterBody = { username, password }
@@ -32,6 +37,7 @@ export default function Register() {
         }
         setToken(token)
         setLoading('')
+        trackingService.track(ActivityEvent.REGISTER_COMPLETE)
         router.push('/preference')
       }
     }).catch((error) => {

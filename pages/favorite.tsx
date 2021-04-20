@@ -7,7 +7,8 @@ import { useFormatter } from "../utils";
 import { useAuth } from "../utils/auth";
 import { useEffect, useState } from "react";
 import { Restaurant } from "../types";
-import { favoriteService } from "../services";
+import { favoriteService, trackingService } from "../services";
+import { ActivityEvent } from "../utils/constant";
 
 export default function FavoritePage () {
 
@@ -20,6 +21,7 @@ export default function FavoritePage () {
 
   useEffect(() => {
     setLoading(f('loading'))
+    trackingService.track(ActivityEvent.FAVORITE_PAGE)
     favoriteService.get().then(response => {
       setRestaurants(response.data)
       setLoading('')

@@ -8,6 +8,8 @@ import { removeToken, useAuth } from "../utils/auth";
 import { useEffect, useState } from "react";
 import Modal from "antd/lib/modal/Modal";
 import { Button, Input } from "antd";
+import { trackingService } from "../services";
+import { ActivityEvent } from "../utils/constant";
 
 const headerHeight = "56px"
 
@@ -28,11 +30,13 @@ export default function Home() {
     if (token) {
       setUsername(token.username)
       setLoading('')
+      trackingService.track(ActivityEvent.HOME_PAGE)
     }
   }, [])
 
 
   const showJoinModal = () => {
+    trackingService.track(ActivityEvent.JOIN_GROUP_CLICK)
     setIsJoinModal(true);
   };
 
@@ -46,10 +50,12 @@ export default function Home() {
   };
 
   const handleIndividualReccommendation = () => {
+    trackingService.track(ActivityEvent.INDIVIDUAL_CLICK)
     router.push(`/individual/confirm`)
   }
 
   const handleCreateGroup = () => {
+    trackingService.track(ActivityEvent.CREATE_GROUP_CLICK)
     router.push(`/group/new`)
   }
 
@@ -71,7 +77,7 @@ export default function Home() {
   }
   
   const handleLogout= () => {
-    // TODO: remove user from session
+    trackingService.track(ActivityEvent.LOGOUT_CLICK)
     setLoading(f('loading_loggingOut'))
     removeToken()
     router.push(`/login`).then(_ => {
@@ -80,8 +86,7 @@ export default function Home() {
   }
 
   const handleChangeLanguge= () => {
-    // TODO: 
-    const text = process.env.APP_SERVER_URL
+    trackingService.track(ActivityEvent.CHANGE_LANGUAGE_CLICK)
     router.push('/home', '/home', { locale: router.locale === 'th' ? 'en' : 'th' })
   }
 

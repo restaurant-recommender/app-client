@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router"
 import { Button, Input } from "antd";
 import { Spacer, Loading } from "../components";
-import { authenticationService } from "../services";
+import { authenticationService, trackingService } from "../services";
 import { useFormatter } from "../utils";
 import { setToken } from "../utils/auth";
+import { ActivityEvent } from "../utils/constant";
 
 export default function Login() {
   const router = useRouter()
@@ -16,6 +17,10 @@ export default function Login() {
 
   const handleInputUsername = (e) => { e.preventDefault(); setUsername(e.target.value) }
   const handleInputPassword = (e) => { e.preventDefault(); setPassword(e.target.value) }
+
+  useEffect(() => {
+    trackingService.track(ActivityEvent.LOGIN_PAGE)
+  })
 
   const handleLogin = () => {
     if (!username || !password) {

@@ -7,9 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { RestaurantListArea, Spacer, FixedBottomButton, Loading, Box } from "../../../components"
 import { Restaurant, Recommendation, AuthenticationToken, RestaurantAvailableItem } from "../../../types"
-import { recommendationService, urls } from "../../../services"
+import { recommendationService, trackingService, urls } from "../../../services"
 import { useAuth } from "../../../utils/auth"
 import { Color, useFormatter } from "../../../utils"
+import { ActivityEvent } from "../../../utils/constant"
 
 const getItemsFromRestaurants = (restaurants: Restaurant[]): RestaurantAvailableItem[] => restaurants.map((restaurant, index) => ({
   restaurant: restaurant,
@@ -42,6 +43,7 @@ function GroupStart({ id }) {
   })
 
   const finish = (recommendationId: string) => {
+    trackingService.track(ActivityEvent.GROUP_END, id)
     setLoading(f('loading_finishingRecommendation'))
     router.push(`/finish/${recommendationId}`).then(_ => {
       setLoading('')
@@ -73,6 +75,7 @@ function GroupStart({ id }) {
 
   useEffect(() => {
     const authToken = auth()
+    trackingService.track(ActivityEvent.GROUP_RECOMMENDATION_PAGE)
     setToken(authToken)
     recommendationService.getById(id).then((result) => {
       if (result.status) {
@@ -80,6 +83,7 @@ function GroupStart({ id }) {
         setRecommendation(fetchedRecommendation)
         setTotalSelected(fetchedRecommendation.sugessted_restaurants.length)
         setItems(getItemsFromRestaurants(fetchedRecommendation.sugessted_restaurants))
+        trackingService.track(ActivityEvent.GROUP_START, id)
         const memberRank = fetchedRecommendation.members.find((e) => e._id.toString() === authToken.id.toString()).rank
         if (memberRank && memberRank.length > 0) {
           submited()

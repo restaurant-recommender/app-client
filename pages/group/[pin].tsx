@@ -6,11 +6,11 @@ import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 import io from 'socket.io-client'
-import { groupService, InitializeRecommendationBody, recommendationService, urls, userService } from '../../services'
+import { groupService, InitializeRecommendationBody, recommendationService, trackingService, urls, userService } from '../../services'
 import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading } from "../../components"
 import { useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference, Recommendation } from "../../types"
-import { defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
+import { ActivityEvent, defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
 import { useFormatter } from "../../utils"
 
 const { Option } = Select;
@@ -157,6 +157,7 @@ function GroupConfirmation({ pin, disableNearby }) {
   }
 
   useEffect(() => {
+    trackingService.track(ActivityEvent.GROUP_CONFIRM_PAGE)
     if (pin === 'new') {
       createGroup()
     } else {
@@ -182,6 +183,7 @@ function GroupConfirmation({ pin, disableNearby }) {
   const handleShare = () => {
     setIsCopied(false)
     setIsShareSheetVisible(true)
+    trackingService.track(ActivityEvent.SHARE_CLICK)
   }
 
   const handleStart = () => {
@@ -207,6 +209,7 @@ function GroupConfirmation({ pin, disableNearby }) {
 
   const handleChangeLocation = (newLocation) => {
     setLocation(newLocation)
+    trackingService.track(ActivityEvent.CHANGE_LOCATION)
     recommendationService.update(recommendation._id, { recommendation: { 'location.coordinates': [newLocation[1], newLocation[0]] }}).then((_) => {
       console.log('updated location')
       socket.emit('group-update', recommendation._id)
@@ -219,6 +222,7 @@ function GroupConfirmation({ pin, disableNearby }) {
 
   const handleSelectType = (value) => {
     setType(value)
+    trackingService.track(ActivityEvent.CHANGE_SHOP_TYPE)
     recommendationService.update(recommendation._id, { recommendation: { type: value }}).then((_) => {
       console.log('updated type')
       socket.emit('group-update', recommendation._id)
@@ -227,10 +231,16 @@ function GroupConfirmation({ pin, disableNearby }) {
 
   const handleSelectPricePrefer = (value) => {
     setPreferPrice(value)
+    trackingService.track(ActivityEvent.CHANGE_PREFER_PRICE)
     recommendationService.updateMemberPreferPrice(recommendation._id, token.id, { prefer_price: value }).then((_) => {
       socket.emit('group-update', recommendation._id)
       updateGroup()
     })
+  }
+
+  const handleRefresh = () => {
+    trackingService.track(ActivityEvent.REFRESH_CLICK)
+    updateGroup()
   }
 
   const Map = dynamic(
@@ -313,7 +323,7 @@ function GroupConfirmation({ pin, disableNearby }) {
       <div>
         <Box display="flex">
           <h2 style={{fontWeight: 'bolder'}}>{f('confirm_title_members')}</h2>
-          <Button onClick={updateGroup} style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
+          <Button onClick={handleRefresh} style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
         </Box>
         {members && membersList}
       </div>

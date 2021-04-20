@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 
 import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading } from "../../components"
-import { typeSelectionDefault, typeSelection, preferPriceSelection, defaultLocation } from "../../utils/constant"
+import { typeSelectionDefault, typeSelection, preferPriceSelection, defaultLocation, ActivityEvent } from "../../utils/constant"
 import { useFormatter } from "../../utils"
-import { InitializeRecommendationBody, recommendationService, userService } from "../../services"
+import { InitializeRecommendationBody, recommendationService, trackingService, userService } from "../../services"
 import { getToken, setToken, useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference } from "../../types"
 
@@ -32,6 +32,7 @@ function IndividualConfirmation({ disableNearby }) {
   useEffect(() => {
     setLoading(f('loading_gettingLocation'))
     const authToken = auth()
+    trackingService.track(ActivityEvent.INDIVIDUAL_CONFIRM_PAGE)
     setToken(authToken)
     console.log(authToken)
     if (!("geolocation" in navigator) || disableNearby) {
@@ -85,15 +86,18 @@ function IndividualConfirmation({ disableNearby }) {
   }
 
   const handleSelectType = (value) => {
+    trackingService.track(ActivityEvent.CHANGE_SHOP_TYPE)
     setType(value)
   }
 
   const handleSelectPricePrefer = (value) => {
+    trackingService.track(ActivityEvent.CHANGE_PREFER_PRICE)
     setPreferPrice(value)
   }
 
   const handleChangeLocation = (newLocation) => {
     setLocation(newLocation)
+    trackingService.track(ActivityEvent.CHANGE_LOCATION)
   }
 
   const Map = dynamic(

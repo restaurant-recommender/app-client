@@ -9,8 +9,9 @@ import { Restaurant, History, RestaurantAvailableItem } from "../../../types"
 import { Color, useFormatter } from "../../../utils"
 import { useRouter } from "next/router"
 import { ModalFuncProps } from "antd/lib/modal"
-import { recommendationService, UpdateHistoryBody } from "../../../services"
+import { recommendationService, trackingService, UpdateHistoryBody } from "../../../services"
 import next from "next"
+import { ActivityEvent } from "../../../utils/constant"
 
 const fadeWhite = 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)'
 
@@ -68,6 +69,7 @@ function IndividualStart({ id }) {
       if (response.status) {
         setRestaurantFromRecommender(response.data)
         setLoading('')
+        trackingService.track(ActivityEvent.INDIVIDUAL_START, id)
       } else {
         console.log(response)
         setLoading('')
@@ -78,6 +80,7 @@ function IndividualStart({ id }) {
 
   useEffect(() => {
     // console.log(id)
+    trackingService.track(ActivityEvent.INDIVIDUAL_RECCOMMENDATION_PAGE)
     requestRecommendation()
   }, [])
   
@@ -138,6 +141,7 @@ function IndividualStart({ id }) {
   }, [])
 
   const handleLoadMore = () => {
+    trackingService.track(ActivityEvent.INDIVIDUAL_LOAD_MORE_CLICK, id)
     setLoading(f('loading_gettingRestaurants'))
     const histories: History[] = items.map(item => ({
       restaurant: item.restaurant._id,
@@ -170,6 +174,7 @@ function IndividualStart({ id }) {
   }
 
   const handleNext = () => {
+    trackingService.track(ActivityEvent.INDIVIDUAL_END, id)
     setLoading(f('loading_finishingRecommendation'))
     console.log(items)
     const histories: History[] = items.map(item => ({
