@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import { Button, Dropdown, Menu, Radio, Select } from "antd"
@@ -46,6 +46,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     recommendationService.getById(recommendation._id).then((result) => {
       const updatedRecommendation = result.data
       setRecommendation(updatedRecommendation)
+      setLocation([updatedRecommendation.location.coordinates[1], updatedRecommendation.location.coordinates[0]])
       console.log('updated')
       console.log(updatedRecommendation)
       if (updatedRecommendation.is_started) {
@@ -143,6 +144,7 @@ function GroupConfirmation({ pin, disableNearby }) {
           setMembers(newRecommendation.members)
           const newLocation = [newRecommendation.location.coordinates[1], newRecommendation.location.coordinates[0]] as [number, number]
           setLocation(newLocation)
+          setType(newRecommendation.type)
           setLoading('')
           return newRecommendation
         } else {
@@ -203,14 +205,23 @@ function GroupConfirmation({ pin, disableNearby }) {
     navigator.clipboard.writeText(getShareLink())
   }
 
+  const handleChangeLocation = (newLocation) => {
+    setLocation(newLocation)
+    recommendationService.update(recommendation._id, { recommendation: { 'location.coordinates': [newLocation[1], newLocation[0]] }}).then((_) => {
+      console.log('updated location')
+      socket.emit('group-update', recommendation._id)
+    })
+  }
+
   const getShareLink = () => `${process.env.NEXT_PUBLIC_APP_CLIENT_URL}${router.asPath}`
 
   const getMember = (): Member => recommendation && recommendation.members.find((member) => member._id.toString() === token.id.toString())
 
-  const handleSelectType = (e) => {
-    setType(e.target.value)
-    recommendationService.update(recommendation._id, { recommendation: { type: e.target.value }}).then((_) => {
+  const handleSelectType = (value) => {
+    setType(value)
+    recommendationService.update(recommendation._id, { recommendation: { type: value }}).then((_) => {
       console.log('updated type')
+      socket.emit('group-update', recommendation._id)
     })
   }
 
@@ -280,9 +291,11 @@ function GroupConfirmation({ pin, disableNearby }) {
       </Box>
       <Spacer />
 
-      <Map location={location}/>
+      <Map location={location} draggable={recommendation && getMember().is_head} onChangeLocation={handleChangeLocation}/>
       {/* {process.env.NODE_ENV === 'production' && <Map location={location}/>} */}
       <Spacer rem={2}/>
+      {/* {location}
+      {type} */}
 
       {recommendation && getMember().is_head && <>
         <h3>
@@ -291,7 +304,7 @@ function GroupConfirmation({ pin, disableNearby }) {
         {/* <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
           { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
         </Radio.Group> */}
-        <Select style={{ width: "100%" }} onChange={handleSelectPricePrefer} defaultValue={typeSelectionDefault.value}>
+        <Select style={{ width: "100%" }} onChange={handleSelectType} defaultValue={type}>
           { typeSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
         </Select>
         <Spacer />

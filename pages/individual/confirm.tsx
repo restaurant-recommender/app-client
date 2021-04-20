@@ -92,6 +92,10 @@ function IndividualConfirmation({ disableNearby }) {
     setPreferPrice(value)
   }
 
+  const handleChangeLocation = (newLocation) => {
+    setLocation(newLocation)
+  }
+
   const Map = dynamic(
     () => import("../../components/Map/Map"), { 
       loading: () => (
@@ -113,7 +117,7 @@ function IndividualConfirmation({ disableNearby }) {
       </Box>
       <Spacer />
     
-      <Map location={location}/>
+      <Map location={location} draggable onChangeLocation={handleChangeLocation}/>
       <Spacer rem={2}/>
 
       <h3>
