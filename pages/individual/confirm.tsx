@@ -84,8 +84,8 @@ function IndividualConfirmation({ disableNearby }) {
     })
   }
 
-  const handleSelectType = (e) => {
-    setType(e.target.value)
+  const handleSelectType = (value) => {
+    setType(value)
   }
 
   const handleSelectPricePrefer = (value) => {
@@ -123,7 +123,7 @@ function IndividualConfirmation({ disableNearby }) {
       <h3>
         {f('confirm_cravingFor')}
       </h3>
-      <Select style={{ width: "100%" }} onChange={handleSelectPricePrefer} defaultValue={typeSelectionDefault.value}>
+      <Select style={{ width: "100%" }} onChange={handleSelectType} defaultValue={typeSelectionDefault.value}>
         { typeSelection.map((item) => <Option value={item.value}>{f(item.name)}</Option>) } 
       </Select>
 
