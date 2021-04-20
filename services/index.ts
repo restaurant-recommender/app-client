@@ -54,6 +54,7 @@ const appServerUrl = (path: string) => `${urls.app_server}/api/${path}`
 export const authenticationService = {
   login: async (body: LoginBody): Promise<AxiosResponse<Response<AuthenticationToken>>> => axios.post(appServerUrl('auth/login'), body),
   register: async (body: RegisterBody): Promise<AxiosResponse<Response<AuthenticationToken>>> => axios.post(appServerUrl('auth/register'), body),
+  hasUsername: async(username: string): Promise<AxiosResponse<boolean>> => axios.get(appServerUrl(`users/has/${username}`))
 }
 
 export const restaurantService = {

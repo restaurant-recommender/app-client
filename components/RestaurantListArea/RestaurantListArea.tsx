@@ -255,7 +255,7 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
   // But in this example everything is just done in one place for simplicity
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Box id="pin-box" zIndex={100} position={prop.fixedBox ? 'fixed' : 'relative'} width={prop.fixedBox ? 'calc(100% - 3rem)' : '100%'} boxShadow={ prop.fixedBox ? '0px 6px 40px 0px rgba(0,0,0,0.2)' : ''}>
+      <Box id="pin-box" zIndex={100} position={prop.fixedBox ? 'fixed' : 'relative'} maxWidth={prop.fixedBox && 'calc(800px - 3rem)'} width={prop.fixedBox ? 'calc(100% - 3rem)' : '100%'} boxShadow={ prop.fixedBox ? '0px 6px 40px 0px rgba(0,0,0,0.2)' : ''}>
         <div className="list-title" style={{boxShadow: '0 0 0 4px #fe8019'}}>
           {prop.selectedTitle}&nbsp;&nbsp;<FontAwesomeIcon icon={faHeart} />
           {prop.selectedCount && <Box marginLeft='auto' background="#00000020" borderRadius="8px" padding="0 1rem" fontSize="1.2rem" height="38px" lineHeight="38px">

@@ -24,26 +24,37 @@ export default function Register() {
   })
 
   const handleRegister = () => {
-    const body: RegisterBody = { username, password }
-    setLoading(f('loading_creatingNewAccount'))
-    authenticationService.register(body).then((response) => {
-      const result = response.data
-      if (!result.status) throw(result.code)
-      else {
-        const token: AuthenticationToken = { 
-          token: result.data.token, 
-          username: result.data.username,
-          id: result.data.id,
+    if (!username || !password) {
+      alert('Please fill your new username and password')
+    } else {
+      authenticationService.hasUsername(username).then((response) => {
+        if (response.data) {
+          // username existed
+          alert('This username is already taken')
+        } else {
+          const body: RegisterBody = { username, password }
+          setLoading(f('loading_creatingNewAccount'))
+          authenticationService.register(body).then((response) => {
+            const result = response.data
+            if (!result.status) throw(result.code)
+            else {
+              const token: AuthenticationToken = { 
+                token: result.data.token, 
+                username: result.data.username,
+                id: result.data.id,
+              }
+              setToken(token)
+              setLoading('')
+              trackingService.track(ActivityEvent.REGISTER_COMPLETE)
+              router.push('/preference')
+            }
+          }).catch((error) => {
+            alert(f(error))
+            setLoading('')
+          })
         }
-        setToken(token)
-        setLoading('')
-        trackingService.track(ActivityEvent.REGISTER_COMPLETE)
-        router.push('/preference')
-      }
-    }).catch((error) => {
-      alert(f(error))
-      setLoading('')
-    })
+      })
+    }
   }
 
   const handleLogin = () => {
