@@ -74,6 +74,7 @@ function IndividualStart({ id }) {
         console.log(response)
         setLoading('')
         alert(response.message)
+        router.push('/individual/confirm')
       }
     })
   }

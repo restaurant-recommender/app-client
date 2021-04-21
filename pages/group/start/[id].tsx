@@ -93,7 +93,8 @@ function GroupStart({ id }) {
         }
       } else {
         console.log(result)
-        alert('getting recommendation error!')
+        alert(result.message)
+        router.push('/home')
       }
     })
   }, [])
