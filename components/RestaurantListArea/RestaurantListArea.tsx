@@ -86,9 +86,9 @@ const grid = 8
 //   ...draggableStyle
 // });
 
-const getListStyle = (isDraggingOver, hasTitle) => ({
-  maxHeight: '480px',
-  overflow: 'scroll',
+const getListStyle = (isDraggingOver, hasTitle, isFixed) => ({
+  maxHeight: isFixed && '480px',
+  overflow: isFixed && 'scroll',
   borderRadius: '14px',
   background: isDraggingOver ? '#ffe7ba' : '#e5e5e5',
   boxShadow: hasTitle ? '0 0 0 4px #fe8019' : 'none',
@@ -266,7 +266,7 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
         </div>
         <Droppable droppableId="selectedDropableId">
           {(provided, snapshot) => (
-            <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle)}>
+            <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver, prop.selectedTitle, prop.fixedBox)}>
               {selected.length == 0 && 
                 <div style={{textAlign: 'center', color: 'gray'}}>
                   {f(
@@ -289,7 +289,7 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver, false)}>
+              style={getListStyle(snapshot.isDraggingOver, false, false)}>
               {items.length == 0 && 
                 <div style={{textAlign: 'center', color: 'gray'}}>
                   {f(
