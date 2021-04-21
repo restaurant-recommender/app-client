@@ -102,4 +102,15 @@ export const trackingService = {
     }
     return axios.post(appServerUrl('tracks/'), body).then((response) => response.data)
   },
+  isTracked: async(eventId: number): Promise<boolean> => {
+    if (!hasToken()) return false;
+    const body = {
+      user_id: getToken().id,
+      event_id: eventId,
+    }
+    return axios.post(appServerUrl('tracks/query'), body).then((response => {
+      const activities = response.data
+      return activities.length > 0
+    }))
+  }
 }

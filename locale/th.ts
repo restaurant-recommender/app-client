@@ -110,4 +110,8 @@ export const th = {
   select_bb: "100฿ - 250฿",
   select_bbb: "250฿ - 500฿",
   select_bbbb: "แพงกว่า 500฿",
+
+  survey_useAgain: "ขอบคุณที่เข้ามาใช้งานนะคะ/ครับ มื้อหน้าของคุณจะกลับมาให้เราแนะนำอีกครั้งหรือไม่",
+  survey_useAgain_yes: "แน่นอน!",
+  survey_useAgain_no: "คงไม่แล้วล่ะ",
 };

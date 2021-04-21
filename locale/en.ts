@@ -114,4 +114,8 @@ export const en = {
   ERROR_AUTH_1: "Username or password is incorrect.",
   ERROR_AUTH_2: "Username or password is incorrect.",
   ERROR_AUTH_3: "Username is already existed.",
+
+  survey_useAgain: "Thank you for using KinRaiDee. Do you think you would like to use our application again for your future meal?",
+  survey_useAgain_yes: "Yes! For sure.",
+  survey_useAgain_no: "Nah",
 };

@@ -217,7 +217,7 @@ function IndividualStart({ id }) {
       </Box>
       <Spacer height={100} />
       <FixedBottomButton disabled={!isValid()} title={isValid() ? f('btn_finish') : f('individual_btn_requireSelect')} onClick={handleNext}/>
-      {contextHolder}    
+      {contextHolder}
     </div>
   )
 }
