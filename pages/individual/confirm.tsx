@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
-import { Button, Dropdown, Menu, Radio, Select } from "antd"
+import { Button, Dropdown, Menu, Radio, Select, message } from "antd"
 import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
@@ -42,6 +42,13 @@ function IndividualConfirmation({ disableNearby }) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation([position.coords.latitude, position.coords.longitude, ])
         setLoading('')
+      }, (error) => {
+        trackingService.track(ActivityEvent.ERROR, error.message)
+        setLocation(defaultLocation)
+        message.error(f('error_gettingCurrentLocation'))
+        setLoading('')
+      }, {
+        timeout: 10000,
       })
     }
   }, [])

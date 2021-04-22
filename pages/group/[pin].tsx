@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
-import { Button, Dropdown, Menu, Radio, Select } from "antd"
+import { Button, Dropdown, Menu, Radio, Select, message } from "antd"
 import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
@@ -112,6 +112,13 @@ function GroupConfirmation({ pin, disableNearby }) {
         setLocation([position.coords.latitude, position.coords.longitude])
         const fetchedLoaction = [position.coords.latitude, position.coords.longitude] as [number, number]
         initGroup(fetchedLoaction)
+      }, (error) => {
+        trackingService.track(ActivityEvent.ERROR, error.message)
+        setLocation(defaultLocation)
+        message.error(f('error_gettingCurrentLocation'))
+        initGroup(defaultLocation)
+      }, {
+        timeout: 10000,
       })
     }
   }

@@ -41,6 +41,9 @@ export const ActivityEvent = {
 
     // MISC
     WANT_TO_USE_AGAIN: 1001,
+
+    // System
+    ERROR: 2001,
 }
 
 export const typeSelection: SelectItem[] = [

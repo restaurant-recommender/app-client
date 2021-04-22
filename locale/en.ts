@@ -111,6 +111,8 @@ export const en = {
   select_bbb: "250฿ - 500฿",
   select_bbbb: "More than 500฿",
 
+  error_gettingCurrentLocation: "Cannot get your current location.",
+
   ERROR_AUTH_1: "Username or password is incorrect.",
   ERROR_AUTH_2: "Username or password is incorrect.",
   ERROR_AUTH_3: "Username is already existed.",
