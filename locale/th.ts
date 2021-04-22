@@ -67,7 +67,7 @@ export const th = {
   group_title: "ร้านแนะนำ",
   group_desc: "กรุณาเรียงลำดับความสนใจของคุณต่อร้านอาหารจากมากไปถึงน้อยดังต่อไปนี้ โดยลากร้านอาหารทั้ง 6 ร้านเข้ามาอยู่ในกล่อง Love และจัดลำดับ",
   group_btn_requireOrdering: "กรุณาเรียงลำดับทุกร้าน",
-  group_btn_waitingForOthers: "กรุณารอสมาชิดคนอื่น",
+  group_btn_waitingForOthers: "กรุณารอสมาชิกคนอื่น",
 
   finish_title: "ขอให้เป็นมื้อที่อร่อย!",
   finish_title_rate: "กรุณาให้คะแนนการแนะนำครั้งนี้",
