@@ -25,6 +25,8 @@ export const th = {
 
   title_love: "ชอบ",
 
+  drawer_mapSearchTitle: "ค้นหาสถานที่...",
+
   input_draggableSelected: "ลากสิ่งที่ต้องการจากด้านล่างมาที่กล่องนี้.",
   input_draggableNonSelected: "ลากสิ่งที่ต้องการจะลบจากด้านบนมาที่กล่องนี้",
   input_checkableSelected: "กดที่เครื่องหมายเช็คถูกเพื่อเลือกเข้ากล่องนี้",

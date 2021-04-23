@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer, Popup } from 'react-leaflet'
 import { Box } from '../Box/Box';
 
@@ -9,6 +9,7 @@ interface IMap {
   location: [number, number]
   draggable?: boolean
   onChangeLocation?: (newLocation: any) => void
+  children?: ReactNode
 }
 
 const Map = (prop: IMap) => {
@@ -90,20 +91,20 @@ const Map = (prop: IMap) => {
   
 
   return (
-    <>
+    <Box position="relative">
       {prop.location && <MapContainer id="mapid" center={currentPosition} zoom={15} scrollWheelZoom={false} >
         <TileLayer attribution='' url="https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoibm9ydGgxNjAyIiwiYSI6ImNram1lY2lxeDByNmUyc25zNWIzbGFucTAifQ.ihP0UD9jJk1XoR2qYOktQg"/>
         <DraggableMarker />
-        {prop.draggable && isPositionChanged && <Box position="absolute" bottom={20} right={20} zIndex={1000}>
-          <FloatingButton onClick={handleReset} margin="1rem" label="Reset" color="red"/>
-          <FloatingButton onClick={handleUpdateLocation} label="Update Location" color="black"/>
-        </Box>}
-        {prop.draggable && !isPositionChanged && <Box position="absolute" bottom={20} right={20} zIndex={1000} padding="0.2rem 0.4rem" borderRadius="8px" background="#ffffffe0">
-          Drag the marker to change the location.
-        </Box>}
       </MapContainer>}
-
-    </>
+      {prop.draggable && isPositionChanged && <Box position="absolute" bottom={20} right={0} zIndex={1000}>
+        <FloatingButton onClick={handleReset} margin="1rem" label="Reset" color="red"/>
+        <FloatingButton onClick={handleUpdateLocation} label="Update Location" color="black"/>
+      </Box>}
+      {prop.draggable && !isPositionChanged && <Box position="absolute" fontSize={12} bottom={20} right={0} zIndex={1000} padding="0.2rem 0.4rem" borderRadius="8px" background="#ffffffe0">
+        Drag the marker to change the location.
+      </Box>}
+      <Box position="absolute" top={20} right={0} zIndex={1000}>{prop.children}</Box>
+    </Box>
   );
 };
 

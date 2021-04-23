@@ -6,7 +6,7 @@ import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft } from '@fortaweso
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 
-import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading } from "../../components"
+import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading, MapSearch } from "../../components"
 import { typeSelectionDefault, typeSelection, preferPriceSelection, defaultLocation, ActivityEvent } from "../../utils/constant"
 import { useFormatter } from "../../utils"
 import { InitializeRecommendationBody, recommendationService, trackingService, userService } from "../../services"
@@ -28,6 +28,8 @@ function IndividualConfirmation({ disableNearby }) {
   const [preferPrice, setPreferPrice] = useState<number>()
   const [loading, setLoading] = useState<string>('')
   const [token, getToken] = useState<AuthenticationToken>()
+  const [mapSearchVisible, setMapSearchVisible] = useState(false)
+  const [mapSearchResponse, setMapSearchResponse] = useState()
 
   useEffect(() => {
     setLoading(f('loading_gettingLocation'))
@@ -128,7 +130,9 @@ function IndividualConfirmation({ disableNearby }) {
       </Box>
       <Spacer />
     
-      <Map location={location} draggable onChangeLocation={handleChangeLocation}/>
+      <Map location={location} draggable onChangeLocation={handleChangeLocation}>
+        <MapSearch onChangeLocation={handleChangeLocation} searchResponse={mapSearchResponse} setSearchResponse={setMapSearchResponse} visible={mapSearchVisible} setVisible={setMapSearchVisible}/>
+      </Map>
       <Spacer rem={2}/>
 
       <h3>

@@ -25,6 +25,8 @@ export const en = {
 
   title_love: "Love",
 
+  drawer_mapSearchTitle: "Search place...",
+
   input_draggableSelected: "Drag item from bottom to this box.",
   input_draggableNonSelected: "Drag item from top to this box to remove.",
   input_checkableSelected: "Tap on checkmark icon to select",

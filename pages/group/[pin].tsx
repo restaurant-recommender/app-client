@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 import io from 'socket.io-client'
 import { groupService, InitializeRecommendationBody, recommendationService, trackingService, urls, userService } from '../../services'
-import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading } from "../../components"
+import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading, MapSearch } from "../../components"
 import { useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference, Recommendation } from "../../types"
 import { ActivityEvent, defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
@@ -26,6 +26,8 @@ function GroupConfirmation({ pin, disableNearby }) {
   const [token, setToken] = useState<AuthenticationToken>()
   const [type, setType] = useState<string>(typeSelectionDefault.value as string)
   const [preferPrice, setPreferPrice] = useState<number>()
+  const [mapSearchVisible, setMapSearchVisible] = useState(false)
+  const [mapSearchResponse, setMapSearchResponse] = useState()
   const router = useRouter()
   const auth = useAuth()
   const f = useFormatter()
@@ -308,7 +310,9 @@ function GroupConfirmation({ pin, disableNearby }) {
       </Box>
       <Spacer />
 
-      <Map location={location} draggable={recommendation && getMember().is_head} onChangeLocation={handleChangeLocation}/>
+      <Map location={location} draggable={recommendation && getMember().is_head} onChangeLocation={handleChangeLocation}>
+        {recommendation && getMember().is_head && <MapSearch onChangeLocation={handleChangeLocation} searchResponse={mapSearchResponse} setSearchResponse={setMapSearchResponse} visible={mapSearchVisible} setVisible={setMapSearchVisible}/>}
+      </Map>
       {/* {process.env.NODE_ENV === 'production' && <Map location={location}/>} */}
       <Spacer rem={2}/>
       {/* {location}

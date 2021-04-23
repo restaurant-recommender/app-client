@@ -114,3 +114,7 @@ export const trackingService = {
     }))
   }
 }
+
+export const externalService = {
+  longdoMapSearch: async(keyword: string): Promise<AxiosResponse> => axios.get(`https://search.longdo.com/mapsearch/json/search?keyword=${keyword}&key=44dd98b7c51d7993ba31885d11406b20`)
+}
