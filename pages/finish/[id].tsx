@@ -30,13 +30,6 @@ function IndividualFinish({ id }) {
     setLoading(f('loading_finalizing'))
     const authToken = auth()
     setToken(authToken)
-    trackingService.isTracked(ActivityEvent.WANT_TO_USE_AGAIN).then(isTracked => {
-      if (isTracked) {
-        setRatingDrawer(true)
-      } else {
-        modal.confirm(questionModalConfig)
-      }
-    })
     
     recommendationService.getFinal(id).then((response) => {
       console.log(response)
@@ -54,6 +47,7 @@ function IndividualFinish({ id }) {
             } else {
               trackingService.track(ActivityEvent.INDIVIDUAL_SUCCESS_PAGE)
             }
+            setRatingDrawer(true)
           }
         })
       } else {
@@ -76,9 +70,21 @@ function IndividualFinish({ id }) {
     } else {
       const body: UpdateRatingBody = { rating }
       recommendationService.updateRating(id, token.id, body).then((_) => {
-        setRatingDrawer(false)
+        closeRatingModal()
       })
     }
+  }
+
+  const closeRatingModal = () => {
+    setRatingDrawer(false)
+    setTimeout(() => {
+      trackingService.isTracked(ActivityEvent.WANT_TO_USE_AGAIN).then(isTracked => {
+        // alert(isTracked ? 'tracked' : 'not tracked yet')
+        if (!isTracked) {
+          modal.confirm(questionModalConfig)
+        }
+      })
+    }, 5000)
   }
 
   const handleShowSummary = () => {
@@ -100,12 +106,10 @@ function IndividualFinish({ id }) {
     onOk: () => {
       console.log('yes')
       trackingService.track(ActivityEvent.WANT_TO_USE_AGAIN, 'yes')
-      setRatingDrawer(true)
     },
     onCancel: () => {
       console.log('no')
       trackingService.track(ActivityEvent.WANT_TO_USE_AGAIN, 'no')
-      setRatingDrawer(true)
     },
   };
 
@@ -130,7 +134,7 @@ function IndividualFinish({ id }) {
         {recommendation && recommendation.final_restaurants.length > 1 && <Button size="large" onClick={handleShowSummary}>{f('finish_btn_summary')}</Button>}
         <Spacer />
         <Button size="large" onClick={handleHome}>{f('btn_home')}</Button>
-        <BottomDrawer height="240px" visible={ratingDrawer} onClose={() => {setRatingDrawer(false)}}>
+        <BottomDrawer height="240px" visible={ratingDrawer} onClose={closeRatingModal}>
           <Spacer />
           <Box textAlign="center">{f('finish_title_rate')}</Box>
           <Box textAlign="center"><Rate onChange={handleInputRating} /></Box>
