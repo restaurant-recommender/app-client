@@ -38,7 +38,7 @@ export const RestaurantList = (prop: IRestaurantCard) => {
   
   useEffect(() => {
     favoriteService.check(prop.restaurant._id).then((response) => {
-      console.log(`${prop.restaurant.name}: ${response.data}`)
+      // console.log(`${prop.restaurant.name}: ${response.data}`)
       setIsSaved(response.data)
     })
   }, [])

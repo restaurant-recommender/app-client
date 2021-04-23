@@ -32,14 +32,14 @@ function IndividualFinish({ id }) {
     setToken(authToken)
     
     recommendationService.getFinal(id).then((response) => {
-      console.log(response)
+      // console.log(response)
       if (response.status) {
-        console.log('------------------------')
-        console.log(response)
+        // console.log('------------------------')
+        // console.log(response)
         setRestaurant(response.data)
         setLoading('')
         recommendationService.getById(id).then((response) => {
-          console.log(response)
+          // console.log(response)
           if (response.status) {
             setRecommendation(response.data)
             if(response.data.final_restaurants.length > 1) {
@@ -104,11 +104,11 @@ function IndividualFinish({ id }) {
     okText: f('survey_useAgain_yes'),
     cancelText: f('survey_useAgain_no'),
     onOk: () => {
-      console.log('yes')
+      // console.log('yes')
       trackingService.track(ActivityEvent.WANT_TO_USE_AGAIN, 'yes')
     },
     onCancel: () => {
-      console.log('no')
+      // console.log('no')
       trackingService.track(ActivityEvent.WANT_TO_USE_AGAIN, 'no')
     },
   };

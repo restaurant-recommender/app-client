@@ -71,7 +71,7 @@ function IndividualStart({ id }) {
         setLoading('')
         trackingService.track(ActivityEvent.INDIVIDUAL_START, id)
       } else {
-        console.log(response)
+        // console.log(response)
         setLoading('')
         alert(response.message)
         router.push('/individual/confirm')
@@ -138,7 +138,7 @@ function IndividualStart({ id }) {
 
   const setItemsCallback = useCallback((newItems) => {
     setItems(newItems)
-    console.log(newItems)
+    // console.log(newItems)
   }, [])
 
   const handleLoadMore = () => {
@@ -162,11 +162,11 @@ function IndividualStart({ id }) {
           }))
           setItems(null)
           setItems(items.concat(newRestaurantItems))
-          console.log(newRestaurantItems)
-          console.log(items.concat(newRestaurantItems))
+          // console.log(newRestaurantItems)
+          // console.log(items.concat(newRestaurantItems))
           setLoading('')
         } else {
-          console.log(response)
+          // console.log(response)
           setLoading('')
           alert(response.message)
         }
@@ -177,14 +177,14 @@ function IndividualStart({ id }) {
   const handleNext = () => {
     trackingService.track(ActivityEvent.INDIVIDUAL_END, id)
     setLoading(f('loading_finishingRecommendation'))
-    console.log(items)
+    // console.log(items)
     const histories: History[] = items.map(item => ({
       restaurant: item.restaurant._id,
       is_love: item.isSelected,
       rating: null,
       timestamp: Date.now(),
     }))
-    console.log(histories)
+    // console.log(histories)
     recommendationService.updateHistory(id, { histories }).then((response) => {
       if (!response.status) { alert('update history error!') }
       recommendationService.complete(id).then((response) => {

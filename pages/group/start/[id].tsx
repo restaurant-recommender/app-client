@@ -34,10 +34,10 @@ function GroupStart({ id }) {
     transports: ['websocket'],
   })
 
-  socket.on('group-rank-update', (id) => {
-    console.log('new rank update!')
-    if (recommendation && id === recommendation._id) {
-      console.log('rank updated!')
+  socket.on('group-rank-update', (recid) => {
+    // console.log('new rank update!')
+    if (recommendation && recid === recommendation._id) {
+      // console.log('rank updated!')
       updateRecommendationAndCheckForCompleted()
     }
   })
@@ -66,7 +66,7 @@ function GroupStart({ id }) {
 
   const setItemsCallback = useCallback((newItems) => {
     setItems(newItems)
-    console.log(newItems)
+    // console.log(newItems)
   }, [])
 
   const submited = () => {
@@ -92,7 +92,7 @@ function GroupStart({ id }) {
           }
         }
       } else {
-        console.log(result)
+        // console.log(result)
         alert(result.message)
         router.push('/home')
       }
@@ -101,18 +101,18 @@ function GroupStart({ id }) {
 
   const handleNext = () => {
     if (isValid()) {
-      console.log(items)
+      // console.log(items)
       const orderedRestaurant = items.sort((a, b) => a.order - b.order).map((item) => item.restaurant._id)
-      console.log(orderedRestaurant)
+      // console.log(orderedRestaurant)
       recommendationService.updateMemberRestaurantRank(recommendation._id, token.id, { rank: orderedRestaurant }).then((result) => {
         if (result.status) {
           const updatedRecommendation = result.data
           socket.emit('group-rank-update', recommendation._id)
           submited()
           updateRecommendationAndCheckForCompleted()
-          console.log(updatedRecommendation)
+          // console.log(updatedRecommendation)
         } else {
-          console.log(result)
+          // console.log(result)
           alert('unknown error!')
         }
       })

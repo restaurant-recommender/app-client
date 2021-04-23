@@ -63,13 +63,13 @@ function RestaurantsAdminPage(prop: IRestaurantsAdminPage) {
   function handleChange(value) {
     // console.log(value);
     setCategoryIds(value.map(v => prop.categories.find(category => category.label === v).id))
-    console.log(value.map(v => prop.categories.find(category => category.label === v).id))
+    // console.log(value.map(v => prop.categories.find(category => category.label === v).id))
   }
 
   const handleSearch = () => {
     setLoading('Searching...')
     restaurantService.searchRestaurant({ 'categories': categoriyIds }).then((result) => {
-      console.log(result.data)
+      // console.log(result.data)
       setRestaurantDataSource(result.data)
       setLoading('')
     })
@@ -78,7 +78,7 @@ function RestaurantsAdminPage(prop: IRestaurantsAdminPage) {
   const handleGetAll = () => {
     setLoading('Getting all restaurants...')
     restaurantService.searchRestaurant({}).then((result) => {
-      console.log(result.data)
+      // console.log(result.data)
       setRestaurantDataSource(result.data)
       setLoading('')
     })

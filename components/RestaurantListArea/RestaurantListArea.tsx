@@ -116,12 +116,12 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
 
   useEffect(() => {
     setBoxHeight(getBoxHeight())
-    console.log(getBoxHeight())
+    // console.log(getBoxHeight())
   }, [items, selected])
 
   useEffect(() => {
     const newAvailableItems = getAvailableItems(selected, items)
-    console.log(newAvailableItems)
+    // console.log(newAvailableItems)
     prop.setAvailableItemsCallback(newAvailableItems)
   }, [items, selected])
 
@@ -175,9 +175,9 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
   const handleCheckbox = (restaurantId: string) => {
     const filteredItems = items.filter((item) => item.restaurant._id === restaurantId)
     const filteredSelected = selected.filter((item) => item.restaurant._id === restaurantId)
-    console.log('------------------------')
-    console.log(filteredItems)
-    console.log(filteredSelected)
+    // console.log('------------------------')
+    // console.log(filteredItems)
+    // console.log(filteredSelected)
     if (filteredItems.length) {
       const item = filteredItems[0]
       selected.push({

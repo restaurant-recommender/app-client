@@ -31,7 +31,7 @@ export const MapSearch = (prop: MapSearchProp) => {
   }
 
   const handleSearch = value => {
-    console.log(value)
+    // console.log(value)
     externalService.longdoMapSearch(value).then((response) => {
       if (response.status === 200) {
         prop.setSearchResponse(response.data)
@@ -44,7 +44,7 @@ export const MapSearch = (prop: MapSearchProp) => {
   }
 
   const handleChange = (latitude: number, longitude: number) => {
-    console.log([latitude, longitude])
+    // console.log([latitude, longitude])
     prop.onChangeLocation([latitude, longitude])
     prop.setVisible(false)
   }

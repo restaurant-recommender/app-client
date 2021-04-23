@@ -39,22 +39,22 @@ function GroupConfirmation({ pin, disableNearby }) {
   socket.on('group-update', (id) => {
     if (recommendation && id === recommendation._id) {
       updateGroup();
-      console.log('updated!')
+      // console.log('updated group')
     }
   })
 
   const updateGroup = () => {
-    console.log('inside update group')
+    // console.log('inside update group')
     recommendationService.getById(recommendation._id).then((result) => {
       const updatedRecommendation = result.data
       setRecommendation(updatedRecommendation)
       setLocation([updatedRecommendation.location.coordinates[1], updatedRecommendation.location.coordinates[0]])
-      console.log('updated')
-      console.log(updatedRecommendation)
+      // console.log('updated')
+      // console.log(updatedRecommendation)
       if (updatedRecommendation.is_started) {
         setLoading(f('loading_startingGroupRecommendation'))
         router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
-          console.log('')
+          // console.log('')
         })
       }
     })
@@ -81,7 +81,7 @@ function GroupConfirmation({ pin, disableNearby }) {
         is_group: true,
         type: 'restaurant',
       }
-      console.log(body)
+      // console.log(body)
       return recommendationService.initial(body).then((result) => {
         if (result.status) {
           const newRecommendation = result.data
@@ -104,7 +104,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
-    console.log(authToken)
+    // console.log(authToken)
     if (!("geolocation" in navigator) || disableNearby) {
       // alert(f('alert_geolocationIsDisabled'))
       setLocation(defaultLocation)
@@ -146,7 +146,7 @@ function GroupConfirmation({ pin, disableNearby }) {
           if (newRecommendation.is_started) {
             setLoading(f('loading_startingGroupRecommendation'))
             router.push(`/group/start/${newRecommendation._id}`).then((_) => {
-              console.log('')
+              // console.log('')
             })
           }
           setRecommendation(newRecommendation)
@@ -171,7 +171,7 @@ function GroupConfirmation({ pin, disableNearby }) {
       createGroup()
     } else {
       joinGroup().then((result) => {
-        console.log(result)
+        // console.log(result)
         // groupHasUpdate()
         if (result) {
           socket.emit('group-update', result._id)
@@ -181,7 +181,6 @@ function GroupConfirmation({ pin, disableNearby }) {
     // setupSocket()
   }, [])
 
-  // const groupHasUpdate = (id) => { if (recommendation) socket.emit('group-update', recommendation._id); }
 
   const handleCancel = () => {
     // TODO: implement close recommendation session
@@ -220,7 +219,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     setLocation(newLocation)
     trackingService.track(ActivityEvent.CHANGE_LOCATION)
     recommendationService.update(recommendation._id, { recommendation: { 'location.coordinates': [newLocation[1], newLocation[0]] }}).then((_) => {
-      console.log('updated location')
+      // console.log('updated location')
       socket.emit('group-update', recommendation._id)
     })
   }
@@ -233,7 +232,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     setType(value)
     trackingService.track(ActivityEvent.CHANGE_SHOP_TYPE)
     recommendationService.update(recommendation._id, { recommendation: { type: value }}).then((_) => {
-      console.log('updated type')
+      // console.log('updated type')
       socket.emit('group-update', recommendation._id)
     })
   }
@@ -275,7 +274,7 @@ function GroupConfirmation({ pin, disableNearby }) {
 
   const membersList = recommendation && (
     recommendation.members.map((member) => (
-      <div>
+      <div key={member._id}>
         <CardList>
           <div style={{flexGrow: 1, fontWeight: 'bold'}}>{member.username}</div>
           <span style={{margin: 'auto'}}><span style={{color:'gray'}}>{'฿'.repeat(member.price_range)}</span>&nbsp;&nbsp;{member.is_head && <FontAwesomeIcon icon={faCrown}/>}</span>

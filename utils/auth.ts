@@ -44,7 +44,7 @@ export const useAuth = () => {
       router.push('/login')
       return null
     } else {
-      console.log(`Found token in cookie: ${token}`);
+      // console.log(`Found token in cookie: ${token}`);
       return getToken()
     }
   }

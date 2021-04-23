@@ -30,7 +30,7 @@ export default function Register() {
 
   const setItemsCallback = useCallback((newItems) => {
     setItems(newItems)
-    console.log(newItems)
+    // console.log(newItems)
   }, [])
 
   useEffect(() => {
@@ -40,8 +40,8 @@ export default function Register() {
       const commonCetegories = response.data.data
       userService.getPreferences().then((response) => {
         const userPreferences: Preference[] = response.data
-        console.log(userPreferences)
-        console.log(generateAvailableItem(commonCetegories, userPreferences))
+        // console.log(userPreferences)
+        // console.log(generateAvailableItem(commonCetegories, userPreferences))
         setCategories(commonCetegories)
         setItems(generateAvailableItem(commonCetegories, userPreferences))
       })
@@ -59,7 +59,7 @@ export default function Register() {
         name_en: categories.find((category) => category._id === item.id).name_en,
         order: item.order,
       }))
-      console.log(preferences)
+      // console.log(preferences)
       userService.updatePreferences({ preferences }).then((result) => {
         if (result.data.status) {
           router.push("/home").then(_ => {

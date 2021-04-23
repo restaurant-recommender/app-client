@@ -36,7 +36,7 @@ function IndividualConfirmation({ disableNearby }) {
     const authToken = auth()
     trackingService.track(ActivityEvent.INDIVIDUAL_CONFIRM_PAGE)
     setToken(authToken)
-    console.log(authToken)
+    // console.log(authToken)
     if (!("geolocation" in navigator) || disableNearby) {
       setLocation(defaultLocation)
       setLoading('')
