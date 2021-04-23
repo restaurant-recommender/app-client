@@ -62,7 +62,7 @@ export const MapSearch = (prop: MapSearchProp) => {
           </Box>
           <Search size="large" placeholder="location name, keywords..." onSearch={handleSearch} enterButton />
           <Spacer rem={2}/>
-          {prop.searchResponse && prop.searchResponse.data.filter(e => e.type === 'poi').map(place => (
+          {prop.searchResponse && prop.searchResponse.data.filter(e => 'lat' in e && 'lon' in e).map(place => (
             <Box onClick={() => { handleChange(place.lat, place.lon) }} key={place.id} padding='1rem 0rem' borderTop='1px solid #00000030'>
               {place.name}
             </Box>
