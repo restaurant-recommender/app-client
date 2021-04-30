@@ -26,21 +26,10 @@ function GroupStart({ id }) {
   const [totalSelected, setTotalSelected] = useState<number>()
   const [token, setToken] = useState<AuthenticationToken>()
   const [isSubmited, setIsSubmited] = useState<boolean>(false)
+  const [socket, setSocket] = useState(null)
   const auth = useAuth()
   const router = useRouter()
   const f = useFormatter()
-
-  const socket = io(urls.app_server, {
-    transports: ['websocket'],
-  })
-
-  socket.on('group-rank-update', (recid) => {
-    // console.log('new rank update!')
-    if (recommendation && recid === recommendation._id) {
-      // console.log('rank updated!')
-      updateRecommendationAndCheckForCompleted()
-    }
-  })
 
   const finish = (recommendationId: string) => {
     trackingService.track(ActivityEvent.GROUP_END, id)
@@ -50,8 +39,8 @@ function GroupStart({ id }) {
     })
   }
 
-  const updateRecommendationAndCheckForCompleted = () => {
-    recommendationService.getById(recommendation._id).then((result) => {
+  const updateRecommendationAndCheckForCompleted = (recommendaitonId) => {
+    recommendationService.getById(recommendaitonId).then((result) => {
       if (result.status) {
         const updatedRecommendation = result.data
         setRecommendation(updatedRecommendation)
@@ -59,6 +48,7 @@ function GroupStart({ id }) {
           finish(updatedRecommendation._id)
         }
       } else {
+        console.log(result)
         alert('update data error!')
       }
     }) 
@@ -77,12 +67,22 @@ function GroupStart({ id }) {
     const authToken = auth()
     trackingService.track(ActivityEvent.GROUP_RECOMMENDATION_PAGE)
     setToken(authToken)
+    const socketIo = io(urls.app_server, {
+      transports: ['websocket'],
+    })
+    setSocket(socketIo)
+    
     recommendationService.getById(id).then((result) => {
       if (result.status) {
         const fetchedRecommendation = result.data
         setRecommendation(fetchedRecommendation)
         setTotalSelected(fetchedRecommendation.sugessted_restaurants.length)
         setItems(getItemsFromRestaurants(fetchedRecommendation.sugessted_restaurants))
+        socketIo.emit('group-rank-join', fetchedRecommendation._id)
+        socketIo.on('group-rank-update', () => {
+          console.log('group rank update')
+          updateRecommendationAndCheckForCompleted(fetchedRecommendation._id)
+        })
         trackingService.track(ActivityEvent.GROUP_START, id)
         const memberRank = fetchedRecommendation.members.find((e) => e._id.toString() === authToken.id.toString()).rank
         if (memberRank && memberRank.length > 0) {
@@ -107,9 +107,9 @@ function GroupStart({ id }) {
       recommendationService.updateMemberRestaurantRank(recommendation._id, token.id, { rank: orderedRestaurant }).then((result) => {
         if (result.status) {
           const updatedRecommendation = result.data
-          socket.emit('group-rank-update', recommendation._id)
+          if (socket) socket.emit('group-rank-update', recommendation._id)
           submited()
-          updateRecommendationAndCheckForCompleted()
+          updateRecommendationAndCheckForCompleted(recommendation._id)
           // console.log(updatedRecommendation)
         } else {
           // console.log(result)

@@ -218,12 +218,14 @@ function GroupConfirmation({ pin, disableNearby }) {
         if (result) {
           console.log('created')
           console.log(result._id)
-
-          socketIo.on('group-update', (id) => {
-            if (id === result._id) {
-              updateGroup(result._id);
-              console.log('updated group')
-            }
+          socketIo.emit('group-join', result._id)
+          socketIo.on('group-update', () => {
+            console.log('updated group')
+            updateGroup(result._id);
+            // if (id === result._id) {
+            //   updateGroup(result._id);
+            //   console.log('updated group')
+            // }
           })
         }
       })
@@ -235,14 +237,16 @@ function GroupConfirmation({ pin, disableNearby }) {
           // while (!socket) {}
           console.log('joined')
           console.log(result._id)
+          socketIo.emit('group-join', result._id)
           socketIo.emit('group-update', result._id)
           console.log('emmited')
 
-          socketIo.on('group-update', (id) => {
-            if (id === result._id) {
-              updateGroup(result._id);
-              console.log('updated group')
-            }
+          socketIo.on('group-update', () => {
+            console.log('updated group')
+            updateGroup(result._id);
+            // if (id === result._id) {
+            //   updateGroup(result._id);
+            // }
           })
           // console.log(socket)
           // emitUpdateEvent(result._id)
@@ -329,13 +333,13 @@ function GroupConfirmation({ pin, disableNearby }) {
     trackingService.track(ActivityEvent.CHANGE_PREFER_PRICE)
     recommendationService.updateMemberPreferPrice(recommendation._id, token.id, { prefer_price: value }).then((_) => {
       if (socket) socket.emit('group-update', recommendation._id)
-      updateGroup()
+      updateGroup(recommendation._id)
     })
   }
 
   const handleRefresh = () => {
     trackingService.track(ActivityEvent.REFRESH_CLICK)
-    updateGroup()
+    updateGroup(recommendation._id)
   }
 
   const Map = dynamic(
