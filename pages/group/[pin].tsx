@@ -12,6 +12,7 @@ import { useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference, Recommendation } from "../../types"
 import { ActivityEvent, defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
 import { useFormatter } from "../../utils"
+import { useSocket } from "../../utils/socketio"
 
 const { Option } = Select;
 
@@ -28,39 +29,35 @@ function GroupConfirmation({ pin, disableNearby }) {
   const [preferPrice, setPreferPrice] = useState<number>()
   const [mapSearchVisible, setMapSearchVisible] = useState(false)
   const [mapSearchResponse, setMapSearchResponse] = useState()
+  const [socket, setSocket] = useState(null)
+
   const router = useRouter()
   const auth = useAuth()
   const f = useFormatter()
+  // const socket = useSocket()
 
-  const socket = io(urls.app_server, {
-    transports: ['websocket'],
-  })
-
-  socket.on('group-update', (id) => {
-    if (recommendation && id === recommendation._id) {
-      updateGroup();
-      // console.log('updated group')
-    }
-  })
-
-  const updateGroup = () => {
+  const updateGroup = (groupId) => {
     // console.log('inside update group')
-    recommendationService.getById(recommendation._id).then((result) => {
+    recommendationService.getById(groupId).then((result) => {
       const updatedRecommendation = result.data
-      setRecommendation(updatedRecommendation)
-      setLocation([updatedRecommendation.location.coordinates[1], updatedRecommendation.location.coordinates[0]])
-      // console.log('updated')
-      // console.log(updatedRecommendation)
-      if (updatedRecommendation.is_started) {
-        setLoading(f('loading_startingGroupRecommendation'))
-        router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
-          // console.log('')
-        })
+      if (updatedRecommendation) {
+        console.log(updatedRecommendation)
+        setRecommendation(updatedRecommendation)
+        setLocation([updatedRecommendation.location.coordinates[1], updatedRecommendation.location.coordinates[0]])
+        // console.log('updated')
+        // console.log(updatedRecommendation)
+        if (updatedRecommendation.is_started) {
+          setLoading(f('loading_startingGroupRecommendation'))
+          router.push(`/group/start/${updatedRecommendation._id}`).then((_) => {
+            // console.log('')
+          })
+        }
       }
+      
     })
   }
 
-  const initGroup = async (location: [number, number]) => {
+  const initGroup = async (location: [number, number]): Promise<Recommendation> => {
     setLoading(f('loading_creatingGroup'))
     return userService.getPreferences().then((result) => {
       const authToken = auth()
@@ -100,7 +97,15 @@ function GroupConfirmation({ pin, disableNearby }) {
     })
   }
 
-  const createGroup = async () => {
+  const getPosition = function (): Promise<GeolocationPosition> {
+    return new Promise(function (resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        timeout: 10000,
+      });
+    });
+  }
+
+  const createGroup = async (): Promise<Recommendation> => {
     setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
@@ -108,19 +113,19 @@ function GroupConfirmation({ pin, disableNearby }) {
     if (!("geolocation" in navigator) || disableNearby) {
       // alert(f('alert_geolocationIsDisabled'))
       setLocation(defaultLocation)
-      initGroup(defaultLocation)
+      return initGroup(defaultLocation).then((result) => {
+        return result
+      })
     } else {
-      navigator.geolocation.getCurrentPosition((position) => {
+      return getPosition().then((position) => {
         setLocation([position.coords.latitude, position.coords.longitude])
         const fetchedLoaction = [position.coords.latitude, position.coords.longitude] as [number, number]
-        initGroup(fetchedLoaction)
-      }, (error) => {
+        return initGroup(fetchedLoaction)
+      }).catch((error) => {
         trackingService.track(ActivityEvent.ERROR, error.message)
         setLocation(defaultLocation)
         message.error(f('error_gettingCurrentLocation'))
-        initGroup(defaultLocation)
-      }, {
-        timeout: 10000,
+        return initGroup(defaultLocation)
       })
     }
   }
@@ -165,21 +170,103 @@ function GroupConfirmation({ pin, disableNearby }) {
     })
   }
 
+  // const emitUpdateEvent = (recommendationId) => {
+  //   console.log(socket)
+  //   if (socket) {
+  //     socket.emit('group-update', recommendationId)
+  //   }
+  // }
+
+  const recommendtaionId = useMemo(() => recommendation && recommendation._id, [recommendation])
+
+  const getId = () => recommendation && recommendation._id
+
+  const checkGroupUpdate = useCallback((id) => {
+    console.log('-----------------------------------')
+    console.log(recommendtaionId)
+    console.log(getId())
+    console.log(id)
+    if (id === recommendtaionId) {
+      updateGroup(recommendtaionId);
+      console.log('updated group')
+    }
+  }, [recommendation, socket])
+
   useEffect(() => {
+    // const socket = io(urls.app_server, {
+    //   transports: ['websocket'],
+    // })
+  
+    // socket.on('group-update', (id) => {
+    //   if (recommendation && id === recommendation._id) {
+    //     updateGroup();
+    //     console.log('updated group')
+    //   }
+    // })
+    console.log('setup socket')
+    const socketIo = io(urls.app_server, {
+      transports: ['websocket'],
+    })
+
+    setSocket(socketIo)
+    
+    
+
     trackingService.track(ActivityEvent.GROUP_CONFIRM_PAGE)
     if (pin === 'new') {
-      createGroup()
+      createGroup().then((result) => {
+        if (result) {
+          console.log('created')
+          console.log(result._id)
+
+          socketIo.on('group-update', (id) => {
+            if (id === result._id) {
+              updateGroup(result._id);
+              console.log('updated group')
+            }
+          })
+        }
+      })
     } else {
       joinGroup().then((result) => {
         // console.log(result)
         // groupHasUpdate()
         if (result) {
-          socket.emit('group-update', result._id)
+          // while (!socket) {}
+          console.log('joined')
+          console.log(result._id)
+          socketIo.emit('group-update', result._id)
+          console.log('emmited')
+
+          socketIo.on('group-update', (id) => {
+            if (id === result._id) {
+              updateGroup(result._id);
+              console.log('updated group')
+            }
+          })
+          // console.log(socket)
+          // emitUpdateEvent(result._id)
         }
       })
     }
     // setupSocket()
   }, [])
+
+  // useEffect(() => {
+  //   console.log('setup socket')
+  //   if (socket) {
+  //     socket.on('group-update', (id) => {
+  //       if (recommendation && id === recommendation._id) {
+  //         updateGroup();
+  //         console.log('updated group')
+  //       }
+  //     })
+  //     console.log('socket is setted')
+  //     console.log(socket)
+  //   } else {
+  //     console.log('socket is null')
+  //   }
+  // }, [socket])
 
 
   const handleCancel = () => {
@@ -201,7 +288,7 @@ function GroupConfirmation({ pin, disableNearby }) {
         const restaurants = result.data
         recommendationService.update(recommendation._id, { recommendation: { sugessted_restaurants: restaurants, is_started: true }}).then((_) => {
           router.push(`/group/start/${recommendation._id}`)
-          socket.emit('group-update', recommendation._id)
+          if (socket) socket.emit('group-update', recommendation._id)
         })
       } else {
         setLoading('')
@@ -220,7 +307,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     trackingService.track(ActivityEvent.CHANGE_LOCATION)
     recommendationService.update(recommendation._id, { recommendation: { 'location.coordinates': [newLocation[1], newLocation[0]] }}).then((_) => {
       // console.log('updated location')
-      socket.emit('group-update', recommendation._id)
+      if (socket) socket.emit('group-update', recommendation._id)
     })
   }
 
@@ -233,7 +320,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     trackingService.track(ActivityEvent.CHANGE_SHOP_TYPE)
     recommendationService.update(recommendation._id, { recommendation: { type: value }}).then((_) => {
       // console.log('updated type')
-      socket.emit('group-update', recommendation._id)
+      if (socket) socket.emit('group-update', recommendation._id)
     })
   }
 
@@ -241,7 +328,7 @@ function GroupConfirmation({ pin, disableNearby }) {
     setPreferPrice(value)
     trackingService.track(ActivityEvent.CHANGE_PREFER_PRICE)
     recommendationService.updateMemberPreferPrice(recommendation._id, token.id, { prefer_price: value }).then((_) => {
-      socket.emit('group-update', recommendation._id)
+      if (socket) socket.emit('group-update', recommendation._id)
       updateGroup()
     })
   }
@@ -319,7 +406,7 @@ function GroupConfirmation({ pin, disableNearby }) {
 
       {recommendation && getMember().is_head && <>
         <h3>
-          {f('confirm_cravingFor')}
+          {f('confirm_cravingFor') + recommendtaionId}
         </h3>
         {/* <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
           { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
