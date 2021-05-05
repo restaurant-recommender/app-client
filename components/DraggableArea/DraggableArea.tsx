@@ -169,7 +169,7 @@ export const DraggableArea = (prop: IDraggableArea) => {
       index={index}>
       {(provided, snapshot) => (
         prop.hasThumnail ? 
-        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
+        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
           <Box width={thumbnailSize} height={thumbnailSize} background="#fe8019" flexShrink={0} borderRadius="8px 0 0 8px" overflow="hidden">
             <img src={item.image} width={thumbnailSize} height={thumbnailSize} style={{objectFit: 'cover', zoom: '2', transform: 'translate(-25%, -25%)'}} />
           </Box>
@@ -180,14 +180,14 @@ export const DraggableArea = (prop: IDraggableArea) => {
             <Box margin="auto 1rem">{item.name}</Box>
           </Box>
           {!prop.disabled && <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem', marginRight: '1rem'}}/>}
-          {!prop.disabled && <div className="draggable-knob" {...provided.dragHandleProps}/>}
+          {!prop.disabled && <div className="draggable-knob"/>}
         </div>)
         :
-        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
+        (<div onClick={() => {prop.clickOnIdCallback && prop.clickOnIdCallback(item.id)}} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, isLast, prop.hasThumnail)}>
           {showRanking && <div className="rank-badge">{index + 1}</div>}
           <div style={{flexGrow: 1, maxWidth: '75%'}}>{item.name}</div>
           {!prop.disabled && <FontAwesomeIcon icon={faBars} style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '1rem'}}/>}
-          {!prop.disabled && <div className="draggable-knob" {...provided.dragHandleProps}/>}
+          {!prop.disabled && <div className="draggable-knob"/>}
         </div>)
       )}
     </Draggable>

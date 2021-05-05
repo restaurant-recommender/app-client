@@ -206,13 +206,13 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
       draggableId={item.restaurant._id}
       index={index}>
       {(provided, snapshot) => (
-        <div ref={provided.innerRef} {...provided.draggableProps}>
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           {/* marginBottom: isLast ? '0': '8px',  */}
-          <RestaurantList expandable restaurant={item.restaurant} rank={showRanking && index + 1} style={{background: snapshot.isDragging ? '#bae7ff' : '#ffffff', boxShadow: snapshot.isDragging ? "0 0 0 4pt #1890ff" : 'none', position: 'relative'}}>
+          <RestaurantList expandable restaurant={item.restaurant}  rank={showRanking && index + 1} style={{background: snapshot.isDragging ? '#bae7ff' : '#ffffff', boxShadow: snapshot.isDragging ? "0 0 0 4pt #1890ff" : 'none', position: 'relative'}}>
             {
               !prop.disabled && 
               prop.type === 'drag' ?
-              <div {...provided.dragHandleProps} style={{width: '100%', height: '100%', display:'flex'}}>
+              <div style={{width: '100%', height: '100%', display:'flex'}}>
                 <Box background="#ffffff" borderRadius="50%" width="32px" height="32px" margin="auto" display="flex">
                   <FontAwesomeIcon icon={faBars} style={{margin: 'auto'}}/>
                 </Box>
@@ -220,7 +220,7 @@ export const RestaurantListArea = (prop: IRestaurantListArea) => {
               :
               <Box onClick={() => { handleCheckbox(item.restaurant._id) }} width="24px" height="24px" margin="auto" background={item.isSelected ? '#fe8019' : '#e0e0e0'} borderRadius="4px" display="flex" boxShadow="0 0 0 4px white">
                 <FontAwesomeIcon icon={faCheck} style={{color: item.isSelected ? '#ffffff' : '#afafaf', margin: 'auto'}}/>
-                <div {...provided.dragHandleProps} style={{display: 'none'}} />
+                <div style={{display: 'none'}} />
               </Box>
             }
           </RestaurantList>
