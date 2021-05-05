@@ -66,6 +66,8 @@ export const restaurantService = {
 export const userService = {
   updatePreferences: async (body: UpdatePreferencesBody): Promise<AxiosResponse<Response<null>>> => axios.post(appServerUrl(`users/${getId()}/preferences`), body),
   getPreferences: async (): Promise<Response<Preference[]>> => axios.get(appServerUrl(`users/${getId()}/preferences`)).then((response) => response.data),
+  getTrackOfEvent: async (eventName: string): Promise<boolean> => axios.get(appServerUrl(`users/${getId()}/track/${eventName}`)).then((response) => response.data),
+  updateTrackOfEvent: async (eventName: string): Promise<void> => axios.put(appServerUrl(`users/${getId()}/track/${eventName}`)),
 }
 
 export const recommendationService = {

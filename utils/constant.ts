@@ -61,4 +61,11 @@ export const preferPriceSelection: SelectItem[] = [
     { name: 'select_bbbb', value: 4 },
 ]
 
+export const TutorialEvent = {
+    CREATE_GROUP: {
+        NAME: 'tutorial_create_group',
+        PAGES: ['group-1', 'group-2', 'group-3'],
+    },
+}
+
 export const defaultLocation: [number, number] = [13.736717, 100.523186]

@@ -2,15 +2,15 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic"
 import { Button, Dropdown, Menu, Radio, Select, message } from "antd"
-import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH, faCrown, faLink, faCheck, faChevronLeft, faExternalLinkAlt, faSyncAlt, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import QRCode from "react-qr-code"
 import io from 'socket.io-client'
 import { groupService, InitializeRecommendationBody, recommendationService, trackingService, urls, userService } from '../../services'
-import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading, MapSearch } from "../../components"
+import { Spacer, CardList, FixedBottom, BottomDrawer, Box, Loading, MapSearch, Tutorial } from "../../components"
 import { useAuth } from "../../utils/auth"
 import { AuthenticationToken, Member, Preference, Recommendation } from "../../types"
-import { ActivityEvent, defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault } from "../../utils/constant"
+import { ActivityEvent, defaultLocation, preferPriceSelection, typeSelection, typeSelectionDefault, TutorialEvent } from "../../utils/constant"
 import { useFormatter } from "../../utils"
 import { useSocket } from "../../utils/socketio"
 
@@ -30,6 +30,7 @@ function GroupConfirmation({ pin, disableNearby }) {
   const [mapSearchVisible, setMapSearchVisible] = useState(false)
   const [mapSearchResponse, setMapSearchResponse] = useState()
   const [socket, setSocket] = useState(null)
+  const [isTutorialVisible, setIsTutorialVisible] = useState<boolean>(false)
 
   const router = useRouter()
   const auth = useAuth()
@@ -109,6 +110,15 @@ function GroupConfirmation({ pin, disableNearby }) {
     setLoading(f('loading_gettingLocation'))
     const authToken = auth()
     setToken(authToken)
+
+    userService.getTrackOfEvent(TutorialEvent.CREATE_GROUP.NAME).then(isShown => {
+      console.log(`Tracked: ${isShown}`)
+      if (!isShown) {
+        console.log('showTutorial')
+        setIsTutorialVisible(true)
+        userService.updateTrackOfEvent(TutorialEvent.CREATE_GROUP.NAME)
+      }
+    })
     // console.log(authToken)
     if (!("geolocation" in navigator) || disableNearby) {
       // alert(f('alert_geolocationIsDisabled'))
@@ -206,7 +216,18 @@ function GroupConfirmation({ pin, disableNearby }) {
     console.log('setup socket')
     const socketIo = io(urls.app_server, {
       transports: ['websocket'],
+      reconnection: false
     })
+
+    socketIo.on('connect_error', function() {
+      alert('Socket error. Please try again later.')
+      handleCancel()
+    })
+
+    // if (!socketIo) {
+    //   alert('Socket error. Please try again later.')
+    //   handleCancel()
+    // }
 
     setSocket(socketIo)
     
@@ -342,6 +363,14 @@ function GroupConfirmation({ pin, disableNearby }) {
     updateGroup(recommendation._id)
   }
 
+  const handleHelp = () => {
+    setIsTutorialVisible(true)
+  }
+
+  const handleCloseTutorial = useCallback(() => {
+    setIsTutorialVisible(false)
+  }, [])
+
   const Map = dynamic(
     () => import("../../components/Map/Map"), { 
       loading: () => (
@@ -390,6 +419,7 @@ function GroupConfirmation({ pin, disableNearby }) {
   return (
     <div className="container group-confirmation-page">
       <Loading message={loading} />
+      <Tutorial pages={TutorialEvent.CREATE_GROUP.PAGES} onClose={handleCloseTutorial} visible={isTutorialVisible}/>
       <Box lineHeight="64px" height="64px" display="flex">
         <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{f('btn_back')}</Button>
         <Box flexGrow={1} />
@@ -410,7 +440,7 @@ function GroupConfirmation({ pin, disableNearby }) {
 
       {recommendation && getMember().is_head && <>
         <h3>
-          {f('confirm_cravingFor') + recommendtaionId}
+          {f('confirm_cravingFor')}
         </h3>
         {/* <Radio.Group onChange={handleSelectType} defaultValue={typeSelectionDefault.value} style={{width: "100%"}} buttonStyle="solid" size="large">
           { typeSelection.map((item) => <Radio.Button value={item.value}>{f(item.name)}</Radio.Button>) }
@@ -425,6 +455,7 @@ function GroupConfirmation({ pin, disableNearby }) {
         <Box display="flex">
           <h2 style={{fontWeight: 'bolder'}}>{f('confirm_title_members')}</h2>
           <Button onClick={handleRefresh} style={{marginLeft: 'auto'}}><FontAwesomeIcon icon={faSyncAlt}/>&nbsp;&nbsp;{f('btn_refresh')}</Button>
+          <Button onClick={handleHelp} style={{marginLeft: '0.5rem', padding: '4px 10px'}}><FontAwesomeIcon icon={faQuestion}/></Button>
         </Box>
         {members && membersList}
       </div>
