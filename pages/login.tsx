@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router"
 import { Button, Input } from "antd";
-import { Spacer, Loading } from "../components";
+import { Spacer, Loading, Box } from "../components";
 import { authenticationService, trackingService } from "../services";
-import { useFormatter } from "../utils";
+import { Color, useFormatter } from "../utils";
 import { setToken } from "../utils/auth";
 import { ActivityEvent } from "../utils/constant";
 
@@ -43,6 +43,11 @@ export default function Login() {
     router.push('/register')
   }
 
+  const handleChangeLanguge= () => {
+    trackingService.track(ActivityEvent.CHANGE_LANGUAGE_CLICK)
+    router.push('/login', '/login', { locale: router.locale === 'th' ? 'en' : 'th' })
+  }
+
   return (
     <div className="container middle register-page">
       <Loading message={loading} />
@@ -56,6 +61,9 @@ export default function Login() {
       <Button onClick={handleLogin} type="primary" size="large">{f('btn_login')}</Button>
       <Spacer />
       <p>{f('login_register1')}<a onClick={handleRegister}>{f('btn_register')}</a></p>
+      <Box position="fixed" top="1rem" right="1rem" color={Color.orange} fontWeight="bold">
+        <Button onClick={handleChangeLanguge}>{router.locale === 'th' ? 'EN' : 'ไทย'}</Button>
+      </Box>
     </div>
   )
 }
