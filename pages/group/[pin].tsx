@@ -419,7 +419,7 @@ function GroupConfirmation({ pin, disableNearby }) {
   return (
     <div className="container group-confirmation-page">
       <Loading message={loading} />
-      <Tutorial pages={TutorialEvent.CREATE_GROUP.PAGES} onClose={handleCloseTutorial} visible={isTutorialVisible}/>
+      <Tutorial pages={router.locale === 'th' ? TutorialEvent.CREATE_GROUP.PAGES_TH : TutorialEvent.CREATE_GROUP.PAGES} onClose={handleCloseTutorial} visible={isTutorialVisible}/>
       <Box lineHeight="64px" height="64px" display="flex">
         <Button onClick={handleCancel} style={{margin: "auto"}} className="center-button"><FontAwesomeIcon icon={faChevronLeft} />&nbsp;&nbsp;{f('btn_back')}</Button>
         <Box flexGrow={1} />

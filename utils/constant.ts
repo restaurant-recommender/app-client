@@ -65,6 +65,7 @@ export const TutorialEvent = {
     CREATE_GROUP: {
         NAME: 'tutorial_create_group',
         PAGES: ['group-1', 'group-2', 'group-3'],
+        PAGES_TH: ['group-1-th', 'group-2-th', 'group-3-th'],
     },
 }
 
