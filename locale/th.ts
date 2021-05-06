@@ -1,5 +1,5 @@
 export const th = {
-  appName: "กินไรดี?",
+  appName: "กินไรดี",
 
   btn_home: "หน้าหลัก",
   btn_next: "ถัดไป",

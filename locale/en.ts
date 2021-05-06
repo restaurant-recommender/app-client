@@ -1,5 +1,5 @@
 export const en = {
-  appName: "Kinraidee?",
+  appName: "Kinraidee",
 
   btn_home: "Home",
   btn_next: "Next",
